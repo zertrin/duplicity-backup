@@ -136,8 +136,8 @@ EMAIL_TO=
 EMAIL_FROM=
 EMAIL_SUBJECT=
 
-# command to use to send mail (uncomment to activate functionnality)
-#MAIL="mailx"
+# command to use to send mail
+MAIL="mailx"
 #MAIL="ssmtp"
 
 # TROUBLESHOOTING: If you are having any problems running this script it is
@@ -333,16 +333,18 @@ include_exclude()
   IFS=$(echo -en "\t\n")
 
   for include in ${INCLIST[@]}
-    do
-      TMP=" --include=""'"$include"'"
-      INCLUDE=$INCLUDE$TMP
+  do
+    TMP=" --include=""'"$include"'"
+    INCLUDE=$INCLUDE$TMP
   done
+
   for exclude in ${EXCLIST[@]}
-      do
-      TMP=" --exclude "$exclude
-      EXCLUDE=$EXCLUDE$TMP
-    done
-    EXCLUDEROOT="--exclude=**"
+  do
+    TMP=" --exclude ""'"$exclude"'"
+    EXCLUDE=$EXCLUDE$TMP
+  done
+
+  EXCLUDEROOT="--exclude=**"
 
   # Restore IFS
   IFS=$OLDIFS

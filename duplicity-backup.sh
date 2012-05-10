@@ -394,7 +394,13 @@ backup_this_script()
   echo "You are backing up: "
   echo "      1. ${SCRIPTPATH}"
   echo "      2. GPG Secret Key: ${GPG_KEY}"
-  echo "Backup will be saved to: `pwd`/${TMPFILENAME}"
+
+  if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
+  then
+    echo "      3. Config file: ${CONFIG}"
+  fi
+
+  echo "Backup tarball will be encrypted and saved to: `pwd`/${TMPFILENAME}"
   echo
   echo ">> Are you sure you want to do that ('yes' to continue)?"
   read ANSWER
@@ -405,6 +411,12 @@ backup_this_script()
 
   mkdir -p ${TMPDIR}
   cp $SCRIPTPATH ${TMPDIR}/
+
+  if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
+  then
+    cp $CONFIG ${TMPDIR}/
+  fi
+
   gpg -a --export-secret-keys ${GPG_KEY} > ${TMPDIR}/duplicity-backup-secret.key.txt
   echo -e ${README_TXT} > ${README}
   echo "Encrypting tarball, choose a password you'll remember..."

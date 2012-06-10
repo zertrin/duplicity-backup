@@ -247,7 +247,7 @@ email_logfile()
           if [ "$MAIL" = "ssmtp" ]; then
             echo """Subject: ${EMAIL_SUBJECT}""" | cat - ${LOGFILE} | ${MAILCMD} -s ${EMAIL_TO}
 
-          elif ["$MAIL" = "mailx" ]; then
+          elif [ "$MAIL" = "mailx" ]; then
             EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
           fi

@@ -39,14 +39,15 @@ AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 # ENCRYPTION INFORMATION
 # If you aren't running this from a cron, comment this line out
 # and duplicity should prompt you for your password.
-# Comment out if you're not using encryption
+# Comment out if you're using only GPG_KEY or not using encryption
 PASSPHRASE="foobar_gpg_passphrase"
 
 # Specify which GPG key you would like to use (even if you have only one).
-# Comment out if you're not using encryption
+# Comment out if you're using only PASSPHRASE or not using encryption
 GPG_KEY="foobar_gpg_key"
 
 # Do you want your backup to be encrypted? yes/no
+# If yes, please make sure you specify either PASSPHRASE OR GPG_KEY
 ENCRYPTION='yes'
 
 # BACKUP SOURCE INFORMATION
@@ -174,7 +175,11 @@ S3CMD="$(which s3cmd)"
 LOCKFILE=${LOGDIR}backup.lock
 
 if [ $ENCRYPTION = "yes" ]; then
-  ENCRYPT="--encrypt-key=${GPG_KEY} --sign-key=${GPG_KEY}"
+  if [ ! -z "$GPG_KEY" ]; then
+    ENCRYPT="--encrypt-key=${GPG_KEY} --sign-key=${GPG_KEY}"
+  elif [ ! -z "$PASSPHRASE" ]; then
+    ENCRYPT=""
+  fi
 elif [ $ENCRYPTION = "no" ]; then
   ENCRYPT="--no-encryption"
 fi

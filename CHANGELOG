@@ -1,3 +1,8 @@
+0.7 (8 July 2012)
+=================
+  * Fix Issue #1 "Restore error if no target name"
+  * Rewrite to force utilisation of an external config file to facilitate updates of the script in itself
+
 0.6.1 (5 May 2012)
 =================
 Inclusion of two patches written by [shamer] + modified config file management.

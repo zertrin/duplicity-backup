@@ -1,11 +1,11 @@
 ABOUT THIS SCRIPT
 =================
 
-This bash script was designed to automate and simplify the remote backup
-process of duplicity on Amazon S3 primarily. Other backup destinations are
-possible. After your script is configured, you can easily backup, restore,
-verify and clean (either via cron or manually) your data without having to
-remember lots of different command options and passphrases.
+This bash script was designed to automate and simplify the remote backup process
+of duplicity on Amazon S3 primarily. Other backup destinations are possible.
+After your script is configured, you can easily backup, restore, verify and
+clean (either via cron or manually) your data without having to remember lots of
+different command options and passphrases.
 
 Most importantly, you can easily backup the script and your gpg key in a
 convenient passphrase-encrypted file.  This comes in in handy if/when your
@@ -15,8 +15,8 @@ Optionally, you can set up an email address where the log file will be sent,
 which is useful when the script is used via cron.
 
 This version is a rewriting of the code originally written by Damon Timm,
-including many patches that have been brought to the original scripts by
-various forks on Github.
+including many patches that have been brought to the original scripts by various
+forks on Github.
 
 Latest version of the code available at:
 http://github.com/zertrin/duplicity-backup
@@ -24,7 +24,7 @@ http://github.com/zertrin/duplicity-backup
 Merge requests are welcome :)
 
 More information about this script available at:
-http://zertrin.org/duplicity-backup.html
+http://zertrin.org/projects/duplicity-backup/
 
 The original version of the code is availabe at:
 http://github.com/theterran/dt-s3-backup
@@ -32,10 +32,11 @@ http://github.com/theterran/dt-s3-backup
 BEFORE YOU START
 ================
 
-This script requires user configuration.  Instructions are in
-the file itself and should be self-explanatory.  Be sure to replace all the
-*foobar* values with your real ones.  Almost every value needs to be
-configured in someway.
+This script requires user configuration. Instructions are in the config file
+itself and should be self-explanatory. Please DO NOT edit the example config
+file, but make a copy of it and edit this one. Be sure to replace all the
+*foobar* values with your real ones. Almost every value needs to be configured
+in someway.
 
 You can use multiple copies of the script with different settings for different
 backup scenarios.  It is designed to run as a cron job and will log information
@@ -54,11 +55,11 @@ REQUIREMENTS
 CONFIGURATION
 =============
 
-The configuration takes place directly in the script and is documented there.
+The configuration takes place in a separate config file and is documented there.
 
-You can optionnaly specifiy a custom config file in the CONFIG parameter at the
-very beginning. Any parameter specified in this custom config file will
-override thoses specified in the script.
+The script looks for its configuration by reading the config file specified in
+the CONFIG parameter at the beggining of the script. Be sure to edit it to match
+the actual location of your config file.
 
 COMMON USAGE EXAMPLES
 =====================
@@ -103,15 +104,14 @@ TROUBLESHOOTING
 
 This script attempts to simplify the task of running a duplicity command; if you
 are having any problems with the script the first step is to determine if the
-script is generating an incorrect command or if duplicity itself is
-causing your error.
+script is generating an incorrect command or if duplicity itself is causing your
+error.
 
 To see exactly what is happening when you run duplicity-backup, head to the bottom
-of the user configuration portion of the script and uncomment the `ECHO=$(which
-echo)` variable.  This will stop the script from running and will, instead,
-output the generated command into your log file. You can then check to see if
-what is being generated is causing an error or if it is duplicity causing you
-woe.
+of the configuration file and uncomment the `ECHO=$(which echo)` variable. This
+will stop the script from running and will, instead, output the generated
+command into your log file. You can then check to see if what is being generated
+is causing an error or if it is duplicity causing you woe.
 
 NEXT VERSION WISH LIST
 ======================

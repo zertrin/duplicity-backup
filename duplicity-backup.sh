@@ -19,7 +19,7 @@
 #
 # MORE ABOUT THIS SCRIPT AVAILABLE IN THE README AND AT:
 #
-# http://zertrin.org/duplicity-backup.html (for this version)
+# http://zertrin.org/projects/duplicity-backup/ (for this version)
 # http://damontimm.com/code/dt-s3-backup (for the original programi by Damon Timm)
 #
 # Latest code available at:
@@ -27,127 +27,9 @@
 #
 # ---------------------------------------------------------------------------- #
 
-# Set config file (uncomment if you want to use a separate config file)
-# Its content override config below !
-#CONFIG="/some/path/to/config/file"
-
-# AMAZON S3 INFORMATION
-# Comment out this lines if you're not using S3
-AWS_ACCESS_KEY_ID="foobar_aws_key_id"
-AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
-
-# ENCRYPTION INFORMATION
-# If you aren't running this from a cron, comment this line out
-# and duplicity should prompt you for your password.
-# Comment out if you're using only GPG_KEY or not using encryption
-PASSPHRASE="foobar_gpg_passphrase"
-
-# Specify which GPG key you would like to use (even if you have only one).
-# Comment out if you're using only PASSPHRASE or not using encryption
-GPG_KEY="foobar_gpg_key"
-
-# Do you want your backup to be encrypted? yes/no
-# If yes, please make sure you specify either PASSPHRASE OR GPG_KEY
-ENCRYPTION='yes'
-
-# BACKUP SOURCE INFORMATION
-# The ROOT of your backup (where you want the backup to start);
-# This can be / or somwhere else -- I use /home/ because all the
-# directories start with /home/ that I want to backup.
-ROOT="/home"
-
-# BACKUP DESTINATION INFORMATION
-# In my case, I use Amazon S3 use this - so I made up a unique
-# bucket name (you don't have to have one created, it will do it
-# for you).  If you don't want to use Amazon S3, you can backup
-# to a file or any of duplicity's supported outputs.
-#
-# NOTE: You do need to keep the "s3+http://<your location>/" format
-# even though duplicity supports "s3://<your location>/".
-DEST="s3+http://backup-bucket/backup-folder/"
-# Other possible locations
-#DEST="ftp://user[:password]@other.host[:port]/some_dir"
-#DEST="rsync://user@host.com[:port]//absolute_path"
-#DEST="ssh://user[:password]@other.host[:port]/[/]some_dir"
-#DEST="file:///home/foobar_user_name/new-backup-test/"
-
-# INCLUDE LIST OF DIRECTORIES
-# Here is a list of directories to include; if you want to include
-# everything that is in root, you could leave this list empty (I think).
-#
-# Here is an example with multiple locations:
-#INCLIST=(  "/home/*/Documents" \
-#           "/home/*/Projects" \
-#           "/home/*/logs" \
-#           "/home/www/mysql-backups" \
-#        )
-#
-# Simpler example with one location:
-INCLIST=( "/home/foobar_user_name/Documents/Prose/" ) 
-
-# EXCLUDE LIST OF DIRECTORIES
-# Even though I am being specific about what I want to include,
-# there is still a lot of stuff I don't need.
-EXCLIST=(   "/home/*/Trash" \
-            "/home/*/Projects/Completed" \
-            "/**.DS_Store" "/**Icon?" "/**.AppleDouble" \
-        )
-
-# STATIC BACKUP OPTIONS
-# Here you can define the static backup options that you want to run with
-# duplicity.  I use both the `--full-if-older-than` option plus the
-# `--s3-use-new-style` option (for European buckets).  Be sure to separate your
-# options with appropriate spacing.
-STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
-
-# FULL BACKUP & REMOVE OLDER THAN SETTINGS
-# Because duplicity will continue to add to each backup as you go,
-# it will eventually create a very large set of files.  Also, incremental
-# backups leave room for problems in the chain, so doing a "full"
-# backup every so often isn't not a bad idea.
-#
-# You can either remove older than a specific time period:
-#CLEAN_UP_TYPE="remove-older-than"
-#CLEAN_UP_VARIABLE="31D"
-
-# Or, If you would rather keep a certain (n) number of full backups (rather
-# than removing the files based on their age), you can use what I use:
-CLEAN_UP_TYPE="remove-all-but-n-full"
-CLEAN_UP_VARIABLE="2"
-
-# LOGFILE INFORMATION DIRECTORY
-# Provide directory for logfile, ownership of logfile, and verbosity level.
-# I run this script as root, but save the log files under my user name --
-# just makes it easier for me to read them and delete them as needed.
-
-LOGDIR="/home/foobar_user_name/logs/test2/"
-LOG_FILE="duplicity-`date +%Y-%m-%d_%H-%M`.txt"
-LOG_FILE_OWNER="foobar_user_name:foobar_user_name"
-VERBOSITY="-v3"
-
-# EMAIL ALERT (*thanks: rmarescu*)
-# Provide an email address to receive the logfile by email. If no email
-# address is provided, no alert will be sent.
-# You can set a custom from email address and a custom subject (both optionally)
-# If no value is provided for the subject, the following value will be
-# used by default: "duplicity-backup Alert ${LOG_FILE}"
-# MTA used: mailx
-#EMAIL="admin@example.com"
-EMAIL_TO=
-EMAIL_FROM=
-EMAIL_SUBJECT=
-
-# command to use to send mail
-MAIL="mailx"
-#MAIL="ssmtp"
-
-# TROUBLESHOOTING: If you are having any problems running this script it is
-# helpful to see the command output that is being generated to determine if the
-# script is causing a problem or if it is an issue with duplicity (or your
-# setup).  Simply  uncomment the ECHO line below and the commands will be
-# printed to the logfile.  This way, you can see if the problem is with the
-# script or with duplicity.
-#ECHO=$(which echo)
+# Set config file (don't forget to copy duplicity-backup.conf.example to
+# match that path) 
+CONFIG="duplicity-backup.conf"
 
 ##############################################################
 # Script Happens Below This Line - Shouldn't Require Editing #
@@ -157,9 +39,9 @@ MAIL="mailx"
 if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
 then
   . $CONFIG
-elif [ ! -z "$CONFIG" -a ! -f "$CONFIG" ];
-then
-  echo "ERROR: can't find config file!" >&2
+else
+  echo "ERROR: can't find config file! (${CONFIG})" >&2
+  exit 1
 fi
 
 export AWS_ACCESS_KEY_ID
@@ -507,14 +389,13 @@ case "$1" in
     if [[ ! "$2" ]]; then
       echo "Which file do you want to restore (eg, mail/letter.txt):"
       read -e FILE_TO_RESTORE
-      FILE_TO_RESTORE="'"$FILE_TO_RESTORE"'"
       echo
     else
-      FILE_TO_RESTORE="'"$2"'"
+      FILE_TO_RESTORE=$2
     fi
 
     if [[ "$3" ]]; then
-      DEST="'"$3"'"
+      DEST=$3
     else
       DEST=$(basename $FILE_TO_RESTORE)
     fi
@@ -529,6 +410,9 @@ case "$1" in
       echo -e "--------    END    --------\n" >> ${LOGFILE}
       exit 1
     fi
+
+    FILE_TO_RESTORE="'"$FILE_TO_RESTORE"'"
+    DEST="'"$DEST"'"
 
     echo "Restoring now ..."
     #use INCLUDE variable without create another one

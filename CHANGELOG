@@ -1,3 +1,7 @@
+0.7.1 (9 July 2012)
+===================
+  * Adding 'duplicity-backup.conf' to .gitignore
+
 0.7 (8 July 2012)
 =================
   * Fix Issue #1 "Restore error if no target name"

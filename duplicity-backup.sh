@@ -303,7 +303,7 @@ backup_this_script()
   then
     cp $CONFIG ${TMPDIR}/
   fi
-
+  export GPG_TTY=`tty`
   gpg -a --export-secret-keys ${GPG_KEY} > ${TMPDIR}/duplicity-backup-secret.key.txt
   echo -e ${README_TXT} > ${README}
   echo "Encrypting tarball, choose a password you'll remember..."

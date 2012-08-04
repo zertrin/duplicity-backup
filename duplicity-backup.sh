@@ -56,13 +56,13 @@ S3CMD="$(which s3cmd)"
 # the script is running at a time.
 LOCKFILE=${LOGDIR}backup.lock
 
-if [ $ENCRYPTION = "yes" ]; then
+if [ "$ENCRYPTION" = "yes" ]; then
   if [ ! -z "$GPG_KEY" ]; then
     ENCRYPT="--encrypt-key=${GPG_KEY} --sign-key=${GPG_KEY}"
   elif [ ! -z "$PASSPHRASE" ]; then
     ENCRYPT=""
   fi
-elif [ $ENCRYPTION = "no" ]; then
+elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
@@ -79,7 +79,7 @@ if [ ! -x "$DUPLICITY" ]; then
   exit 1
 fi
 
-if  [ `echo ${DEST} | cut -c 1,2` = "s3" ]; then
+if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
   DEST_IS_S3=true
   if [ ! -x "$S3CMD" ]; then
     echo $NO_S3CMD; S3CMD_AVAIL=false

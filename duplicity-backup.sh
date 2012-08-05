@@ -27,13 +27,74 @@
 #
 # ---------------------------------------------------------------------------- #
 
-# Set config file (don't forget to copy duplicity-backup.conf.example to
-# match that path) 
+# Default config file (don't forget to copy duplicity-backup.conf.example to
+# match that path)
+# NOTE: It can be useful not to edit this script at all to ease future updates
+#       so the config file can be specified directly on the command line too 
+#       with the -c option.
 CONFIG="duplicity-backup.conf"
 
 ##############################################################
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
+
+# Some expensive argument parsing that allows the script to
+# be insensitive to the order of appearance of the options
+# and to handle correctly option parameters that are optional
+while getopts ":c:-:" opt; do
+  case $opt in
+    # parse long options (a bit tricky because builtin getopts does not
+    # manage long options and i don't want to impose GNU getopt dependancy)
+    -)
+      case "$OPTARG" in
+        backup | full | verify | list-current-files | collection-status | help)
+          COMMAND=$OPTARG
+        ;;
+        # --restore [restore dest]
+        restore)
+          COMMAND=$OPTARG
+          # We try to find the optional value [restore dest]
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            RESTORE_DEST=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
+        # --restore-file [file to restore] [restore dest]
+        restore-file)
+          COMMAND=$OPTARG
+          # We try to find the first optional value [file to restore]
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            FILE_TO_RESTORE=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          else
+            continue # no value for the restore-file option, skip the rest
+          fi
+          # We try to find the second optional value [restore dest]
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            RESTORE_DEST=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
+        *)
+          echo "Invalid option: --$OPTARG" >&2
+          COMMAND=$OPTARG
+        ;;
+        esac
+    ;;
+    # here are parsed the short options
+    c) # set the config file from the command line
+      CONFIG=$OPTARG
+    ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      COMMAND=""
+    ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      COMMAND=""
+    ;;
+  esac
+done
 
 # Read config file if specified
 if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
@@ -322,13 +383,13 @@ echo -e "--------    START DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
 
 get_lock
 
-case "$1" in
-  "--backup-script")
+case "$COMMAND" in
+  "backup-script")
     backup_this_script
     exit
   ;;
 
-  "--full")
+  "full")
     OPTION="full"
     include_exclude
     duplicity_backup
@@ -336,7 +397,7 @@ case "$1" in
     get_file_sizes
   ;;
 
-  "--verify")
+  "verify")
     OLDROOT=${ROOT}
     ROOT=${DEST}
     DEST=${OLDROOT}
@@ -355,11 +416,11 @@ case "$1" in
     echo -e "Verify complete.  Check the log file for results:\n>> ${LOGFILE}"
   ;;
 
-  "--restore")
+  "restore")
     ROOT=$DEST
     OPTION="restore"
 
-    if [[ ! "$2" ]]; then
+    if [[ ! "$RESTORE_DEST" ]]; then
       echo "Please provide a destination path (eg, /home/user/dir):"
       read -e NEWDESTINATION
       DEST=$NEWDESTINATION
@@ -372,30 +433,28 @@ case "$1" in
         exit 1
       fi
     else
-      DEST=$2
+      DEST=$RESTORE_DEST
     fi
 
     echo "Attempting to restore now ..."
     duplicity_backup
   ;;
 
-  "--restore-file")
+  "restore-file")
     ROOT=$DEST
     INCLUDE=
     EXCLUDE=
     EXLUDEROOT=
     OPTION=
 
-    if [[ ! "$2" ]]; then
+    if [[ ! "$FILE_TO_RESTORE" ]]; then
       echo "Which file do you want to restore (eg, mail/letter.txt):"
       read -e FILE_TO_RESTORE
       echo
-    else
-      FILE_TO_RESTORE=$2
     fi
 
-    if [[ "$3" ]]; then
-      DEST=$3
+    if [[ "$RESTORE_DEST" ]]; then
+      DEST=$RESTORE_DEST
     else
       DEST=$(basename $FILE_TO_RESTORE)
     fi
@@ -420,7 +479,7 @@ case "$1" in
     duplicity_backup
   ;;
 
-  "--list-current-files")
+  "list-current-files")
     OPTION="list-current-files"
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
@@ -428,7 +487,7 @@ case "$1" in
     echo -e "--------    END    --------\n" >> ${LOGFILE}
   ;;
 
-  "--collection-status")
+  "collection-status")
     OPTION="collection-status"
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
@@ -436,7 +495,7 @@ case "$1" in
     echo -e "--------    END    --------\n" >> ${LOGFILE}
   ;;
 
-  "--backup")
+  "backup")
     include_exclude
     duplicity_backup
     duplicity_cleanup
@@ -449,6 +508,8 @@ case "$1" in
       `basename $0` [options]
 
     Options:
+      -c config_file : specify the config file to use
+
       --backup: runs an incremental backup
       --full: forces a full backup
 

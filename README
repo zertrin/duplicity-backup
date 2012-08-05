@@ -57,9 +57,16 @@ CONFIGURATION
 
 The configuration takes place in a separate config file and is documented there.
 
-The script looks for its configuration by reading the config file specified in
-the CONFIG parameter at the beggining of the script. Be sure to edit it to match
-the actual location of your config file.
+The script looks for its configuration by reading the config file specified by
+the command line option -c and fallback on the CONFIG parameter at the beggining
+of the script otherwise. 
+
+Be sure to specify it on the command line or to edit the CONFIG parameter in the
+script to match the actual location of your config file.
+
+NOTE: to ease future updates of the script, you may want not to edit the script
+      at all and to specify systematically the path to your config file on the 
+      command line with the -c option.
 
 COMMON USAGE EXAMPLES
 =====================
@@ -68,36 +75,36 @@ COMMON USAGE EXAMPLES
     $ duplicity-backup.sh
 
 * Run an incremental backup:
-    $ duplicity-backup.sh --backup
+    $ duplicity-backup.sh [-c config_file] --backup
 
 * Force a one-off full backup:
-    $ duplicity-backup.sh --full
+    $ duplicity-backup.sh [-c config_file] --full
 
 * Restore your entire backup:
-    $ duplicity-backup.sh --restore
+    $ duplicity-backup.sh [-c config_file] --restore
     You will be prompted for a restore directory
 
-    $ duplicity-backup.sh --restore /home/user/restore-folder
+    $ duplicity-backup.sh [-c config_file] --restore /home/user/restore-folder
     You can also provide a restore folder on the command line.
 
 * Restore a specific file in the backup:
-    $ duplicity-backup.sh --restore-file
+    $ duplicity-backup.sh [-c config_file] --restore-file
     You will be prompted for a file to restore to the current directory
 
-    $ duplicity-backup.sh --restore-file img/mom.jpg
+    $ duplicity-backup.sh [-c config_file] --restore-file img/mom.jpg
     Restores the file img/mom.jpg to the current directory
 
-    $ duplicity-backup.sh --restore-file img/mom.jpg /home/user/i-love-mom.jpg
+    $ duplicity-backup.sh [-c config_file] --restore-file img/mom.jpg /home/user/i-love-mom.jpg
     Restores the file img/mom.jpg to /home/user/i-love-mom.jpg
 
 * List files in the remote archive
-    $ duplicity-backup.sh --list-current-files
+    $ duplicity-backup.sh [-c config_file] --list-current-files
 
 * Verify the backup
-    $ duplicity-backup.sh --verify
+    $ duplicity-backup.sh [-c config_file] --verify
 
 * Backup the script and gpg key (for safekeeping)
-    $ duplicity-backup.sh --backup-script
+    $ duplicity-backup.sh [-c config_file] --backup-script
 
 TROUBLESHOOTING
 ===============

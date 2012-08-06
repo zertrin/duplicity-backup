@@ -38,18 +38,44 @@ CONFIG="duplicity-backup.conf"
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
 
+usage(){
+echo "USAGE:
+    `basename $0` [options]
+
+  Options:
+    -c, --config CONFIG_FILE   specify the config file to use
+
+    -b, --backup               runs an incremental backup
+    -f, --full                 forces a full backup
+    -v, --verify               verifies the backup
+        --restore [PATH]       restores the entire backup to [path]
+        --restore-file [FILE_TO_RESTORE] [DESTINATION]
+                               restore a specific file
+    -l, --list-current-files   lists the files currently backed up in the archive
+    -s, --collection-status    show all the backup sets in the archive
+        --backup-script        automatically backup the script and secret key to
+                               the current working directory
+    -n, --dry-run              perform a trial run with no changes made
+
+  CURRENT SCRIPT VARIABLES:
+  ========================
+    DEST (backup destination)       = ${DEST}
+    INCLIST (directories included)  = ${INCLIST[@]:0}
+    EXCLIST (directories excluded)  = ${EXCLIST[@]:0}
+    ROOT (root directory of backup) = ${ROOT}
+    LOGFILE (log file path)         = ${LOGFILE}
+"
+}
+
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:-:" opt; do
+while getopts ":c:bfvlsn-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and i don't want to impose GNU getopt dependancy)
     -)
       case "$OPTARG" in
-        backup | full | verify | list-current-files | collection-status | help)
-          COMMAND=$OPTARG
-        ;;
         # --restore [restore dest]
         restore)
           COMMAND=$OPTARG
@@ -75,16 +101,29 @@ while getopts ":c:-:" opt; do
             OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
           fi
         ;;
+        config) # set the config file from the command line
+          # We try to find the config file
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            CONFIG=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
+        dry-run)
+          ECHO=$(which echo)
+        ;;
         *)
-          echo "Invalid option: --$OPTARG" >&2
           COMMAND=$OPTARG
         ;;
         esac
     ;;
     # here are parsed the short options
-    c) # set the config file from the command line
-      CONFIG=$OPTARG
-    ;;
+    c) CONFIG=$OPTARG;; # set the config file from the command line
+    b) COMMAND="backup";;
+    f) COMMAND="full";;
+    v) COMMAND="verify";;
+    l) COMMAND="list-current-files";;
+    s) COMMAND="collection-status";;
+    n) ECHO=$(which echo);; # dry run
     :)
       echo "Option -$OPTARG requires an argument." >&2
       COMMAND=""
@@ -102,6 +141,7 @@ then
   . $CONFIG
 else
   echo "ERROR: can't find config file! (${CONFIG})" >&2
+  usage
   exit 1
 fi
 
@@ -133,7 +173,7 @@ NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
 README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3).  In order to restore these files, you first need to import your GPG private key (if you haven't already).  The key is in this directory and the following command should do the trick:\n\ngpg --allow-secret-key-import --import duplicity-backup-secret.key.txt\n\nAfter your key as been succesfully imported, you should be able to restore your files.\n\nGood luck!"
-CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables at the top of the script.\nCheck your configuration because it appears that something has not been set yet."
+CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables in the configuration file.\nCheck your configuration because it appears that something has not been set yet."
 
 if [ ! -x "$DUPLICITY" ]; then
   echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
@@ -504,31 +544,7 @@ case "$COMMAND" in
 
   *)
     echo -e "[Only show `basename $0` usage options]\n" >> ${LOGFILE}
-    echo "  USAGE:
-      `basename $0` [options]
-
-    Options:
-      -c config_file : specify the config file to use
-
-      --backup: runs an incremental backup
-      --full: forces a full backup
-
-      --verify: verifies the backup
-      --restore [path]: restores the entire backup
-      --restore-file [file] [destination/filename]: restore a specific file
-      --list-current-files: lists the files currently backed up in the archive
-      --collection-status: show all the backup sets in the archive
-
-      --backup-script: automatically backup the script and secret key to the current working directory
-
-    CURRENT SCRIPT VARIABLES:
-    ========================
-      DEST (backup destination)       = ${DEST}
-      INCLIST (directories included)  = ${INCLIST[@]:0}
-      EXCLIST (directories excluded)  = ${EXCLIST[@]:0}
-      ROOT (root directory of backup) = ${ROOT}
-      LOGFILE (log file path)         = ${LOGFILE}
-    "
+    usage
   ;;
 esac
 

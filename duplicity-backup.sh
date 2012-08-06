@@ -27,13 +27,113 @@
 #
 # ---------------------------------------------------------------------------- #
 
-# Set config file (don't forget to copy duplicity-backup.conf.example to
-# match that path) 
+# Default config file (don't forget to copy duplicity-backup.conf.example to
+# match that path)
+# NOTE: It can be useful not to edit this script at all to ease future updates
+#       so the config file can be specified directly on the command line too 
+#       with the -c option.
 CONFIG="duplicity-backup.conf"
 
 ##############################################################
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
+
+usage(){
+echo "USAGE:
+    `basename $0` [options]
+
+  Options:
+    -c, --config CONFIG_FILE   specify the config file to use
+
+    -b, --backup               runs an incremental backup
+    -f, --full                 forces a full backup
+    -v, --verify               verifies the backup
+        --restore [PATH]       restores the entire backup to [path]
+        --restore-file [FILE_TO_RESTORE] [DESTINATION]
+                               restore a specific file
+    -l, --list-current-files   lists the files currently backed up in the archive
+    -s, --collection-status    show all the backup sets in the archive
+        --backup-script        automatically backup the script and secret key to
+                               the current working directory
+    -n, --dry-run              perform a trial run with no changes made
+
+  CURRENT SCRIPT VARIABLES:
+  ========================
+    DEST (backup destination)       = ${DEST}
+    INCLIST (directories included)  = ${INCLIST[@]:0}
+    EXCLIST (directories excluded)  = ${EXCLIST[@]:0}
+    ROOT (root directory of backup) = ${ROOT}
+    LOGFILE (log file path)         = ${LOGFILE}
+"
+}
+
+# Some expensive argument parsing that allows the script to
+# be insensitive to the order of appearance of the options
+# and to handle correctly option parameters that are optional
+while getopts ":c:bfvlsn-:" opt; do
+  case $opt in
+    # parse long options (a bit tricky because builtin getopts does not
+    # manage long options and i don't want to impose GNU getopt dependancy)
+    -)
+      case "$OPTARG" in
+        # --restore [restore dest]
+        restore)
+          COMMAND=$OPTARG
+          # We try to find the optional value [restore dest]
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            RESTORE_DEST=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
+        # --restore-file [file to restore] [restore dest]
+        restore-file)
+          COMMAND=$OPTARG
+          # We try to find the first optional value [file to restore]
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            FILE_TO_RESTORE=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          else
+            continue # no value for the restore-file option, skip the rest
+          fi
+          # We try to find the second optional value [restore dest]
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            RESTORE_DEST=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
+        config) # set the config file from the command line
+          # We try to find the config file
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            CONFIG=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
+        dry-run)
+          ECHO=$(which echo)
+        ;;
+        *)
+          COMMAND=$OPTARG
+        ;;
+        esac
+    ;;
+    # here are parsed the short options
+    c) CONFIG=$OPTARG;; # set the config file from the command line
+    b) COMMAND="backup";;
+    f) COMMAND="full";;
+    v) COMMAND="verify";;
+    l) COMMAND="list-current-files";;
+    s) COMMAND="collection-status";;
+    n) ECHO=$(which echo);; # dry run
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      COMMAND=""
+    ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      COMMAND=""
+    ;;
+  esac
+done
 
 # Read config file if specified
 if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
@@ -41,6 +141,7 @@ then
   . $CONFIG
 else
   echo "ERROR: can't find config file! (${CONFIG})" >&2
+  usage
   exit 1
 fi
 
@@ -72,7 +173,7 @@ NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
 README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3).  In order to restore these files, you first need to import your GPG private key (if you haven't already).  The key is in this directory and the following command should do the trick:\n\ngpg --allow-secret-key-import --import duplicity-backup-secret.key.txt\n\nAfter your key as been succesfully imported, you should be able to restore your files.\n\nGood luck!"
-CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables at the top of the script.\nCheck your configuration because it appears that something has not been set yet."
+CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables in the configuration file.\nCheck your configuration because it appears that something has not been set yet."
 
 if [ ! -x "$DUPLICITY" ]; then
   echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
@@ -322,13 +423,13 @@ echo -e "--------    START DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
 
 get_lock
 
-case "$1" in
-  "--backup-script")
+case "$COMMAND" in
+  "backup-script")
     backup_this_script
     exit
   ;;
 
-  "--full")
+  "full")
     OPTION="full"
     include_exclude
     duplicity_backup
@@ -336,7 +437,7 @@ case "$1" in
     get_file_sizes
   ;;
 
-  "--verify")
+  "verify")
     OLDROOT=${ROOT}
     ROOT=${DEST}
     DEST=${OLDROOT}
@@ -355,11 +456,11 @@ case "$1" in
     echo -e "Verify complete.  Check the log file for results:\n>> ${LOGFILE}"
   ;;
 
-  "--restore")
+  "restore")
     ROOT=$DEST
     OPTION="restore"
 
-    if [[ ! "$2" ]]; then
+    if [[ ! "$RESTORE_DEST" ]]; then
       echo "Please provide a destination path (eg, /home/user/dir):"
       read -e NEWDESTINATION
       DEST=$NEWDESTINATION
@@ -372,30 +473,28 @@ case "$1" in
         exit 1
       fi
     else
-      DEST=$2
+      DEST=$RESTORE_DEST
     fi
 
     echo "Attempting to restore now ..."
     duplicity_backup
   ;;
 
-  "--restore-file")
+  "restore-file")
     ROOT=$DEST
     INCLUDE=
     EXCLUDE=
     EXLUDEROOT=
     OPTION=
 
-    if [[ ! "$2" ]]; then
+    if [[ ! "$FILE_TO_RESTORE" ]]; then
       echo "Which file do you want to restore (eg, mail/letter.txt):"
       read -e FILE_TO_RESTORE
       echo
-    else
-      FILE_TO_RESTORE=$2
     fi
 
-    if [[ "$3" ]]; then
-      DEST=$3
+    if [[ "$RESTORE_DEST" ]]; then
+      DEST=$RESTORE_DEST
     else
       DEST=$(basename $FILE_TO_RESTORE)
     fi
@@ -420,7 +519,7 @@ case "$1" in
     duplicity_backup
   ;;
 
-  "--list-current-files")
+  "list-current-files")
     OPTION="list-current-files"
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
@@ -428,7 +527,7 @@ case "$1" in
     echo -e "--------    END    --------\n" >> ${LOGFILE}
   ;;
 
-  "--collection-status")
+  "collection-status")
     OPTION="collection-status"
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
@@ -436,7 +535,7 @@ case "$1" in
     echo -e "--------    END    --------\n" >> ${LOGFILE}
   ;;
 
-  "--backup")
+  "backup")
     include_exclude
     duplicity_backup
     duplicity_cleanup
@@ -445,29 +544,7 @@ case "$1" in
 
   *)
     echo -e "[Only show `basename $0` usage options]\n" >> ${LOGFILE}
-    echo "  USAGE:
-      `basename $0` [options]
-
-    Options:
-      --backup: runs an incremental backup
-      --full: forces a full backup
-
-      --verify: verifies the backup
-      --restore [path]: restores the entire backup
-      --restore-file [file] [destination/filename]: restore a specific file
-      --list-current-files: lists the files currently backed up in the archive
-      --collection-status: show all the backup sets in the archive
-
-      --backup-script: automatically backup the script and secret key to the current working directory
-
-    CURRENT SCRIPT VARIABLES:
-    ========================
-      DEST (backup destination)       = ${DEST}
-      INCLIST (directories included)  = ${INCLIST[@]:0}
-      EXCLIST (directories excluded)  = ${EXCLIST[@]:0}
-      ROOT (root directory of backup) = ${ROOT}
-      LOGFILE (log file path)         = ${LOGFILE}
-    "
+    usage
   ;;
 esac
 

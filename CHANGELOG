@@ -1,3 +1,11 @@
+0.8 (05 August 2012)
+===================
+  * Improved argument parsing. Now the script is insensitive to the order of appearance of the options and handles correctly optional options parameters
+  * Re-added possibility to specify the config file on the command line, which is now the recommended way to do (facilitating script updates)
+  * Added dry-run command line option (-n or --dry-run)
+  * Added many short versions of long options (-b, -f, -v, -l, -s)
+  * Fix "unary operator expected warning" in some rare cases
+
 0.7.1 (9 July 2012)
 ===================
   * Adding 'duplicity-backup.conf' to .gitignore

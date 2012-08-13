@@ -158,8 +158,8 @@ S3CMD="$(which s3cmd)"
 LOCKFILE=${LOGDIR}backup.lock
 
 if [ "$ENCRYPTION" = "yes" ]; then
-  if [ ! -z "$GPG_KEY" ]; then
-    ENCRYPT="--encrypt-key=${GPG_KEY} --sign-key=${GPG_KEY}"
+  if [ ! -z "$GPG_ENC_KEY" ] && [ ! -z "$GPG_SIGN_KEY" ]; then
+    ENCRYPT="--encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
   elif [ ! -z "$PASSPHRASE" ]; then
     ENCRYPT=""
   fi
@@ -196,7 +196,8 @@ fi
 check_variables ()
 {
   if [[ ${ROOT} = "" || ${DEST} = "" || ${INCLIST} = "" || \
-         ${GPG_KEY} = "foobar_gpg_key" || \
+         ${GPG_ENC_KEY} = "foobar_gpg_key" || \
+         ${GPG_SIGN_KEY} = "foobar_gpg_key" || \         
          ${PASSPHRASE} = "foobar_gpg_passphrase" || \
          ${LOGDIR} = "/home/foobar_user_name/logs/test2/" || \
          ( ${DEST_IS_S3} = true && ${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" ) || \

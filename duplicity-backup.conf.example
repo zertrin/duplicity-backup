@@ -45,17 +45,28 @@ AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 
 # ENCRYPTION INFORMATION
 # Do you want your backup to be encrypted? yes/no
-# If yes, please make sure you specify either PASSPHRASE or GPG_KEY
+# If yes, please make sure you specify either PASSPHRASE or GPG_ENC_KEY/GPG_SIGN_KEY
 ENCRYPTION='yes'
 
 # If you are NOT running this from a cron, comment this line out
 # and duplicity should prompt you for your password.
+# Otherwise this password is either used for symmetric encryption
+# (your backups will be encrypted with this password) or is used
+# for the "GPG_SIGN_KEY" (see below).
 # Comment out if you aren't using encryption
 PASSPHRASE="foobar_gpg_passphrase"
 
-# Specify which GPG key you would like to use (even if you have only one).
-# Comment out if you're using only PASSPHRASE or not using encryption
-GPG_KEY="foobar_gpg_key"
+# Specify which GPG keys you would like to use (even if you have only one).
+# If you are running this from a cron, it is highly recommended to create separate 
+# signature and encryption keys, because you have to specify the password for the 
+# GPG_SIGN_KEY via the above PASSPHRASE variable 
+# (see http://www.debian-administration.org/articles/209#d0e109).
+# If you are not running the script from a cron, duplicity should prompt you for the 
+# GPG_SIGN_KEY password.
+# Comment out if you're using only PASSPHRASE (symmetric encryption) or not using 
+# encryption at all.
+GPG_ENC_KEY="foobar_gpg_key"
+GPG_SIGN_KEY="foobar_gpg_key"
 
 # BACKUP SOURCE INFORMATION
 # The ROOT of your backup (where you want the backup to start);

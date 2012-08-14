@@ -197,7 +197,7 @@ check_variables ()
 {
   if [[ ${ROOT} = "" || ${DEST} = "" || ${INCLIST} = "" || \
          ${GPG_ENC_KEY} = "foobar_gpg_key" || \
-         ${GPG_SIGN_KEY} = "foobar_gpg_key" || \         
+         ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
          ${PASSPHRASE} = "foobar_gpg_passphrase" || \
          ${LOGDIR} = "/home/foobar_user_name/logs/test2/" || \
          ( ${DEST_IS_S3} = true && ${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" ) || \

@@ -172,7 +172,7 @@ size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
-README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3).  In order to restore these files, you first need to import your GPG private key (if you haven't already).  The key is in this directory and the following command should do the trick:\n\ngpg --allow-secret-key-import --import duplicity-backup-secret.key.txt\n\nAfter your key as been succesfully imported, you should be able to restore your files.\n\nGood luck!"
+README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\n\nIf you were using the same key for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.txt\nOr if you were using two separate keys for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.txt\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.txt\n\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files.\n\nGood luck!"
 CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables in the configuration file.\nCheck your configuration because it appears that something has not been set yet."
 
 if [ ! -x "$DUPLICITY" ]; then
@@ -382,7 +382,11 @@ backup_this_script()
 
   echo "You are backing up: "
   echo "      1. ${SCRIPTPATH}"
-  echo "      2. GPG Secret Key: ${GPG_KEY}"
+  if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
+    echo "      2. GPG Secret encryption and sign key: ${GPG_ENC_KEY}"
+  else
+    echo "      2. GPG Secret encryption key: ${GPG_ENC_KEY} and GPG secret sign key: ${GPG_SIGN_KEY}"
+  fi
 
   if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
   then
@@ -405,8 +409,15 @@ backup_this_script()
   then
     cp $CONFIG ${TMPDIR}/
   fi
+
   export GPG_TTY=`tty`
-  gpg -a --export-secret-keys ${GPG_KEY} > ${TMPDIR}/duplicity-backup-secret.key.txt
+  if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
+    gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-and-sign-secret.key.txt
+  else
+    gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-secret.key.txt
+    gpg -a --export-secret-keys ${GPG_SIGN_KEY} > ${TMPDIR}/duplicity-backup-sign-secret.key.txt
+  fi
+
   echo -e ${README_TXT} > ${README}
   echo "Encrypting tarball, choose a password you'll remember..."
   tar c ${TMPDIR} | gpg -aco ${TMPFILENAME}

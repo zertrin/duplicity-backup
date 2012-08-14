@@ -1,3 +1,8 @@
+0.8.1 (15 August 2012)
+======================
+  * Added support for using separate signature and encryption keys [puredoze]
+  * Adaptation of the script's self-backup process resulting from puredoze's enhancement
+
 0.8 (05 August 2012)
 ===================
   * Improved argument parsing. Now the script is insensitive to the order of appearance of the options and handles correctly optional options parameters

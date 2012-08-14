@@ -63,6 +63,8 @@ PASSPHRASE="foobar_gpg_passphrase"
 # (see http://www.debian-administration.org/articles/209#d0e109).
 # If you are not running the script from a cron, duplicity should prompt you for the 
 # GPG_SIGN_KEY password.
+# If you choose to use the same GPG key for encryption and signature, set it both
+# in GPG_ENC_KEY and GPG_SIGN_KEY.
 # Comment out if you're using only PASSPHRASE (symmetric encryption) or not using 
 # encryption at all.
 GPG_ENC_KEY="foobar_gpg_key"

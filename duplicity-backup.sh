@@ -382,10 +382,15 @@ backup_this_script()
 
   echo "You are backing up: "
   echo "      1. ${SCRIPTPATH}"
-  if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
-    echo "      2. GPG Secret encryption and sign key: ${GPG_ENC_KEY}"
+
+  if [ ! -z "$GPG_ENC_KEY" -a ! -z "$GPG_SIGN_KEY" ]; then
+    if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
+      echo "      2. GPG Secret encryption and sign key: ${GPG_ENC_KEY}"
+    else
+      echo "      2. GPG Secret encryption key: ${GPG_ENC_KEY} and GPG secret sign key: ${GPG_SIGN_KEY}"
+    fi
   else
-    echo "      2. GPG Secret encryption key: ${GPG_ENC_KEY} and GPG secret sign key: ${GPG_SIGN_KEY}"
+    echo "      2. GPG Secret encryption and sign key: none (symmetric encryption)"
   fi
 
   if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
@@ -410,12 +415,14 @@ backup_this_script()
     cp $CONFIG ${TMPDIR}/
   fi
 
-  export GPG_TTY=`tty`
-  if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
-    gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-and-sign-secret.key.txt
-  else
-    gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-secret.key.txt
-    gpg -a --export-secret-keys ${GPG_SIGN_KEY} > ${TMPDIR}/duplicity-backup-sign-secret.key.txt
+  if [ ! -z "$GPG_ENC_KEY" -a ! -z "$GPG_SIGN_KEY" ]; then
+    export GPG_TTY=`tty`
+    if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
+      gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-and-sign-secret.key.txt
+    else
+      gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-secret.key.txt
+      gpg -a --export-secret-keys ${GPG_SIGN_KEY} > ${TMPDIR}/duplicity-backup-sign-secret.key.txt
+    fi
   fi
 
   echo -e ${README_TXT} > ${README}

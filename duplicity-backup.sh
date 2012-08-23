@@ -145,9 +145,11 @@ else
   exit 1
 fi
 
+SIGN_PASSPHRASE=$PASSPHRASE
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
 export PASSPHRASE
+export SIGN_PASSPHRASE
 
 LOGFILE="${LOGDIR}${LOG_FILE}"
 DUPLICITY="$(which duplicity)"
@@ -359,14 +361,13 @@ duplicity_backup()
   >> ${LOGFILE}
 }
 
-setup_passphrases_for_restore()
+setup_passphrase()
 {
   if [ ! -z "$GPG_ENC_KEY" -a ! -z "$GPG_SIGN_KEY" -a "$GPG_ENC_KEY" != "$GPG_SIGN_KEY" ]; then
-    SIGN_PASSPHRASE=$PASSPHRASE
-    echo "Please provide the passphrase for decryption (GPG key 0x${GPG_ENC_KEY}):"
-    read -e ENCPASSPHRASE
+    echo -n "Please provide the passphrase for decryption (GPG key 0x${GPG_ENC_KEY}): "
+    builtin read -s ENCPASSPHRASE
+    echo -ne "\n"
     PASSPHRASE=$ENCPASSPHRASE
-    export SIGN_PASSPHRASE
     export PASSPHRASE
   fi
 }
@@ -476,6 +477,8 @@ case "$COMMAND" in
 
     echo -e "-------[ Verifying Source & Destination ]-------\n" >> ${LOGFILE}
     include_exclude
+    setup_passphrase
+    echo -e "Attempting to verify now ..."
     duplicity_backup
 
     OLDROOT=${ROOT}
@@ -507,7 +510,7 @@ case "$COMMAND" in
       DEST=$RESTORE_DEST
     fi
 
-    setup_passphrases_for_restore
+    setup_passphrase
     echo "Attempting to restore now ..."
     duplicity_backup
   ;;
@@ -545,7 +548,7 @@ case "$COMMAND" in
     FILE_TO_RESTORE="'"$FILE_TO_RESTORE"'"
     DEST="'"$DEST"'"
 
-    setup_passphrases_for_restore
+    setup_passphrase
     echo "Restoring now ..."
     #use INCLUDE variable without create another one
     INCLUDE="--file-to-restore ${FILE_TO_RESTORE}"

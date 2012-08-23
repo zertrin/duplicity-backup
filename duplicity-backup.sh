@@ -359,6 +359,18 @@ duplicity_backup()
   >> ${LOGFILE}
 }
 
+setup_passphrases_for_restore()
+{
+  if [ ! -z "$GPG_ENC_KEY" -a ! -z "$GPG_SIGN_KEY" -a "$GPG_ENC_KEY" != "$GPG_SIGN_KEY" ]; then
+    SIGN_PASSPHRASE=$PASSPHRASE
+    echo "Please provide the passphrase for decryption (GPG key 0x${GPG_ENC_KEY}):"
+    read -e ENCPASSPHRASE
+    PASSPHRASE=$ENCPASSPHRASE
+    export SIGN_PASSPHRASE
+    export PASSPHRASE
+  fi
+}
+
 get_file_sizes()
 {
   get_source_file_size
@@ -495,6 +507,7 @@ case "$COMMAND" in
       DEST=$RESTORE_DEST
     fi
 
+    setup_passphrases_for_restore
     echo "Attempting to restore now ..."
     duplicity_backup
   ;;
@@ -532,6 +545,7 @@ case "$COMMAND" in
     FILE_TO_RESTORE="'"$FILE_TO_RESTORE"'"
     DEST="'"$DEST"'"
 
+    setup_passphrases_for_restore
     echo "Restoring now ..."
     #use INCLUDE variable without create another one
     INCLUDE="--file-to-restore ${FILE_TO_RESTORE}"
@@ -578,5 +592,6 @@ fi
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 unset PASSPHRASE
+unset SIGN_PASSPHRASE
 
 # vim: set tabstop=2 shiftwidth=2 sts=2 autoindent smartindent:

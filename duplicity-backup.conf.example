@@ -160,6 +160,7 @@ EMAIL_SUBJECT=
 
 # command to use to send mail
 MAIL="mailx"
+#MAIL="mail"
 #MAIL="ssmtp"
 
 # TROUBLESHOOTING: If you are having any problems running this script it is

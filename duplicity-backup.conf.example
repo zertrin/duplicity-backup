@@ -116,9 +116,11 @@ EXCLIST=(   "/home/*/Trash" \
 
 # STATIC BACKUP OPTIONS
 # Here you can define the static backup options that you want to run with
-# duplicity.  I use both the `--full-if-older-than` option plus the
-# `--s3-use-new-style` option (for European buckets).  Be sure to separate your
-# options with appropriate spacing.
+# duplicity. Reference is the manpage of duplicity (available at 
+# http://duplicity.nongnu.org/duplicity.1.html for example)
+# Useful examples are `--full-if-older-than` option and (for those using
+# Amazon S3 in Europe) `--s3-use-new-style` and `--s3-european-buckets` options
+# Be sure to separate your options with appropriate spacing.
 STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 
 # FULL BACKUP & REMOVE OLDER THAN SETTINGS

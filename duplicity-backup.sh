@@ -153,7 +153,6 @@ export SIGN_PASSPHRASE
 
 LOGFILE="${LOGDIR}${LOG_FILE}"
 DUPLICITY="$(which duplicity)"
-S3CMD="$(which s3cmd)"
 
 # File to use as a lock. The lock is used to insure that only one instance of
 # the script is running at a time.
@@ -184,6 +183,7 @@ fi
 
 if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
   DEST_IS_S3=true
+  S3CMD="$(which s3cmd)"
   if [ ! -x "$S3CMD" ]; then
     echo $NO_S3CMD; S3CMD_AVAIL=false
   elif [ ! -f "${HOME}/.s3cfg" ]; then

@@ -1,3 +1,11 @@
+0.8.2 (01 November 2012)
+========================
+  * Handle --time option for restoration and file-listing
+  * Fix "check_variables" not to throw errors if no encryption is desired
+  * Added mail option [philcryer]
+  * Fix issue #18: `which s3cmd` only called when dest is s3
+  * Added hint in the comments of the config file to use --s3-european-buckets option for european buckets
+
 0.8.1 (15 August 2012)
 ======================
   * Added support for using separate signature and encryption keys [puredoze]

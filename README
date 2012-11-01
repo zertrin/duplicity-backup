@@ -50,6 +50,7 @@ REQUIREMENTS
 
 * duplicity
 * gpg
+* which
 * Amazon S3 (optional)
 * s3cmd (optional)
 * mailx (optional)
@@ -97,6 +98,8 @@ USAGE
     -l, --list-current-files   lists the files currently backed up in the archive
     -s, --collection-status    show all the backup sets in the archive
 
+    -t, --time TIME            specify the time from which to restore or list 
+                               files (duplicity time format)
         --backup-script        automatically backup the script and secret key to
                                the current working directory
     -n, --dry-run              perform a trial run with no changes made
@@ -159,7 +162,5 @@ NEXT VERSION WISH LIST
 ======================
 
 * --restore-dir option
-* restore files from a specific time period
-* support multiple MTAs for the email alert feature
 
 Thanks to Mario Santagiuliana and Razvan for their help.

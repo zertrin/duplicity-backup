@@ -55,6 +55,7 @@ echo "USAGE:
     -s, --collection-status    show all the backup sets in the archive
         --backup-script        automatically backup the script and secret key to
                                the current working directory
+    -t, --time TIME            specify the time from which to restore or list files
     -n, --dry-run              perform a trial run with no changes made
 
   CURRENT SCRIPT VARIABLES:
@@ -70,7 +71,7 @@ echo "USAGE:
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:bfvlsn-:" opt; do
+while getopts ":c:t:bfvlsn-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and i don't want to impose GNU getopt dependancy)
@@ -108,6 +109,13 @@ while getopts ":c:bfvlsn-:" opt; do
             OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
           fi
         ;;
+        time) # set the restore time from the command line
+          # We try to find the restore time
+          if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
+            TIME=${!OPTIND}
+            OPTIND=$(( $OPTIND + 1 )) # we found it, move forward in arg parsing
+          fi
+        ;;
         dry-run)
           ECHO=$(which echo)
         ;;
@@ -118,6 +126,7 @@ while getopts ":c:bfvlsn-:" opt; do
     ;;
     # here are parsed the short options
     c) CONFIG=$OPTARG;; # set the config file from the command line
+    t) TIME=$OPTARG;; # set the restore time from the command line
     b) COMMAND="backup";;
     f) COMMAND="full";;
     v) COMMAND="verify";;
@@ -495,6 +504,9 @@ case "$COMMAND" in
   "restore")
     ROOT=$DEST
     OPTION="restore"
+    if [ ! -z "$TIME" ]; then
+      STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
+    fi
 
     if [[ ! "$RESTORE_DEST" ]]; then
       echo "Please provide a destination path (eg, /home/user/dir):"
@@ -523,6 +535,10 @@ case "$COMMAND" in
     EXCLUDE=
     EXLUDEROOT=
     OPTION=
+
+    if [ ! -z "$TIME" ]; then
+      STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
+    fi
 
     if [[ ! "$FILE_TO_RESTORE" ]]; then
       echo "Which file do you want to restore (eg, mail/letter.txt):"
@@ -559,6 +575,11 @@ case "$COMMAND" in
 
   "list-current-files")
     OPTION="list-current-files"
+
+    if [ ! -z "$TIME" ]; then
+      STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
+    fi
+
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST}

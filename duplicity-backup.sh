@@ -286,9 +286,9 @@ get_source_file_size()
   OLDIFS=$IFS
   IFS=$(echo -en "\t\n")
   
-  DUEXCFLAG="--exclude-from"
+  DUEXCFLAG="--exclude-from="
   if [ `uname` == 'FreeBSD' ]; then 
-     DUEXCFLAG="-I"
+     DUEXCFLAG="-I "
   fi
 
   for exclude in ${EXCLIST[@]}; do
@@ -298,7 +298,7 @@ get_source_file_size()
   for include in ${INCLIST[@]}
     do
       echo -e '"'$DUEXCLIST'"' | \
-	      du -hs ${DUEXCFLAG}="-" ${include} | \
+	      du -hs ${DUEXCFLAG}"-" ${include} | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
       >> ${LOGFILE}
   done

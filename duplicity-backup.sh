@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
@@ -246,12 +246,15 @@ email_logfile()
           EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup alert ${LOG_FILE}"}
           if [ "$MAIL" = "ssmtp" ]; then
             echo """Subject: ${EMAIL_SUBJECT}""" | cat - ${LOGFILE} | ${MAILCMD} -s ${EMAIL_TO}
-
           elif [ "$MAIL" = "mailx" ]; then
             EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
 	  elif [ "$MAIL" = "mail" ]; then
-	    cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
+	    if [ `uname` == "FreeBSD" ]; then
+               cat ${LOGFILE} | mail -s """${EMAIL_SUBJECT}""" ${EMAIL_TO} --
+            else
+               cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
+            fi
 	  fi
           echo -e "Email alert sent to ${EMAIL_TO} using ${MAIL}" >> ${LOGFILE}
       fi
@@ -282,6 +285,11 @@ get_source_file_size()
   # Remove space as a field separator temporarily
   OLDIFS=$IFS
   IFS=$(echo -en "\t\n")
+  
+  DUEXCFLAG="--exclude-from"
+  if [ `uname` == 'FreeBSD' ]; then 
+     DUEXCFLAG="-I"
+  fi
 
   for exclude in ${EXCLIST[@]}; do
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
@@ -290,7 +298,7 @@ get_source_file_size()
   for include in ${INCLIST[@]}
     do
       echo -e '"'$DUEXCLIST'"' | \
-      du -hs --exclude-from="-" ${include} | \
+	      du -hs ${DUEXCFLAG}="-" ${include} | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
       >> ${LOGFILE}
   done

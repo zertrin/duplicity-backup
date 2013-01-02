@@ -590,7 +590,7 @@ case "$COMMAND" in
 
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
-    ${DEST}
+    ${DEST} | tee -a ${LOGFILE}
     echo -e "--------    END    --------\n" >> ${LOGFILE}
   ;;
 
@@ -598,7 +598,7 @@ case "$COMMAND" in
     OPTION="collection-status"
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
-    ${DEST}
+    ${DEST} | tee -a ${LOGFILE}
     echo -e "--------    END    --------\n" >> ${LOGFILE}
   ;;
 

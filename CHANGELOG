@@ -1,3 +1,8 @@
+0.8.3 (02 January 2013)
+======================
+  * FreeBSD portability (du, mail, & shebang) [barofsoap]
+  * Fix issue #30 "-s (collection-status) option not writing anything to log file"
+
 0.8.2 (01 November 2012)
 ========================
   * Handle --time option for restoration and file-listing

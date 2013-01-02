@@ -50,7 +50,7 @@ REQUIREMENTS
 
 * duplicity
 * gpg
-* which
+* Basic utilities like: which, tee
 * Amazon S3 (optional)
 * s3cmd (optional)
 * mailx (optional)
@@ -72,7 +72,7 @@ to "duplicity-backup.conf" in the script's directory).
 
 So be sure either:
 - to specify the configuration file path on the command line [recommended]
-- or to edit the CONFIG parameter in thescript to match the actual location of
+- or to edit the CONFIG parameter in the script to match the actual location of
   your config file. [deprecated]
 
 NOTE: to ease future updates of the script, you may prefer NOT to edit the

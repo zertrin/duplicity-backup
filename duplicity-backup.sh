@@ -195,10 +195,18 @@ if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
   S3CMD="$(which s3cmd)"
   if [ ! -x "$S3CMD" ]; then
     echo $NO_S3CMD; S3CMD_AVAIL=false
-  elif [ ! -f "${HOME}/.s3cfg" ]; then
+  elif [ -z "$S3CMD_CONF_FILE" -a ! -f "${HOME}/.s3cfg" ]; then
     echo $NO_S3CMD_CFG; S3CMD_AVAIL=false
+  elif [ ! -z "$S3CMD_CONF_FILE" -a ! -f "$S3CMD_CONF_FILE" ]; then
+    echo "${S3CMD_CONF_FILE} not found, check S3CMD_CONF_FILE variable in duplicity-backup's configuration!";
+    echo $NO_S3CMD_CFG;
+    S3CMD_AVAIL=false
   else
     S3CMD_AVAIL=true
+
+    if [ ! -z "$S3CMD_CONF_FILE" -a -f "$S3CMD_CONF_FILE" ]; then
+      S3CMD="${S3CMD} -c ${S3CMD_CONF_FILE}"
+    fi
   fi
 else
   DEST_IS_S3=false
@@ -321,7 +329,7 @@ get_remote_file_size()
     "s3")
       if $S3CMD_AVAIL ; then
           TMPDEST=$(echo ${DEST} | cut -c 11-)
-          SIZE=`s3cmd du -H s3://${TMPDEST} | awk '{print $1}'`
+          SIZE=`${S3CMD} du -H s3://${TMPDEST} | awk '{print $1}'`
       else
           SIZE="s3cmd not installed."
       fi

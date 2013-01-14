@@ -43,6 +43,14 @@
 AWS_ACCESS_KEY_ID="foobar_aws_key_id"
 AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 
+# S3CMD INFORMATION
+# Most people don't need that, but in some cases 
+# you may want to specify a custom configuration file
+# to pass to s3cmd. If so, set the S3CMD_CONF_FILE variable
+# to the full path of this custom config file.
+# Per default s3cmd uses ${HOME}/.s3cfg
+# S3CMD_CONF_FILE='/path/to/your/s3cmd/conf/file'
+
 # ENCRYPTION INFORMATION
 # Do you want your backup to be encrypted? yes/no
 # If yes, please make sure you specify either PASSPHRASE or GPG_ENC_KEY/GPG_SIGN_KEY

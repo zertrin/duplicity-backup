@@ -263,6 +263,8 @@ email_logfile()
             else
                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
             fi
+          elif [ "$MAIL" = "nail" ]; then
+            cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
           fi
           echo -e "Email alert sent to ${EMAIL_TO} using ${MAIL}" >> ${LOGFILE}
       fi

@@ -258,7 +258,7 @@ email_logfile()
             EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
           elif [ "$MAIL" = "mail" ]; then
-            if [ `uname` == "FreeBSD" ]; then
+            if [[ `uname` == "FreeBSD" || `uname` == 'Darwin' ]]; then
                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" ${EMAIL_TO} --
             else
                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
@@ -297,7 +297,7 @@ get_source_file_size()
   IFS=$(echo -en "\t\n")
   
   DUEXCFLAG="--exclude-from="
-  if [ `uname` == 'FreeBSD' ]; then 
+  if [[ `uname` == 'FreeBSD' || `uname` == 'Darwin' ]]; then 
      DUEXCFLAG="-I "
   fi
 

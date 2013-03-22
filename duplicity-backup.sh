@@ -246,7 +246,7 @@ check_logdir()
 
 email_logfile()
 {
-  if [ $EMAIL_TO ]; then
+  if [ ! -z "$EMAIL_TO" ]; then
       MAILCMD=$(which $MAIL)
       if [ ! -x "$MAILCMD" ]; then
           echo -e "Email couldn't be sent. ${MAIL} not available." >> ${LOGFILE}

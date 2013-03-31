@@ -90,8 +90,12 @@ ROOT="/home"
 # for you).  If you don't want to use Amazon S3, you can backup
 # to a file or any of duplicity's supported outputs.
 #
-# NOTE: You do need to keep the "s3+http://<your location>/" format
-# even though duplicity supports "s3://<your location>/".
+# The s3+http scheme uses the default aws s3 hostname.
+# Use s3://host/bucket/[backup-folder/] if you want to specify the host name.
+# If using the s3://... scheme and you have s3cmd installed, be sure to change
+# 's3.amazonaws.com' to the appropriate host in your .s3cfg file so that the
+# remote file size check will work.
+#DEST="s3://host/backup-bucket/backup-folder/"
 DEST="s3+http://backup-bucket/backup-folder/"
 # Other possible locations
 #DEST="ftp://user[:password]@other.host[:port]/some_dir"

@@ -183,7 +183,6 @@ NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
 README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\n\nIf you were using the same key for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.txt\nOr if you were using two separate keys for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.txt\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.txt\n\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files.\n\nGood luck!"
-CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables in the configuration file.\nCheck your configuration because it appears that something has not been set yet."
 
 if [ ! -x "$DUPLICITY" ]; then
   echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
@@ -212,18 +211,26 @@ else
   DEST_IS_S3=false
 fi
 
+config_sanity_fail()
+{
+  EXPLANATION=$1
+  CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables in the configuration file.\nCheck your configuration because it appears that something has not been set yet."
+  echo -e "${CONFIG_VAR_MSG}\n  ${EXPLANATION}."
+  exit 1
+}
+
 check_variables ()
 {
-  if [[ ${ROOT} = "" || ${DEST} = "" || ${INCLIST} = "" || \
-         ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
-         ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
-         ${PASSPHRASE} = "foobar_gpg_passphrase")) || \
-         ${LOGDIR} = "/home/foobar_user_name/logs/test2/" || \
-         ( ${DEST_IS_S3} = true && ${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" ) || \
-         ( ${DEST_IS_S3} = true && ${AWS_SECRET_ACCESS_KEY} = "foobar_aws_access_key" ) ]]; then
-    echo -e ${CONFIG_VAR_MSG}
-    exit 1
-  fi
+  [[ ${ROOT} = "" ]] && config_sanity_fail "ROOT must be configured"
+  [[ ${DEST} = "" ]] && config_sanity_fail "DEST must be configured"
+  [[ ${INCLIST} = "" ]] && config_sanity_fail "INCLIST must have some value(s) specified"
+  [[ ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
+       ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
+       ${PASSPHRASE} = "foobar_gpg_passphrase")) ]] && \
+  config_sanity_fail "ENCRYPTION is set to 'yes', but GPG_ENC_KEY, GPG_SIGN_KEY, or PASSPHRASE have not been configured"
+  [[ ${LOGDIR} = "/home/foobar_user_name/logs/test2/" ]] && config_sanity_fail "LOGDIR must be configured"
+  [[ ( ${DEST_IS_S3} = true && (${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" || ${AWS_SECRET_ACCESS_KEY} = "foobar_aws_access_key" )) ]] && \
+  config_sanity_fail "An s3 DEST has been specified, but AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY have not been configured"
 }
 
 check_logdir()

@@ -331,6 +331,11 @@ get_remote_file_size()
     "s3")
       if $S3CMD_AVAIL ; then
           TMPDEST=$(echo ${DEST} | cut -c 11-)
+          dest_scheme=$(echo ${DEST} | cut -f -1 -d :)
+          if [ "$dest_scheme" = "s3" ]; then
+              # Strip off the host name, too.
+              TMPDEST=`echo $TMPDEST | cut -f 2- -d /`
+          fi
           SIZE=`${S3CMD} du -H s3://${TMPDEST} | awk '{print $1}'`
       else
           SIZE="s3cmd not installed."

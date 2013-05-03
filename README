@@ -142,6 +142,11 @@ COMMON USAGE EXAMPLES
 * Backup the script and gpg key (for safekeeping)
     $ duplicity-backup.sh [-c config_file] --backup-script
 
+CRON USAGE EXAMPLE
+==================
+
+41 3 * * * cd /path/to/duplicity-backup; ./duplicity-backup.sh -c /etc/duplicity-backup.conf -b
+
 TROUBLESHOOTING
 ===============
 

@@ -39,12 +39,12 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # AMAZON S3 INFORMATION
-# Comment out this lines if you're not using Amazon S3
+# Comment out these lines if you're not using Amazon S3
 AWS_ACCESS_KEY_ID="foobar_aws_key_id"
 AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 
 # S3CMD INFORMATION
-# Most people don't need that, but in some cases 
+# Most people don't need this, but in some cases 
 # you may want to specify a custom configuration file
 # to pass to s3cmd. If so, set the S3CMD_CONF_FILE variable
 # to the full path of this custom config file.
@@ -139,7 +139,7 @@ STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 # Because duplicity will continue to add to each backup as you go,
 # it will eventually create a very large set of files.  Also, incremental
 # backups leave room for problems in the chain, so doing a "full"
-# backup every so often isn't not a bad idea.
+# backup every so often is not a bad idea.
 #
 # You can either remove older than a specific time period:
 #CLEAN_UP_TYPE="remove-older-than"

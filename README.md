@@ -10,25 +10,29 @@ Optionally, you can set up an email address where the log file will be sent, whi
 
 This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github.
 
-Latest version of the code is available [here](http://github.com/zertrin/duplicity-backup) - Merge requests are welcome! :)
+Latest version of the code is available at http://github.com/zertrin/duplicity-backup - Merge requests are welcome! :)
 
-More information about this script is available [here](http://zertrin.org/projects/duplicity-backup/).
+More information about this script is available at http://zertrin.org/projects/duplicity-backup/
 
-The original version of the code is availabe [here](http://github.com/theterran/dt-s3-backup).
+The original version of the code is availabe at http://github.com/theterran/dt-s3-backup
 
 
 ## Before you start
 
-This script requires user configuration. Instructions are in the config file itself and should be self-explanatory. Please DO NOT edit the example config file, but make a copy of it and edit this one. Be sure to replace all the *foobar* values with your real ones. Almost every value needs to be configured in someway.
+This script requires user configuration. Instructions are in the config file itself and should be self-explanatory. You SHOULD NOT edit the example config file `duplicity-backup.conf.example`, but instead make a copy of it (typical examples are `duplicity-backup.conf` in the same directory as the script or `/etc/duplicity-backup.conf`) and edit this one.
 
-You can use one copy of the script with different settings for different backup scenarios. It is designed to run as a cron job and will log information to a text file (including remote file sizes, if you have `s3cmd` installed). Be sure to make the script executable (`chmod +x`) before you hit the gas.
+Be sure to replace all the *foobar* values with your real ones. Almost every value needs to be configured in someway.
+
+You can use one copy of the script with different settings for different backup scenarios. It is designed to run as a cron job and will log information to a text file (including remote file sizes, if you use Amazon S3 and have `s3cmd` installed).
+
+Be sure to make the script executable (`chmod +x`) before you hit the gas.
 
 
 ## Requirements
 
 * [duplicity](http://duplicity.nongnu.org/)
 * [gpg](http://www.gnupg.org/)
-* Basic utilities like: [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which) and [tee](http://linux.die.net/man/1/tee)
+* Basic utilities like: [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
 * [Amazon S3](http://aws.amazon.com/s3/) *`optional`*
 * [s3cmd](http://s3tools.org/s3cmd) *`optional`*
 * [mailx](http://linux.die.net/man/1/mailx) *`optional`*
@@ -42,7 +46,7 @@ You want to copy `duplicity-backup.conf.example` to another place that suits you
 
 The script looks for its configuration by reading the config file specified by the command line option `-c` or `--config` (see [Usage](#usage))
 
-If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beggining of the script (defaults to `duplicity-backup.conf` in the script's directory).
+If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beginning of the script (default: `duplicity-backup.conf` in the script's directory).
 
 So be sure to either:
 * specify the configuration file path on the command line **[recommended]**

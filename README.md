@@ -31,8 +31,8 @@ Be sure to make the script executable (`chmod +x`) before you hit the gas.
 ## Requirements
 
 * [duplicity](http://duplicity.nongnu.org/)
-* [gpg](http://www.gnupg.org/)
 * Basic utilities like: [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
+* [gpg](http://www.gnupg.org/) *`optional`*
 * [Amazon S3](http://aws.amazon.com/s3/) *`optional`*
 * [s3cmd](http://s3tools.org/s3cmd) *`optional`*
 * [mailx](http://linux.die.net/man/1/mailx) *`optional`*

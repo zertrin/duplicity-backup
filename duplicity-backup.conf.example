@@ -44,7 +44,7 @@ AWS_ACCESS_KEY_ID="foobar_aws_key_id"
 AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 
 # S3CMD INFORMATION
-# Most people don't need this, but in some cases 
+# Most people don't need this, but in some cases
 # you may want to specify a custom configuration file
 # to pass to s3cmd. If so, set the S3CMD_CONF_FILE variable
 # to the full path of this custom config file.
@@ -65,15 +65,15 @@ ENCRYPTION='yes'
 PASSPHRASE="foobar_gpg_passphrase"
 
 # Specify which GPG keys you would like to use (even if you have only one).
-# If you are running this from a cron, it is highly recommended to create separate 
-# signature and encryption keys, because you have to specify the password for the 
-# GPG_SIGN_KEY via the above PASSPHRASE variable 
+# If you are running this from a cron, it is highly recommended to create separate
+# signature and encryption keys, because you have to specify the password for the
+# GPG_SIGN_KEY via the above PASSPHRASE variable
 # (see http://www.debian-administration.org/articles/209#d0e109).
-# If you are not running the script from a cron, duplicity should prompt you for the 
+# If you are not running the script from a cron, duplicity should prompt you for the
 # GPG_SIGN_KEY password.
 # If you choose to use the same GPG key for encryption and signature, set it both
 # in GPG_ENC_KEY and GPG_SIGN_KEY.
-# Comment out if you're using only PASSPHRASE (symmetric encryption) or not using 
+# Comment out if you're using only PASSPHRASE (symmetric encryption) or not using
 # encryption at all.
 GPG_ENC_KEY="foobar_gpg_key"
 GPG_SIGN_KEY="foobar_gpg_key"
@@ -116,7 +116,7 @@ DEST="s3+http://backup-bucket/backup-folder/"
 #        )
 #
 # Simpler example with one location:
-INCLIST=( "/home/foobar_user_name/Documents/Prose/" ) 
+INCLIST=( "/home/foobar_user_name/Documents/Prose/" )
 
 # EXCLUDE LIST OF DIRECTORIES
 # Even though I am being specific about what I want to include,
@@ -128,7 +128,7 @@ EXCLIST=(   "/home/*/Trash" \
 
 # STATIC BACKUP OPTIONS
 # Here you can define the static backup options that you want to run with
-# duplicity. Reference is the manpage of duplicity (available at 
+# duplicity. Reference is the manpage of duplicity (available at
 # http://duplicity.nongnu.org/duplicity.1.html for example)
 # Useful examples are `--full-if-older-than` option and (for those using
 # Amazon S3 in Europe) `--s3-use-new-style` and `--s3-european-buckets` options
@@ -176,6 +176,7 @@ EMAIL_SUBJECT=
 MAIL="mailx"
 #MAIL="mail"
 #MAIL="ssmtp"
+#MAIL="sendmail"
 
 # TROUBLESHOOTING: If you are having any problems running this script it is
 # helpful to see the command output that is being generated to determine if the

@@ -30,7 +30,7 @@
 # Default config file (don't forget to copy duplicity-backup.conf.example to
 # match that path)
 # NOTE: It can be useful not to edit this script at all to ease future updates
-#       so the config file can be specified directly on the command line too 
+#       so the config file can be specified directly on the command line too
 #       with the -c option.
 CONFIG="duplicity-backup.conf"
 
@@ -270,6 +270,8 @@ email_logfile()
             else
                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
             fi
+          elif [[ "$MAIL" ~= "sendmail" ]]; then
+            (echo """Subject: ${EMAIL_SUBJECT}""" ; cat ${LOGFILE}) | ${MAILCMD} -f ${EMAIL_FROM} ${EMAIL_TO}
           elif [ "$MAIL" = "nail" ]; then
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
           fi
@@ -302,9 +304,9 @@ get_source_file_size()
   # Remove space as a field separator temporarily
   OLDIFS=$IFS
   IFS=$(echo -en "\t\n")
-  
+
   DUEXCFLAG="--exclude-from="
-  if [[ `uname` == 'FreeBSD' || `uname` == 'Darwin' ]]; then 
+  if [[ `uname` == 'FreeBSD' || `uname` == 'Darwin' ]]; then
      DUEXCFLAG="-I "
   fi
 

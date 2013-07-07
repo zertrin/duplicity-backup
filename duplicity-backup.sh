@@ -270,7 +270,7 @@ email_logfile()
             else
                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
             fi
-          elif [[ "$MAIL" ~= "sendmail" ]]; then
+          elif [[ "$MAIL" = "sendmail" ]]; then
             (echo """Subject: ${EMAIL_SUBJECT}""" ; cat ${LOGFILE}) | ${MAILCMD} -f ${EMAIL_FROM} ${EMAIL_TO}
           elif [ "$MAIL" = "nail" ]; then
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}

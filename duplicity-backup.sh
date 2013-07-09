@@ -159,6 +159,9 @@ export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
 export PASSPHRASE
 export SIGN_PASSPHRASE
+if [[ -n "$FTP_PASSWORD" ]]; then
+  export FTP_PASSWORD
+fi
 
 LOGFILE="${LOGDIR}${LOG_FILE}"
 DUPLICITY="$(which duplicity)"

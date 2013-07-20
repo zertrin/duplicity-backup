@@ -14,7 +14,7 @@ Latest version of the code is available at http://github.com/zertrin/duplicity-b
 
 More information about this script is available at http://zertrin.org/projects/duplicity-backup/
 
-The original version of the code is availabe at http://github.com/theterran/dt-s3-backup
+The original version of the code is available at http://github.com/theterran/dt-s3-backup
 
 
 ## Before you start

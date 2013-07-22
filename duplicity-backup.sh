@@ -159,6 +159,12 @@ export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
 export PASSPHRASE
 export SIGN_PASSPHRASE
+if [[ -n "$FTP_PASSWORD" ]]; then
+  export FTP_PASSWORD
+fi
+if [[ -n "$HOME" ]]; then
+  export HOME
+fi
 
 LOGFILE="${LOGDIR}${LOG_FILE}"
 DUPLICITY="$(which duplicity)"
@@ -223,7 +229,7 @@ check_variables ()
 {
   [[ ${ROOT} = "" ]] && config_sanity_fail "ROOT must be configured"
   [[ ${DEST} = "" ]] && config_sanity_fail "DEST must be configured"
-  [[ ${INCLIST} = "" ]] && config_sanity_fail "INCLIST must have some value(s) specified"
+  #[[ ${INCLIST} = "" ]] && config_sanity_fail "INCLIST must have some value(s) specified"
   [[ ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
        ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
        ${PASSPHRASE} = "foobar_gpg_passphrase")) ]] && \
@@ -374,7 +380,7 @@ include_exclude()
 
   for exclude in ${EXCLIST[@]}
   do
-    TMP=" --exclude ""'"$exclude"'"
+    TMP=" --exclude=""'"$exclude"'"
     EXCLUDE=$EXCLUDE$TMP
   done
 

@@ -200,3 +200,17 @@ MAIL="mailx"     # default command for Linux mail
 # printed to the logfile.  This way, you can see if the problem is with the
 # script or with duplicity.
 #ECHO=$(which echo)
+
+# #############################################
+# #   ANOTHER VARIABLES TO DUPLICITY-BACKUP   #
+# #############################################
+
+# FTP PASSWORD
+# If you want to set a ftp password without a ftp:// you can to set a password
+# in a FTP_PASSWORD
+#FTP_PASSWORD="your_ftp_password"
+
+# HOME
+# If you're using as cronjob on ubuntu and see a GPG error on a secret key, try to use
+# this variable.
+#HOME="/home/sudouser"

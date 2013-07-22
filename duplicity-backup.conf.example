@@ -144,6 +144,21 @@ STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 # You can either remove older than a specific time period:
 #CLEAN_UP_TYPE="remove-older-than"
 #CLEAN_UP_VARIABLE="31D"
+#
+# In combination with "remove-older-than" clean-up type, you may want
+# to keep only the full backups older than (n) number backup sets. For example, 
+# let's say you set to CLEAN_UP_TYPE="remove-older-than", CLEAN_UP_VARIABLE
+# to "6M" (six months), STATIC_OPTIONS to "--full-if-older-than 7D"
+# (a full backup every 7 days), and you execute duplicity-backup once a day. 
+# After six months you'll have 25 full backups, each with daily incrementals 
+# in between. Perhaps you're keeping the backups past 1 month "just in case", 
+# and so the older incrementals are overkill – weekly full backups beyond
+# one month backward would suffice. In this case you can set 
+# "REMOVE_INCREMENTALS_OLDER_THAN to, say, "4" which will delete the 
+# incrementals for backup sets beyond the four most recent, keeping 
+# only the full weekly backups for those backup sets. The incrementals
+# for the four most recent backup sets remain untouched.
+#REMOVE_INCREMENTALS_OLDER_THAN="4"
 
 # Or, If you would rather keep a certain (n) number of full backups (rather
 # than removing the files based on their age), you can use what I use:

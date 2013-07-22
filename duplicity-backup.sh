@@ -391,6 +391,13 @@ duplicity_cleanup()
       ${ENCRYPT} \
       ${DEST} >> ${LOGFILE}
   echo >> ${LOGFILE}
+  if [ ! -z ${REMOVE_INCREMENTALS_OLDER_THAN} ] && [[ ${REMOVE_INCREMENTALS_OLDER_THAN} =~ ^[0-9]+$ ]]; then
+    eval ${ECHO} ${DUPLICITY} remove-all-inc-of-but-n-full ${REMOVE_INCREMENTALS_OLDER_THAN} \
+      ${STATIC_OPTIONS} --force \
+      ${ENCRYPT} \
+      ${DEST} >> ${LOGFILE}
+    echo >> ${LOGFILE}
+  fi  
 }
 
 duplicity_backup()

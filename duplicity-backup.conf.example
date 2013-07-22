@@ -145,6 +145,11 @@ STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 #CLEAN_UP_TYPE="remove-older-than"
 #CLEAN_UP_VARIABLE="31D"
 #
+# Or, If you would rather keep a certain (n) number of full backups (rather
+# than removing the files based on their age), you can use what I use:
+CLEAN_UP_TYPE="remove-all-but-n-full"
+CLEAN_UP_VARIABLE="4"
+#
 # In combination with "remove-older-than" clean-up type, you may want
 # to keep only the full backups older than (n) number backup sets. For example, 
 # let's say you set to CLEAN_UP_TYPE="remove-older-than", CLEAN_UP_VARIABLE
@@ -159,11 +164,6 @@ STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 # only the full weekly backups for those backup sets. The incrementals
 # for the four most recent backup sets remain untouched.
 #REMOVE_INCREMENTALS_OLDER_THAN="4"
-
-# Or, If you would rather keep a certain (n) number of full backups (rather
-# than removing the files based on their age), you can use what I use:
-CLEAN_UP_TYPE="remove-all-but-n-full"
-CLEAN_UP_VARIABLE="2"
 
 # LOGFILE INFORMATION DIRECTORY
 # Provide directory for logfile, ownership of logfile, and verbosity level.

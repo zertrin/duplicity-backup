@@ -104,10 +104,15 @@ DEST="s3+http://backup-bucket/backup-folder/"
 #DEST="ssh://user[:password]@other.host[:port]/[/]some_dir"
 #DEST="file:///home/foobar_user_name/new-backup-test/"
 
-# FTP PASSWORD
-# If you want to set a ftp password without a ftp:// you can to set a password
-# in a FTP_PASSWORD
-#FTP_PASSWORD="your_ftp_password"
+# DESTINATION BACKEND PASSWORD
+# Instead of setting the password needed for the backup destination in the
+# DEST url, you can supply it in the FTP_PASSWORD variable below, which is
+# used by most, if not all backends, regardless of it’s name.
+# Duplicity's official documentation states:
+#   "Supported by most backends which are password capable. More secure than
+#    setting it in the backend url (which might be readable in the operating
+#    systems process listing to other users on the same machine)."
+#FTP_PASSWORD="password"
 
 # INCLUDE LIST OF DIRECTORIES
 # Here is a list of directories to include; if you want to include

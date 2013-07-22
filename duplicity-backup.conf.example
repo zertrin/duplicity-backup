@@ -188,8 +188,8 @@ EMAIL_FROM=
 EMAIL_SUBJECT=
 
 # command to use to send mail
-MAIL="mailx"
-#MAIL="mail"
+MAIL="mailx"     # default command for Linux mail
+#MAIL="mail"     # for CentOS, if "mailx" fails try this one
 #MAIL="ssmtp"
 #MAIL="sendmail"
 

@@ -104,11 +104,6 @@ DEST="s3+http://backup-bucket/backup-folder/"
 #DEST="ssh://user[:password]@other.host[:port]/[/]some_dir"
 #DEST="file:///home/foobar_user_name/new-backup-test/"
 
-# FTP PASSWORD
-# If you want to set a ftp password without a ftp:// you can to set a password
-# in a FTP_PASSWORD
-#FTP_PASSWORD="your_ftp_password"
-
 # INCLUDE LIST OF DIRECTORIES
 # Here is a list of directories to include; if you want to include
 # everything that is in root, you could leave this list empty (I think).
@@ -190,3 +185,17 @@ MAIL="mailx"
 # printed to the logfile.  This way, you can see if the problem is with the
 # script or with duplicity.
 #ECHO=$(which echo)
+
+# #############################################
+# #   ANOTHER VARIABLES TO DUPLICITY-BACKUP   #
+# #############################################
+
+# FTP PASSWORD
+# If you want to set a ftp password without a ftp:// you can to set a password
+# in a FTP_PASSWORD
+#FTP_PASSWORD="your_ftp_password"
+
+# HOME
+# If you're using as cronjob on ubuntu and see a GPG error on a secret key, try to use
+# this variable.
+#HOME="/home/sudouser"

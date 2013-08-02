@@ -226,7 +226,6 @@ check_variables ()
 {
   [[ ${ROOT} = "" ]] && config_sanity_fail "ROOT must be configured"
   [[ ${DEST} = "" ]] && config_sanity_fail "DEST must be configured"
-  [[ ${INCLIST} = "" ]] && config_sanity_fail "INCLIST must have some value(s) specified"
   [[ ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
        ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
        ${PASSPHRASE} = "foobar_gpg_passphrase")) ]] && \
@@ -380,8 +379,13 @@ include_exclude()
     TMP=" --exclude ""'"$exclude"'"
     EXCLUDE=$EXCLUDE$TMP
   done
-
-  EXCLUDEROOT="--exclude=**"
+  
+  # INCLIST is empty so every file needs to be saved
+  if [[ "$INCLIST" == '' ]]; then
+    EXCLUDEROOT=''
+  else
+    EXCLUDEROOT="--exclude=**"
+  fi
 
   # Restore IFS
   IFS=$OLDIFS
@@ -508,6 +512,10 @@ echo -e "--------    START DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
 
 get_lock
 
+INCLUDE=
+EXCLUDE=
+EXLUDEROOT=
+
 case "$COMMAND" in
   "backup-script")
     backup_this_script
@@ -573,9 +581,6 @@ case "$COMMAND" in
 
   "restore-file")
     ROOT=$DEST
-    INCLUDE=
-    EXCLUDE=
-    EXLUDEROOT=
     OPTION=
 
     if [ ! -z "$TIME" ]; then

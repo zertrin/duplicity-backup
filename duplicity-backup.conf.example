@@ -126,14 +126,17 @@ DEST="s3+http://backup-bucket/backup-folder/"
 #        )
 #
 # Simpler example with one location:
-INCLIST=( "/home/foobar_user_name/Documents/Prose/" )
+INCLIST=(  )
 
 # EXCLUDE LIST OF DIRECTORIES
 # Even though I am being specific about what I want to include,
 # there is still a lot of stuff I don't need.
-EXCLIST=(   "/home/*/Trash" \
-            "/home/*/Projects/Completed" \
-            "/**.DS_Store" "/**Icon?" "/**.AppleDouble" \
+EXCLIST=( "/**.pyc" \
+          "/**.pyo" \
+          "/**.mo" \
+          "/**.egg-info" \ 
+          "/**.DS_Store" \
+          "/**.AppleDouble" \
         )
 
 # STATIC BACKUP OPTIONS

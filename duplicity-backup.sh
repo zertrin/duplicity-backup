@@ -316,12 +316,11 @@ get_source_file_size()
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
   done
 
-  for include in ${INCLIST[@]}
-    do
-      echo -e '"'$DUEXCLIST'"' | \
-      du -hs ${DUEXCFLAG}"-" ${include} | \
-      awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
-      >> ${LOGFILE}
+  for include in ${INCLIST[@]}; do
+    echo -e '"'$DUEXCLIST'"' | \
+    du -hs ${DUEXCFLAG}"-" ${include} | \
+    awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
+    >> ${LOGFILE}
   done
   echo >> ${LOGFILE}
 
@@ -388,7 +387,7 @@ include_exclude()
   fi
 
   # Restore IFS
-  IFS=$OLDIFS
+  IFS=$OLDIFS  
 }
 
 duplicity_cleanup()

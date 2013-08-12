@@ -10,7 +10,11 @@ Optionally, you can set up an email address where the log file will be sent, whi
 
 This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github.
 
-Latest version of the code is available at http://github.com/zertrin/duplicity-backup - Merge requests are welcome! :)
+## Contributing
+
+Latest version of the code is available at http://github.com/zertrin/duplicity-backup
+
+Pull requests are welcome! However please **always use individual feature branches for each pull request**. I will not accept any pull request from master branches.
 
 More information about this script is available at http://zertrin.org/projects/duplicity-backup/
 
@@ -147,8 +151,9 @@ This will stop the script from running and will, instead, output the generated c
 
 ## Wish List
 
-* --restore-dir option
+* send mails only on failure
+* support for include/exclude filelists
 
 
-###### Thanks to [Mario Santagiuliana](https://github.com/marionline) and [Razvan](https://github.com/rmarescu) for their help.
+###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup/graphs/contributors) for their help.
 

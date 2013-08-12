@@ -96,7 +96,7 @@ ROOT="/home"
 # 's3.amazonaws.com' to the appropriate host in your .s3cfg file so that the
 # remote file size check will work.
 #DEST="s3://host/backup-bucket/backup-folder/"
-DEST="s3+http://backup-bucket/backup-folder/"
+DEST="s3+http://foobar-backup-bucket/backup-folder/"
 # Other possible locations
 #DEST="ftp://user[:password]@other.host[:port]/some_dir"
 #DEST="rsync://user@host.com[:port]//absolute_path"
@@ -116,7 +116,7 @@ DEST="s3+http://backup-bucket/backup-folder/"
 
 # INCLUDE LIST OF DIRECTORIES
 # Here is a list of directories to include; if you want to include
-# everything that is in root, you could leave this list empty (I think).
+# everything that is in root, leave this list empty.
 #
 # Here is an example with multiple locations:
 #INCLIST=(  "/home/*/Documents" \
@@ -126,15 +126,22 @@ DEST="s3+http://backup-bucket/backup-folder/"
 #        )
 #
 # Simpler example with one location:
-INCLIST=( "/home/foobar_user_name/Documents/Prose/" )
+INCLIST=( "/home/foobar_user_name/Documents/" )
 
 # EXCLUDE LIST OF DIRECTORIES
 # Even though I am being specific about what I want to include,
 # there is still a lot of stuff I don't need.
-EXCLIST=(   "/home/*/Trash" \
-            "/home/*/Projects/Completed" \
-            "/**.DS_Store" "/**Icon?" "/**.AppleDouble" \
-        )
+# If you don't want to exclude anything, leave this list empty.
+#
+# Here is an example with multiple locations:
+#EXCLIST=(   "/home/*/Trash" \
+#            "/home/*/Projects/Completed" \
+#            "/**.DS_Store" \
+#            "/**Icon?" \
+#            "/**.AppleDouble" \
+#        )
+# Simpler example with one location. Adapt it to your needs.
+EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
 
 # STATIC BACKUP OPTIONS
 # Here you can define the static backup options that you want to run with

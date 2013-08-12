@@ -225,7 +225,9 @@ config_sanity_fail()
 check_variables ()
 {
   [[ ${ROOT} = "" ]] && config_sanity_fail "ROOT must be configured"
-  [[ ${DEST} = "" ]] && config_sanity_fail "DEST must be configured"
+  [[ ${DEST} = "" || ${DEST} = "s3+http://backup-foobar-bucket/backup-folder/" ]] && config_sanity_fail "DEST must be configured"
+  [[ ${INCLIST} = "/home/foobar_user_name/Documents/" ]] && config_sanity_fail "INCLIST must be configured" 
+  [[ ${EXCLIST} = "/home/foobar_user_name/Documents/foobar-to-exclude" ]] && config_sanity_fail "EXCLIST must be configured" 
   [[ ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
        ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
        ${PASSPHRASE} = "foobar_gpg_passphrase")) ]] && \

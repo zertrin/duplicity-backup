@@ -522,7 +522,7 @@ get_lock
 
 INCLUDE=
 EXCLUDE=
-EXLUDEROOT=
+EXCLUDEROOT=
 
 case "$COMMAND" in
   "backup-script")

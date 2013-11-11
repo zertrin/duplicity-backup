@@ -57,6 +57,7 @@ echo "USAGE:
                                the current working directory
     -t, --time TIME            specify the time from which to restore or list files
     -n, --dry-run              perform a trial run with no changes made
+    -d, --debug                echo duplicity commands to logfile
 
   CURRENT SCRIPT VARIABLES:
   ========================
@@ -71,7 +72,7 @@ echo "USAGE:
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:t:bfvlsn-:" opt; do
+while getopts ":c:t:bfvlsnd-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and i don't want to impose GNU getopt dependancy)
@@ -117,6 +118,9 @@ while getopts ":c:t:bfvlsn-:" opt; do
           fi
         ;;
         dry-run)
+          DRY_RUN="--dry-run "
+        ;;
+        debug)
           ECHO=$(which echo)
         ;;
         *)
@@ -132,7 +136,8 @@ while getopts ":c:t:bfvlsn-:" opt; do
     v) COMMAND="verify";;
     l) COMMAND="list-current-files";;
     s) COMMAND="collection-status";;
-    n) ECHO=$(which echo);; # dry run
+    n) DRY_RUN="--dry-run ";; # dry run
+    d) ECHO=$(which echo);; # debug
     :)
       echo "Option -$OPTARG requires an argument." >&2
       COMMAND=""
@@ -153,6 +158,7 @@ else
   usage
   exit 1
 fi
+STATIC_OPTIONS="$DRY_RUN$STATIC_OPTIONS"
 
 SIGN_PASSPHRASE=$PASSPHRASE
 export AWS_ACCESS_KEY_ID

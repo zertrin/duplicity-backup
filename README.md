@@ -82,6 +82,7 @@ NOTE: to ease future updates of the script, you may prefer NOT to edit the scrip
             --backup-script        automatically backup the script and secret key to
                                    the current working directory
         -n, --dry-run              perform a trial run with no changes made
+        -d, --debug                echo duplicity commands to logfile
 
 
 ## Usage Examples
@@ -144,11 +145,11 @@ NOTE: to ease future updates of the script, you may prefer NOT to edit the scrip
 
 This script attempts to simplify the task of running a duplicity command; if you are having any problems with the script the first step is to determine if the script is generating an incorrect command or if duplicity itself is causing your error.
 
-To see exactly what is happening when you run duplicity-backup, either pass the option `-n` or `--dry-run` on the command line, or head to the bottom of the configuration file and uncomment the `ECHO=$(which echo)` variable. 
+To see exactly what is happening when you run duplicity-backup, either pass the option `-d` or `--debug` on the command line, or head to the bottom of the configuration file and uncomment the `ECHO=$(which echo)` variable. 
 
 This will stop the script from running and will, instead, output the generated command into your log file. You can then check to see if what is being generated is causing an error or if it is duplicity causing you woe.
 
-
+You can also try the `-n` or `dry-run` option. This will make duplicity to calculate what would be done, but do not perform any backend actions. Together with info verbosity level (-v8) duplicity will list all files that will be affected. This way you will know exactly which files will be backed up or restored.
 ## Wish List
 
 * send mails only on failure

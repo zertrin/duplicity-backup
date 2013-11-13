@@ -149,7 +149,7 @@ To see exactly what is happening when you run duplicity-backup, either pass the 
 
 This will stop the script from running and will, instead, output the generated command into your log file. You can then check to see if what is being generated is causing an error or if it is duplicity causing you woe.
 
-You can also try the `-n` or `dry-run` option. This will make duplicity to calculate what would be done, but do not perform any backend actions. Together with info verbosity level (-v8) duplicity will list all files that will be affected. This way you will know exactly which files will be backed up or restored.
+You can also try the `-n` or `--dry-run` option. This will make duplicity to calculate what would be done, but do not perform any backend actions. Together with info verbosity level (`VERBOSITY="-v3"`) duplicity will list all files that will be affected. This way you will know exactly which files will be backed up or restored.
 ## Wish List
 
 * send mails only on failure

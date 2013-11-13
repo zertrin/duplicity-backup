@@ -82,7 +82,7 @@ echo "USAGE:
 while getopts ":c:t:bfvlsnd-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
-    # manage long options and i don't want to impose GNU getopt dependancy)
+    # manage long options and I don't want to impose GNU getopt dependancy)
     -)
       case "$OPTARG" in
         # --restore [restore dest]
@@ -597,16 +597,17 @@ case "$COMMAND" in
     duplicity_backup
   ;;
 
-  "restore-file")
+  "restore-file"|"restore-dir")
     ROOT=$DEST
-    OPTION=
+    OPTION="restore"
 
     if [ ! -z "$TIME" ]; then
       STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
     fi
 
     if [[ ! "$FILE_TO_RESTORE" ]]; then
-      echo "Which file do you want to restore (eg, mail/letter.txt):"
+      echo "Which file or directory do you want to restore?"
+      echo "(give the path relative to the root of the backup eg, mail/letter.txt):"
       read -e FILE_TO_RESTORE
       echo
     fi
@@ -633,7 +634,7 @@ case "$COMMAND" in
 
     setup_passphrase
     echo "Restoring now ..."
-    #use INCLUDE variable without create another one
+    #use INCLUDE variable without creating another one
     INCLUDE="--file-to-restore ${FILE_TO_RESTORE}"
     duplicity_backup
   ;;

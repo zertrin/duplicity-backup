@@ -48,14 +48,21 @@ echo "USAGE:
     -b, --backup               runs an incremental backup
     -f, --full                 forces a full backup
     -v, --verify               verifies the backup
+    -l, --list-current-files   lists the files currently backed up in the archive
+    -s, --collection-status    show all the backup sets in the archive
+
         --restore [PATH]       restores the entire backup to [path]
         --restore-file [FILE_TO_RESTORE] [DESTINATION]
                                restore a specific file
-    -l, --list-current-files   lists the files currently backed up in the archive
-    -s, --collection-status    show all the backup sets in the archive
-        --backup-script        automatically backup the script and secret key to
-                               the current working directory
+        --restore-dir [DIR_TO_RESTORE] [DESTINATION]
+                               restore a specific directory
+
     -t, --time TIME            specify the time from which to restore or list files
+                               (see duplicity man page for the format)
+
+    --backup-script            automatically backup the script and secret key(s) to
+                               the current working directory
+
     -n, --dry-run              perform a trial run with no changes made
     -d, --debug                echo duplicity commands to logfile
 
@@ -88,7 +95,8 @@ while getopts ":c:t:bfvlsnd-:" opt; do
           fi
         ;;
         # --restore-file [file to restore] [restore dest]
-        restore-file)
+        # --restore-dir [path to restore] [restore dest]
+        restore-file|restore-dir)
           COMMAND=$OPTARG
           # We try to find the first optional value [file to restore]
           if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then

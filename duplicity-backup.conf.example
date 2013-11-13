@@ -209,6 +209,7 @@ MAIL="mailx"     # default command for Linux mail
 #MAIL="mail"     # for CentOS, if "mailx" fails try this one
 #MAIL="ssmtp"
 #MAIL="sendmail"
+#MAIL="msmtp"
 
 # TROUBLESHOOTING: If you are having any problems running this script it is
 # helpful to see the command output that is being generated to determine if the

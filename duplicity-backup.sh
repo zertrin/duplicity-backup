@@ -48,14 +48,21 @@ echo "USAGE:
     -b, --backup               runs an incremental backup
     -f, --full                 forces a full backup
     -v, --verify               verifies the backup
+    -l, --list-current-files   lists the files currently backed up in the archive
+    -s, --collection-status    show all the backup sets in the archive
+
         --restore [PATH]       restores the entire backup to [path]
         --restore-file [FILE_TO_RESTORE] [DESTINATION]
                                restore a specific file
-    -l, --list-current-files   lists the files currently backed up in the archive
-    -s, --collection-status    show all the backup sets in the archive
-        --backup-script        automatically backup the script and secret key to
-                               the current working directory
+        --restore-dir [DIR_TO_RESTORE] [DESTINATION]
+                               restore a specific directory
+
     -t, --time TIME            specify the time from which to restore or list files
+                               (see duplicity man page for the format)
+
+    --backup-script            automatically backup the script and secret key(s) to
+                               the current working directory
+
     -n, --dry-run              perform a trial run with no changes made
     -d, --debug                echo duplicity commands to logfile
 
@@ -75,7 +82,7 @@ echo "USAGE:
 while getopts ":c:t:bfvlsnd-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
-    # manage long options and i don't want to impose GNU getopt dependancy)
+    # manage long options and I don't want to impose GNU getopt dependancy)
     -)
       case "$OPTARG" in
         # --restore [restore dest]
@@ -88,7 +95,8 @@ while getopts ":c:t:bfvlsnd-:" opt; do
           fi
         ;;
         # --restore-file [file to restore] [restore dest]
-        restore-file)
+        # --restore-dir [path to restore] [restore dest]
+        restore-file|restore-dir)
           COMMAND=$OPTARG
           # We try to find the first optional value [file to restore]
           if [ ! -z "${!OPTIND:0:1}" -a ! "${!OPTIND:0:1}" = "-" ]; then
@@ -271,6 +279,8 @@ email_logfile()
           EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup alert ${LOG_FILE}"}
           if [ "$MAIL" = "ssmtp" ]; then
             echo """Subject: ${EMAIL_SUBJECT}""" | cat - ${LOGFILE} | ${MAILCMD} -s ${EMAIL_TO}
+          elif [ "$MAIL" = "msmtp" ]; then
+            echo """Subject: ${EMAIL_SUBJECT}""" | cat - ${LOGFILE} | ${MAILCMD} ${EMAIL_TO}
           elif [ "$MAIL" = "mailx" ]; then
             EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
@@ -522,7 +532,7 @@ get_lock
 
 INCLUDE=
 EXCLUDE=
-EXLUDEROOT=
+EXCLUDEROOT=
 
 case "$COMMAND" in
   "backup-script")
@@ -587,16 +597,17 @@ case "$COMMAND" in
     duplicity_backup
   ;;
 
-  "restore-file")
+  "restore-file"|"restore-dir")
     ROOT=$DEST
-    OPTION=
+    OPTION="restore"
 
     if [ ! -z "$TIME" ]; then
       STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
     fi
 
     if [[ ! "$FILE_TO_RESTORE" ]]; then
-      echo "Which file do you want to restore (eg, mail/letter.txt):"
+      echo "Which file or directory do you want to restore?"
+      echo "(give the path relative to the root of the backup eg, mail/letter.txt):"
       read -e FILE_TO_RESTORE
       echo
     fi
@@ -623,7 +634,7 @@ case "$COMMAND" in
 
     setup_passphrase
     echo "Restoring now ..."
-    #use INCLUDE variable without create another one
+    #use INCLUDE variable without creating another one
     INCLUDE="--file-to-restore ${FILE_TO_RESTORE}"
     duplicity_backup
   ;;

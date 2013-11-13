@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
-# Copyright (c) 2012 Marc Gallet.
+# Copyright (c) 2012-2013 Marc Gallet.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -24,6 +24,9 @@
 #
 # Latest code available at:
 # http://github.com/zertrin/duplicity-backup
+#
+# List of contributors:
+# https://github.com/zertrin/duplicity-backup/graphs/contributors
 #
 # ---------------------------------------------------------------------------- #
 
@@ -87,7 +90,7 @@ ROOT="/home"
 # BACKUP DESTINATION INFORMATION
 # In my case, I use Amazon S3 use this - so I made up a unique
 # bucket name (you don't have to have one created, it will do it
-# for you).  If you don't want to use Amazon S3, you can backup
+# for you). If you don't want to use Amazon S3, you can backup
 # to a file or any of duplicity's supported outputs.
 #
 # The s3+http scheme uses the default aws s3 hostname.
@@ -97,12 +100,19 @@ ROOT="/home"
 # remote file size check will work.
 #DEST="s3://host/backup-bucket/backup-folder/"
 DEST="s3+http://foobar-backup-bucket/backup-folder/"
+#
 # Other possible locations
+# Be sure to check duplicity's man page to know how to use them
+# (http://duplicity.nongnu.org/duplicity.1.html)
+#
 #DEST="ftp://user[:password]@other.host[:port]/some_dir"
 #DEST="rsync://user@host.com[:port]//absolute_path"
 #DEST="scp://user[:password]@other.host[:port]/[/]some_dir"
 #DEST="ssh://user[:password]@other.host[:port]/[/]some_dir"
+#DEST="sftp://user[:password]@other.host[:port]/[/]some_dir"
 #DEST="file:///home/foobar_user_name/new-backup-test/"
+#DEST="imap[s]://user[:password]@host.com[/from_address_prefix]"
+#DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"
 
 # DESTINATION BACKEND PASSWORD
 # Instead of setting the password needed for the backup destination in the
@@ -116,7 +126,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 
 # INCLUDE LIST OF DIRECTORIES
 # Here is a list of directories to include; if you want to include
-# everything that is in root, leave this list empty.
+# everything that is in ROOT, leave this list empty.
 #
 # Here is an example with multiple locations:
 #INCLIST=(  "/home/*/Documents" \
@@ -209,6 +219,7 @@ MAIL="mailx"     # default command for Linux mail
 #MAIL="mail"     # for CentOS, if "mailx" fails try this one
 #MAIL="ssmtp"
 #MAIL="sendmail"
+#MAIL="msmtp"
 
 # TROUBLESHOOTING: If you are having any problems running this script it is
 # helpful to see the command output that is being generated to determine if the

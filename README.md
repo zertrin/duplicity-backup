@@ -10,6 +10,7 @@ Optionally, you can set up an email address where the log file will be sent, whi
 
 This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github.
 
+
 ## Contributing
 
 Latest version of the code is available at http://github.com/zertrin/duplicity-backup
@@ -53,7 +54,7 @@ The script looks for its configuration by reading the config file specified by t
 If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beginning of the script (default: `duplicity-backup.conf` in the script's directory).
 
 So be sure to either:
-* specify the configuration file path on the command line **[recommended]**
+* specify the configuration file path on the command line with the -c option **[recommended]**
 * or to edit the `CONFIG` parameter in the script to match the actual location of your config file. **[deprecated]**
 
 NOTE: to ease future updates of the script, you may prefer NOT to edit the script at all and to specify systematically the path to your config file on the command line with the `-c` or `--config` option.
@@ -68,19 +69,22 @@ NOTE: to ease future updates of the script, you may prefer NOT to edit the scrip
 
         -b, --backup               runs an incremental backup
         -f, --full                 forces a full backup
-
         -v, --verify               verifies the backup
-            --restore [PATH]       restores the entire backup to [path]
-            --restore-file [FILE_TO_RESTORE] [DESTINATION]
-                                   restore a specific file
-
         -l, --list-current-files   lists the files currently backed up in the archive
         -s, --collection-status    show all the backup sets in the archive
 
-        -t, --time TIME            specify the time from which to restore or list 
-                                   files (duplicity time format)
-            --backup-script        automatically backup the script and secret key to
+            --restore [PATH]       restores the entire backup to [path]
+            --restore-file [FILE_TO_RESTORE] [DESTINATION]
+                                   restore a specific file
+            --restore-dir [DIR_TO_RESTORE] [DESTINATION]
+                                   restore a specific directory
+
+        -t, --time TIME            specify the time from which to restore or list files
+                                   (see duplicity man page for the format)
+
+        --backup-script            automatically backup the script and secret key(s) to
                                    the current working directory
+
         -n, --dry-run              perform a trial run with no changes made
         -d, --debug                echo duplicity commands to logfile
 
@@ -101,37 +105,41 @@ NOTE: to ease future updates of the script, you may prefer NOT to edit the scrip
 
 **Restore your entire backup:**
 
+    # You will be prompted for a restore directory
     duplicity-backup.sh [-c config_file] --restore
 
-*You will be prompted for a restore directory*
-
+    # You can also provide a restore folder on the command line.
     duplicity-backup.sh [-c config_file] --restore /home/user/restore-folder
 
-*You can also provide a restore folder on the command line.*
+**Restore a specific file or directory in the backup:**
 
-**Restore a specific file in the backup:**
+Note that the commands --restore-file and --restore-dir are equivalent.
 
+    # You will be prompted for a file to restore to the current directory
     duplicity-backup.sh [-c config_file] --restore-file
 
-*You will be prompted for a file to restore to the current directory*
-
+    # Restores the file img/mom.jpg to the current directory
     duplicity-backup.sh [-c config_file] --restore-file img/mom.jpg
 
-*Restores the file img/mom.jpg to the current directory*
-
+    # Restores the file img/mom.jpg to /home/user/i-love-mom.jpg
     duplicity-backup.sh [-c config_file] --restore-file img/mom.jpg /home/user/i-love-mom.jpg
 
-*Restores the file img/mom.jpg to /home/user/i-love-mom.jpg*
+    # Restores the directory rel/dir/path to /target/restorepath
+    duplicity-backup.sh [-c config_file] --restore-dir rel/dir/path /target/restorepath
 
 **List files in the remote archive**
 
     duplicity-backup.sh [-c config_file] --list-current-files
 
+**See the collection status (i.e. all the backup sets in the remore archive)**
+
+    duplicity-backup.sh [-c config_file] --collection-status
+
 **Verify the backup**
 
     duplicity-backup.sh [-c config_file] --verify
 
-**Backup the script and gpg key (for safekeeping)**
+**Backup the script and gpg key in a encrypted tarfile (for safekeeping)**
 
     duplicity-backup.sh [-c config_file] --backup-script
 
@@ -149,7 +157,9 @@ To see exactly what is happening when you run duplicity-backup, either pass the 
 
 This will stop the script from running and will, instead, output the generated command into your log file. You can then check to see if what is being generated is causing an error or if it is duplicity causing you woe.
 
-You can also try the `-n` or `--dry-run` option. This will make duplicity to calculate what would be done, but do not perform any backend actions. Together with info verbosity level (`VERBOSITY="-v3"`) duplicity will list all files that will be affected. This way you will know exactly which files will be backed up or restored.
+You can also try the `-n` or `--dry-run` option. This will make duplicity to calculate what would be done, but does not perform any backend actions. Together with info verbosity level (-v8) duplicity will list all files that will be affected. This way you will know exactly which files will be backed up or restored.
+
+
 ## Wish List
 
 * send mails only on failure

@@ -249,6 +249,7 @@ check_variables ()
   [[ ${LOGDIR} = "/home/foobar_user_name/logs/test2/" ]] && config_sanity_fail "LOGDIR must be configured"
   [[ ( ${DEST_IS_S3} = true && (${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" || ${AWS_SECRET_ACCESS_KEY} = "foobar_aws_access_key" )) ]] && \
   config_sanity_fail "An s3 DEST has been specified, but AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY have not been configured"
+  [[ ! -z "$INCEXCFILE" && ! -f $INCEXCFILE ]] && config_sanity_fail "The specified INCEXCFILE $INCEXCFILE does not exists"
 }
 
 check_logdir()
@@ -386,6 +387,12 @@ include_exclude()
   OLDIFS=$IFS
   IFS=$(echo -en "\t\n")
 
+  # Exlcude device files?
+  if [ ! -z $EXDEVICEFILES ] && [ $EXDEVICEFILES -ne 0 ]; then
+    TMP=" --exclude-device-files"
+    INCLUDE=$INCLUDE$TMP
+  fi
+  
   for include in ${INCLIST[@]}
   do
     TMP=" --include=""'"$include"'"
@@ -398,13 +405,20 @@ include_exclude()
     EXCLUDE=$EXCLUDE$TMP
   done
   
-  # INCLIST is empty so every file needs to be saved
-  if [[ "$INCLIST" == '' ]]; then
+  # Include/Exclude globbing filelist
+  if [ $INCEXCFILE != '' ]; then
+    TMP=" --include-globbing-filelist ""'"$INCEXCFILE"'"
+    INCLUDE=$INCLUDE$TMP
+  fi
+  
+  # INCLIST and globbing filelist is empty so every file needs to be saved
+  if [ "$INCLIST" == '' ] && [ "$INCEXCFILE" == '' ]; then
     EXCLUDEROOT=''
   else
     EXCLUDEROOT="--exclude=**"
   fi
-
+  
+  
   # Restore IFS
   IFS=$OLDIFS
 }

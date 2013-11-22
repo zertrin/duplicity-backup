@@ -136,7 +136,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #        )
 #
 # Simpler example with one location:
-INCLIST=( "/home/foobar_user_name/Documents/" )
+# INCLIST=( "/home/foobar_user_name/Documents/" )
 
 # EXCLUDE LIST OF DIRECTORIES
 # Even though I am being specific about what I want to include,
@@ -151,7 +151,31 @@ INCLIST=( "/home/foobar_user_name/Documents/" )
 #            "/**.AppleDouble" \
 #        )
 # Simpler example with one location. Adapt it to your needs.
-EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
+# EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
+
+# INCLUDE GLOBBING FILELIST
+# Instead of using the INCLIST/EXCLIST variable you can also define a special 
+# (text-)file where each line in the filelist will be interpreted as 
+# a globbing pattern. By using the '+' or '-' sign at the beginning of each line 
+# you are able to specify if the folder should be included or excluded. 
+# 
+# 
+# Example:
+# 	+ /dir/foo 
+# 	- /dir/foob*
+# 	+ /dir/*
+# 
+# From the duplicity manual: 	
+# Lines starting with "+" are interpreted as include directives[...]Similarly, lines starting with "-" exclude files even if they are found within an include filelist.
+# For more examples or information refer to http://duplicity.nongnu.org/duplicity.1.html#sect10
+# INCEXCFILE=/path/to/file
+
+# EXCLUDE DEVICE FILES
+# Exclude all device files. This can be useful for security/permissions reasons 
+# or if device files are not handled correctly.
+# 
+# EXDEVICEFILES=1
+
 
 # STATIC BACKUP OPTIONS
 # Here you can define the static backup options that you want to run with

@@ -192,7 +192,7 @@ STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 # backups leave room for problems in the chain, so doing a "full"
 # backup every so often is not a bad idea.
 #
-# You can either remove older than a specific time period:
+# You can remove older than a specific time period:
 #CLEAN_UP_TYPE="remove-older-than"
 #CLEAN_UP_VARIABLE="31D"
 #
@@ -200,6 +200,9 @@ STATIC_OPTIONS="--full-if-older-than 14D --s3-use-new-style"
 # than removing the files based on their age), you can use what I use:
 CLEAN_UP_TYPE="remove-all-but-n-full"
 CLEAN_UP_VARIABLE="4"
+
+# The third option is to skip cleanup altogether, by:
+# CLEAN_UP_TYPE="none"
 #
 # In combination with "remove-older-than" clean-up type, you may want
 # to keep only the full backups older than (n) number backup sets. For example, 

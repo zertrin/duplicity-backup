@@ -425,11 +425,13 @@ include_exclude()
 
 duplicity_cleanup()
 {
-  echo "-----------[ Duplicity Cleanup ]-----------" >> ${LOGFILE}
-  eval ${ECHO} ${DUPLICITY} ${CLEAN_UP_TYPE} ${CLEAN_UP_VARIABLE} ${STATIC_OPTIONS} --force \
-      ${ENCRYPT} \
-      ${DEST} >> ${LOGFILE}
-  echo >> ${LOGFILE}
+	echo "-----------[ Duplicity Cleanup ]-----------" >> ${LOGFILE}
+	if [[ "${CLEAN_UP_TYPE}" != "none" ]]; then
+	  eval ${ECHO} ${DUPLICITY} ${CLEAN_UP_TYPE} ${CLEAN_UP_VARIABLE} ${STATIC_OPTIONS} --force \
+		    ${ENCRYPT} \
+			  ${DEST} >> ${LOGFILE}
+	  echo >> ${LOGFILE}
+	fi
   if [ ! -z ${REMOVE_INCREMENTALS_OLDER_THAN} ] && [[ ${REMOVE_INCREMENTALS_OLDER_THAN} =~ ^[0-9]+$ ]]; then
     eval ${ECHO} ${DUPLICITY} remove-all-inc-of-but-n-full ${REMOVE_INCREMENTALS_OLDER_THAN} \
       ${STATIC_OPTIONS} --force \

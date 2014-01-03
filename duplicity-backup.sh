@@ -186,7 +186,15 @@ LOCKFILE=${LOGDIR}backup.lock
 
 if [ "$ENCRYPTION" = "yes" ]; then
   if [ ! -z "$GPG_ENC_KEY" ] && [ ! -z "$GPG_SIGN_KEY" ]; then
-    ENCRYPT="--encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
+    if [ "$HIDE_KEY_ID" = "yes" ]; then
+      ENCRYPT="--hidden-encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
+    else
+      ENCRYPT="--encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
+    fi
+    if [ ! -z "$SECRET_KEYRING" ]; then
+      KEYRING="--secret-keyring ${SECRET_KEYRING}"
+      ENCRYPT="${ENCRYPT} --encrypt-secret-keyring=${SECRET_KEYRING}"
+    fi
   elif [ ! -z "$PASSPHRASE" ]; then
     ENCRYPT=""
   fi
@@ -506,10 +514,10 @@ backup_this_script()
   if [ ! -z "$GPG_ENC_KEY" -a ! -z "$GPG_SIGN_KEY" ]; then
     export GPG_TTY=`tty`
     if [ "$GPG_ENC_KEY" = "$GPG_SIGN_KEY" ]; then
-      gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-and-sign-secret.key.txt
+      gpg -a --export-secret-keys ${KEYRING} ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-and-sign-secret.key.txt
     else
-      gpg -a --export-secret-keys ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-secret.key.txt
-      gpg -a --export-secret-keys ${GPG_SIGN_KEY} > ${TMPDIR}/duplicity-backup-sign-secret.key.txt
+      gpg -a --export-secret-keys ${KEYRING} ${GPG_ENC_KEY} > ${TMPDIR}/duplicity-backup-encryption-secret.key.txt
+      gpg -a --export-secret-keys ${KEYRING} ${GPG_SIGN_KEY} > ${TMPDIR}/duplicity-backup-sign-secret.key.txt
     fi
   fi
 

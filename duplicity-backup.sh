@@ -187,7 +187,10 @@ LOCKFILE=${LOGDIR}backup.lock
 if [ "$ENCRYPTION" = "yes" ]; then
   if [ ! -z "$GPG_ENC_KEY" ] && [ ! -z "$GPG_SIGN_KEY" ]; then
     if [ "$HIDE_KEY_ID" = "yes" ]; then
-      ENCRYPT="--hidden-encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
+      ENCRYPT="--hidden-encrypt-key=${GPG_ENC_KEY}"
+      if [ "$COMMAND" != "restore" -a "$COMMAND" != "restore-file" -a "$COMMAND" != "restore-dir" ]; then
+        ENCRYPT="$ENCRYPT --sign-key=${GPG_SIGN_KEY}"
+      fi
     else
       ENCRYPT="--encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
     fi

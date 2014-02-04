@@ -81,6 +81,17 @@ PASSPHRASE="foobar_gpg_passphrase"
 GPG_ENC_KEY="foobar_gpg_key"
 GPG_SIGN_KEY="foobar_gpg_key"
 
+# Do you want to hide the key id of the encrypted files? yes/no
+# It uses the gpg's --hidden-recipient command to obfuscate the owner of the backup.
+# On restore, gpg will automatically try all available secret keys in order to 
+# decrypt the backup. See gpg(1) for more details.
+# HIDE_KEY_ID='yes'
+
+# You can optionally specify the secret keyring file to use for the encryption and
+# signing keys. If not specified, the default secret keyring is used which is 
+# usually located at ~/.gnupg/secring.gpg
+# SECRET_KEYRING="/home/foobar_user_name/.gnupg/duplicity.gpg
+
 # BACKUP SOURCE INFORMATION
 # The ROOT of your backup (where you want the backup to start);
 # This can be / or somwhere else -- I use /home/ because all the

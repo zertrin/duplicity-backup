@@ -417,7 +417,7 @@ include_exclude()
   done
   
   # Include/Exclude globbing filelist
-  if [ $INCEXCFILE != '' ]; then
+  if [ "$INCEXCFILE" != '' ]; then
     TMP=" --include-globbing-filelist ""'"$INCEXCFILE"'"
     INCLUDE=$INCLUDE$TMP
   fi

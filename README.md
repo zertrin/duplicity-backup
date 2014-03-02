@@ -163,7 +163,6 @@ You can also try the `-n` or `--dry-run` option. This will make duplicity to cal
 ## Wish List
 
 * send mails only on failure
-* support for include/exclude filelists
 
 
 ###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup/graphs/contributors) for their help.

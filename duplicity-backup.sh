@@ -297,11 +297,14 @@ email_logfile()
             EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
           elif [ "$MAIL" = "mail" ]; then
-            if [[ `uname` == "FreeBSD" || `uname` == 'Darwin' ]]; then
-               cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" ${EMAIL_TO} --
-            else
+            case `uname` in
+              FreeBSD|Darwin|DragonFly|OpenBSD)
+                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" ${EMAIL_TO} --
+                ;;
+              *)
                cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO} -- -f ${EMAIL_FROM}
-            fi
+               ;;
+            esac
           elif [[ "$MAIL" = "sendmail" ]]; then
             (echo """Subject: ${EMAIL_SUBJECT}""" ; cat ${LOGFILE}) | ${MAILCMD} -f ${EMAIL_FROM} ${EMAIL_TO}
           elif [ "$MAIL" = "nail" ]; then
@@ -337,10 +340,18 @@ get_source_file_size()
   OLDIFS=$IFS
   IFS=$(echo -en "\t\n")
 
-  DUEXCFLAG="--exclude-from="
-  if [[ `uname` == 'FreeBSD' || `uname` == 'Darwin' ]]; then
-     DUEXCFLAG="-I "
-  fi
+  case `uname` in
+    FreeBSD|Darwin|DragonFly)
+     DUEXCFLAG="-I -"
+     ;;
+   OpenBSD)
+     echo "WARNING: OpenBSD du does not support exclusion, sizes may be off" >> ${LOGFILE}
+     DUEXCFLAG=""
+     ;;
+   *)
+    DUEXCFLAG="--exclude-from=-"
+    ;;
+esac
 
   for exclude in ${EXCLIST[@]}; do
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
@@ -349,7 +360,7 @@ get_source_file_size()
   for include in ${INCLIST[@]}
     do
       echo -e '"'$DUEXCLIST'"' | \
-      du -hs ${DUEXCFLAG}"-" ${include} | \
+      du -hs ${DUEXCFLAG} ${include} | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
       >> ${LOGFILE}
   done
@@ -479,7 +490,21 @@ get_file_sizes()
   get_source_file_size
   get_remote_file_size
 
-  sed -i -e '/^--*$/d' ${LOGFILE}
+  case `uname` in
+    FreeBSD|Darwin|DragonFly)
+      sed -i '' -e '/^--*$/d' ${LOGFILE}
+      ;;
+    OpenBSD)
+      ed -s ${LOGFILE} <<-"EOF"
+      g/^--*$/d
+      w
+      q
+EOF
+      ;;
+    *)
+      sed -i -e '/^--*$/d' ${LOGFILE}
+      ;;
+  esac
   chown ${LOG_FILE_OWNER} ${LOGFILE}
 }
 

@@ -505,7 +505,8 @@ EOF
       sed -i -e '/^--*$/d' ${LOGFILE}
       ;;
   esac
-  chown ${LOG_FILE_OWNER} ${LOGFILE}
+
+  [[ -n "${LOG_FILE_OWNER}" ]] && chown ${LOG_FILE_OWNER} ${LOGFILE}
 }
 
 backup_this_script()

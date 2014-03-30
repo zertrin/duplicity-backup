@@ -394,7 +394,7 @@ get_remote_file_size()
       fi
     ;;
     *)
-      SIZE="Information on remote file size unavailable."
+      SIZE="unsupported by backend"
     ;;
   esac
 

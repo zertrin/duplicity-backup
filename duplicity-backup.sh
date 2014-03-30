@@ -730,6 +730,10 @@ echo -e "--------    END DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
 
 email_logfile
 
+# remove old logfiles
+# stops them from piling up infinitely
+[[ -n "${REMOVE_LOGS_OLDER_THAN}" ]] && find ${LOGDIR} -type f -mtime +"${REMOVE_LOGS_OLDER_THAN}" -delete
+
 if [ ${ECHO} ]; then
   echo "TEST RUN ONLY: Check the logfile for command output."
 fi

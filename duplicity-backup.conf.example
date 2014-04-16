@@ -238,6 +238,7 @@ CLEAN_UP_VARIABLE="4"
 LOGDIR="/home/foobar_user_name/logs/test2/"
 LOG_FILE="duplicity-`date +%Y-%m-%d_%H-%M`.txt"
 LOG_FILE_OWNER="foobar_user_name:foobar_user_name"
+#REMOVE_LOGS_OLDER_THAN='30' # (days) uncomment to activate
 VERBOSITY="-v3"
 
 # EMAIL ALERT (*thanks: rmarescu*)

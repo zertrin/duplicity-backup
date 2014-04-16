@@ -1,4 +1,4 @@
-# duplicity-backup
+# duplicity-backup.sh
 
 This bash script was designed to automate and simplify the remote backup process of duplicity on Amazon S3 primarily. Other backup destinations are possible (FTP, SFTP, SCP, rsync, file...), i.e. any of duplicity's supported outputs.
 
@@ -9,6 +9,17 @@ Most importantly, you can easily backup the script and your gpg key in a conveni
 Optionally, you can set up an email address where the log file will be sent, which is useful when the script is used via cron.
 
 This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github.
+
+
+## duplicity-backup.sh IS NOT duplicity
+
+It is only a wrapper script for duplicity written in bash!
+
+This means the following:
+
+* You need to install and configure duplicity before using duplicity-backup.sh
+* [The official documentation of duplicity](http://duplicity.nongnu.org/duplicity.1.html) is relevant to duplicity-backup.sh too. Virtually any option supported by duplicity can be specified in the config file of duplicity-backup.sh. See the `STATIC_OPTIONS`, `CLEAN_UP_TYPE` and `CLEAN_UP_VARIABLE` parameters in particular.
+* Before asking something about duplicity-backup.sh, ensure that your question isn’t actually concerning duplicity ;)
 
 
 ## Contributing

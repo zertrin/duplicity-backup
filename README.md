@@ -1,6 +1,6 @@
 # duplicity-backup.sh
 
-This bash script was designed to automate and simplify the remote backup process of duplicity on Amazon S3 primarily. Other backup destinations are possible (FTP, SFTP, SCP, rsync, file...), i.e. any of duplicity's supported outputs.
+This bash script was designed to automate and simplify the remote backup process of [duplicity](http://duplicity.nongnu.org/) on Amazon S3 primarily. Other backup destinations are possible (FTP, SFTP, SCP, rsync, file...), i.e. any of duplicity's supported outputs.
 
 After your script is configured, you can easily backup, restore, verify and clean (either via cron or manually) your data without having to remember lots of different command options and passphrases.
 

@@ -394,7 +394,7 @@ get_remote_file_size()
       fi
     ;;
     *)
-      SIZE="Information on remote file size unavailable."
+      SIZE="unsupported by backend"
     ;;
   esac
 
@@ -505,7 +505,8 @@ EOF
       sed -i -e '/^--*$/d' ${LOGFILE}
       ;;
   esac
-  chown ${LOG_FILE_OWNER} ${LOGFILE}
+
+  [[ -n "${LOG_FILE_OWNER}" ]] && chown ${LOG_FILE_OWNER} ${LOGFILE}
 }
 
 backup_this_script()
@@ -728,6 +729,10 @@ esac
 echo -e "--------    END DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
 
 email_logfile
+
+# remove old logfiles
+# stops them from piling up infinitely
+[[ -n "${REMOVE_LOGS_OLDER_THAN}" ]] && find ${LOGDIR} -type f -mtime +"${REMOVE_LOGS_OLDER_THAN}" -delete
 
 if [ ${ECHO} ]; then
   echo "TEST RUN ONLY: Check the logfile for command output."

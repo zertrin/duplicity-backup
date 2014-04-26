@@ -20,7 +20,7 @@ This means the following:
 * You need to install and configure duplicity before using duplicity-backup.sh
 * [The official documentation of duplicity](http://duplicity.nongnu.org/duplicity.1.html) is relevant to duplicity-backup.sh too. Virtually any option supported by duplicity can be specified in the config file of duplicity-backup.sh. See the `STATIC_OPTIONS`, `CLEAN_UP_TYPE` and `CLEAN_UP_VARIABLE` parameters in particular.
 * Before asking something about duplicity-backup.sh, ensure that your question isn’t actually concerning duplicity ;)
-
+* In particular, to the question "_Does duplicity-backup.sh support the backend XXX_" (with XXX being for example Amazon Glacier), the answer is always the same: "_duplicity-backup.sh uses duplicity, so ask the developers of duplicity ;) Once it's in duplicity, it's automatically available to duplicity-backup.sh_"
 
 ## Contributing
 
@@ -124,7 +124,7 @@ NOTE: to ease future updates of the script, you may prefer NOT to edit the scrip
 
 **Restore a specific file or directory in the backup:**
 
-Note that the commands --restore-file and --restore-dir are equivalent.
+Note that the commands `--restore-file` and `--restore-dir` are equivalent.
 
     # You will be prompted for a file to restore to the current directory
     duplicity-backup.sh [-c config_file] --restore-file

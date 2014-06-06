@@ -65,6 +65,7 @@ ENCRYPTION='yes'
 # (your backups will be encrypted with this password) or is used
 # for the "GPG_SIGN_KEY" (see below).
 # Comment out if you aren't using encryption
+# Note: if you have a '$' in your passphrase, escape it with a '\'
 PASSPHRASE="foobar_gpg_passphrase"
 
 # Specify which GPG keys you would like to use (even if you have only one).

@@ -124,6 +124,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #DEST="file:///home/foobar_user_name/new-backup-test/"
 #DEST="imap[s]://user[:password]@host.com[/from_address_prefix]"
 #DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"
+#DEST="gdocs://foobar_google_account/some_dir"
 
 # DESTINATION BACKEND PASSWORD
 # Instead of setting the password needed for the backup destination in the

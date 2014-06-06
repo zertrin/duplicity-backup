@@ -142,7 +142,7 @@ Note that the commands `--restore-file` and `--restore-dir` are equivalent.
 
     duplicity-backup.sh [-c config_file] --list-current-files
 
-**See the collection status (i.e. all the backup sets in the remore archive)**
+**See the collection status (i.e. all the backup sets in the remote archive)**
 
     duplicity-backup.sh [-c config_file] --collection-status
 

@@ -83,18 +83,18 @@ GPG_SIGN_KEY="foobar_gpg_key"
 
 # Do you want to hide the key id of the encrypted files? yes/no
 # It uses the gpg's --hidden-recipient command to obfuscate the owner of the backup.
-# On restore, gpg will automatically try all available secret keys in order to 
+# On restore, gpg will automatically try all available secret keys in order to
 # decrypt the backup. See gpg(1) for more details.
 # HIDE_KEY_ID='yes'
 
 # You can optionally specify the secret keyring file to use for the encryption and
-# signing keys. If not specified, the default secret keyring is used which is 
+# signing keys. If not specified, the default secret keyring is used which is
 # usually located at ~/.gnupg/secring.gpg
 # SECRET_KEYRING="/home/foobar_user_name/.gnupg/duplicity.gpg
 
 # BACKUP SOURCE INFORMATION
 # The ROOT of your backup (where you want the backup to start);
-# This can be / or somwhere else -- I use /home/ because all the
+# This can be / or somewhere else -- I use /home/ because all the
 # directories start with /home/ that I want to backup.
 ROOT="/home"
 
@@ -165,26 +165,26 @@ INCLIST=( "/home/foobar_user_name/Documents/" )
 EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
 
 # INCLUDE GLOBBING FILELIST
-# Instead of using the INCLIST/EXCLIST variable you can also define a special 
-# (text-)file where each line in the filelist will be interpreted as 
-# a globbing pattern. By using the '+' or '-' sign at the beginning of each line 
-# you are able to specify if the folder should be included or excluded. 
-# 
-# 
+# Instead of using the INCLIST/EXCLIST variable you can also define a special
+# (text-)file where each line in the filelist will be interpreted as
+# a globbing pattern. By using the '+' or '-' sign at the beginning of each line
+# you are able to specify if the folder should be included or excluded.
+#
+#
 # Example:
-# 	+ /dir/foo 
-# 	- /dir/foob*
-# 	+ /dir/*
-# 
-# From the duplicity manual: 	
+#   + /dir/foo
+#   - /dir/foob*
+#   + /dir/*
+#
+# From the duplicity manual:
 # Lines starting with "+" are interpreted as include directives[...]Similarly, lines starting with "-" exclude files even if they are found within an include filelist.
 # For more examples or information refer to http://duplicity.nongnu.org/duplicity.1.html#sect10
 # INCEXCFILE=/path/to/file
 
 # EXCLUDE DEVICE FILES
-# Exclude all device files. This can be useful for security/permissions reasons 
+# Exclude all device files. This can be useful for security/permissions reasons
 # or if device files are not handled correctly.
-# 
+#
 # EXDEVICEFILES=1
 
 
@@ -216,16 +216,16 @@ CLEAN_UP_VARIABLE="4"
 # CLEAN_UP_TYPE="none"
 #
 # In combination with "remove-older-than" clean-up type, you may want
-# to keep only the full backups older than (n) number backup sets. For example, 
+# to keep only the full backups older than (n) number backup sets. For example,
 # let's say you set to CLEAN_UP_TYPE="remove-older-than", CLEAN_UP_VARIABLE
 # to "6M" (six months), STATIC_OPTIONS to "--full-if-older-than 7D"
-# (a full backup every 7 days), and you execute duplicity-backup once a day. 
-# After six months you'll have 25 full backups, each with daily incrementals 
-# in between. Perhaps you're keeping the backups past 1 month "just in case", 
+# (a full backup every 7 days), and you execute duplicity-backup once a day.
+# After six months you'll have 25 full backups, each with daily incrementals
+# in between. Perhaps you're keeping the backups past 1 month "just in case",
 # and so the older incrementals are overkill – weekly full backups beyond
-# one month backward would suffice. In this case you can set 
-# "REMOVE_INCREMENTALS_OLDER_THAN to, say, "4" which will delete the 
-# incrementals for backup sets beyond the four most recent, keeping 
+# one month backward would suffice. In this case you can set
+# "REMOVE_INCREMENTALS_OLDER_THAN to, say, "4" which will delete the
+# incrementals for backup sets beyond the four most recent, keeping
 # only the full weekly backups for those backup sets. The incrementals
 # for the four most recent backup sets remain untouched.
 #REMOVE_INCREMENTALS_OLDER_THAN="4"

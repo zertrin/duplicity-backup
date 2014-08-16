@@ -177,6 +177,9 @@ if [[ -n "$FTP_PASSWORD" ]]; then
   export FTP_PASSWORD
 fi
 
+# Ensure a trailing slash always exists in the log directory name
+LOGDIR="${LOGDIR%/}/"
+
 LOGFILE="${LOGDIR}${LOG_FILE}"
 DUPLICITY="$(which duplicity)"
 

@@ -702,6 +702,7 @@ case "$COMMAND" in
       STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
     fi
 
+    eval \
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}
@@ -710,6 +711,8 @@ case "$COMMAND" in
 
   "collection-status")
     OPTION="collection-status"
+
+    eval \
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}

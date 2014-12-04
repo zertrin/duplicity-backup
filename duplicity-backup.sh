@@ -177,6 +177,10 @@ if [[ -n "$FTP_PASSWORD" ]]; then
   export FTP_PASSWORD
 fi
 
+if [[ -n "$TMPDIR" ]]; then
+  export TMPDIR
+fi
+
 # Ensure a trailing slash always exists in the log directory name
 LOGDIR="${LOGDIR%/}/"
 
@@ -702,6 +706,7 @@ case "$COMMAND" in
       STATIC_OPTIONS="$STATIC_OPTIONS --time $TIME"
     fi
 
+    eval \
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}
@@ -710,6 +715,8 @@ case "$COMMAND" in
 
   "collection-status")
     OPTION="collection-status"
+
+    eval \
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}

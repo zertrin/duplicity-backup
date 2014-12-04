@@ -269,3 +269,7 @@ MAIL="mailx"     # default command for Linux mail
 # printed to the logfile.  This way, you can see if the problem is with the
 # script or with duplicity.
 #ECHO=$(which echo)
+
+
+# Set the temporary directory for duplicity to use.
+#TMPDIR="/tmp"

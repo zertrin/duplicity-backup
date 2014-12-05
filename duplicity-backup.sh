@@ -177,6 +177,10 @@ if [[ -n "$FTP_PASSWORD" ]]; then
   export FTP_PASSWORD
 fi
 
+if [[ -n "$TMPDIR" ]]; then
+  export TMPDIR
+fi
+
 # Ensure a trailing slash always exists in the log directory name
 LOGDIR="${LOGDIR%/}/"
 

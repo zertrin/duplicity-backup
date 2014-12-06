@@ -24,13 +24,13 @@ This means the following:
 
 ## Contributing
 
-Latest version of the code is available at http://github.com/zertrin/duplicity-backup
+Latest version of the code is available at https://github.com/zertrin/duplicity-backup
 
 Pull requests are welcome! However please **always use individual feature branches for each pull request**. I will not accept any pull request from master branches.
 
-More information about this script is available at http://zertrin.org/projects/duplicity-backup/
+More information about this script is available at https://zertrin.org/projects/duplicity-backup/
 
-The original version of the code is available at http://github.com/theterran/dt-s3-backup
+The original version of the code is available at https://github.com/theterran/dt-s3-backup
 
 
 ## Before you start
@@ -47,9 +47,9 @@ Be sure to make the script executable (`chmod +x`) before you hit the gas.
 ## Requirements
 
 * [duplicity](http://duplicity.nongnu.org/)
-* Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](http://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
-* [gpg](http://www.gnupg.org/) *`optional`*
-* [Amazon S3](http://aws.amazon.com/s3/) *`optional`*
+* Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](https://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
+* [gpg](https://www.gnupg.org/) *`optional`*
+* [Amazon S3](https://aws.amazon.com/s3/) *`optional`*
 * [s3cmd](http://s3tools.org/s3cmd) *`optional`*
 * [mailx](http://linux.die.net/man/1/mailx) *`optional`*
 

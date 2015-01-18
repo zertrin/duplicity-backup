@@ -281,6 +281,14 @@ check_logdir()
     else
       echo "Directory ${LOGDIR} successfully created."
     fi
+    echo "Attempting to change owner:group of ${LOGDIR} to ${LOG_FILE_OWNER} ..."
+    if ! chown ${LOG_FILE_OWNER} ${LOGDIR}; then
+      echo "User ${USER} could not change the owner:group of ${LOGDIR} to $LOG_FILE_OWNER"
+      echo "Aborting..."
+      exit 1
+    else
+      echo "Directory ${LOGDIR} successfully changed to owner:group of ${LOG_FILE_OWNER}"
+    fi
   elif [ ! -w ${LOGDIR} ]; then
     echo "Log directory ${LOGDIR} is not writeable by this user: ${USER}"
     echo "Aborting..."

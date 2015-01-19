@@ -372,7 +372,7 @@ get_source_file_size()
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
   done
 
-  # if $INCLIST non zero then itterate through it for df readings, else just df $ROOT
+  # if $INCLIST non zero then itterate through it for du -hs readings, else just du -hs $ROOT
   # in both cases consider the excluded directories
   if [ ! -z "$INCLIST" ]; then
     for include in ${INCLIST[@]}

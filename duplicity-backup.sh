@@ -377,13 +377,13 @@ get_source_file_size()
   if [ ! -z "$INCLIST" ]; then
     for include in ${INCLIST[@]}
       do
-        echo -e '"'$DUEXCLIST'"' | \
+        echo -e "$DUEXCLIST" | \
         du -hs ${DUEXCFLAG} ${include} | \
         awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
         >> ${LOGFILE}
       done
   else
-    echo -e '"'$DUEXCLIST'"' | \
+    echo -e "$DUEXCLIST" | \
     du -hs ${DUEXCFLAG} $ROOT | \
     awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
     >> ${LOGFILE}

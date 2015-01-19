@@ -366,19 +366,29 @@ get_source_file_size()
    *)
     DUEXCFLAG="--exclude-from=-"
     ;;
-esac
+  esac
 
   for exclude in ${EXCLIST[@]}; do
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
   done
 
-  for include in ${INCLIST[@]}
-    do
-      echo -e '"'$DUEXCLIST'"' | \
-      du -hs ${DUEXCFLAG} ${include} | \
-      awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
-      >> ${LOGFILE}
-  done
+  # if $INCLIST non zero then itterate through it for df readings, else just df $ROOT
+  # in both cases consider the excluded directories
+  if [ ! -z "$INCLIST" ]; then
+    for include in ${INCLIST[@]}
+      do
+        echo -e '"'$DUEXCLIST'"' | \
+        du -hs ${DUEXCFLAG} ${include} | \
+        awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
+        >> ${LOGFILE}
+      done
+  else
+    echo -e '"'$DUEXCLIST'"' | \
+    du -hs ${DUEXCFLAG} $ROOT | \
+    awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
+    >> ${LOGFILE}
+  fi
+  
   echo >> ${LOGFILE}
 
   # Restore IFS

@@ -313,7 +313,7 @@ email_logfile()
             cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" $EMAIL_FROM ${EMAIL_TO}
           elif [ "$MAIL" = "mail" ]; then
             case `uname` in
-              FreeBSD|Darwin|DragonFly|OpenBSD)
+              FreeBSD|Darwin|DragonFly|OpenBSD|Linux)
                 cat ${LOGFILE} | ${MAILCMD} -s """${EMAIL_SUBJECT}""" ${EMAIL_TO} --
                 ;;
               *)

@@ -357,14 +357,14 @@ get_source_file_size()
 
   case `uname` in
     FreeBSD|Darwin|DragonFly)
-     DUEXCFLAG="-I -"
-     ;;
-   OpenBSD)
-     echo "WARNING: OpenBSD du does not support exclusion, sizes may be off" >> ${LOGFILE}
-     DUEXCFLAG=""
-     ;;
-   *)
-    DUEXCFLAG="--exclude-from=-"
+      DUEXCFLAG="-I -"
+      ;;
+    OpenBSD)
+      echo "WARNING: OpenBSD du does not support exclusion, sizes may be off" >> ${LOGFILE}
+      DUEXCFLAG=""
+      ;;
+    *)
+      DUEXCFLAG="--exclude-from=-"
     ;;
   esac
 
@@ -372,22 +372,19 @@ get_source_file_size()
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
   done
 
-  # if $INCLIST non zero then itterate through it for du -hs readings, else just du -hs $ROOT
-  # in both cases consider the excluded directories
+  # if INCLIST is not set or empty, add ROOT to it to be able to calculate disk usage
   if [ ! -z "$INCLIST" ]; then
-    for include in ${INCLIST[@]}
-      do
-        echo -e "$DUEXCLIST" | \
-        du -hs ${DUEXCFLAG} ${include} | \
-        awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
-        >> ${LOGFILE}
-      done
+    DUINCLIST=($ROOT)
   else
-    echo -e "$DUEXCLIST" | \
-    du -hs ${DUEXCFLAG} $ROOT | \
-    awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
-    >> ${LOGFILE}
+    DUINCLIST=$INCLIST
   fi
+
+  for include in ${DUINCLIST[@]}; do
+      echo -e "$DUEXCLIST" | \
+      du -hs ${DUEXCFLAG} ${include} | \
+      awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
+      >> ${LOGFILE}
+  done
   
   echo >> ${LOGFILE}
 

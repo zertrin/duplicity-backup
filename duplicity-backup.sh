@@ -554,6 +554,11 @@ backup_this_script()
     echo "      3. Config file: ${CONFIG}"
   fi
 
+  if [ ! -z "$INCEXCFILE" -a -f "$INCEXCFILE" ];
+  then
+    echo "      4. Include/Exclude globbing file: ${INCEXCFILE}"
+  fi
+
   echo "Backup tarball will be encrypted and saved to: `pwd`/${TMPFILENAME}"
   echo
   echo ">> Are you sure you want to do that ('yes' to continue)?"
@@ -569,6 +574,11 @@ backup_this_script()
   if [ ! -z "$CONFIG" -a -f "$CONFIG" ];
   then
     cp $CONFIG ${TMPDIR}/
+  fi
+
+  if [ ! -z "$INCEXCFILE" -a -f "$INCEXCFILE" ];
+  then
+    cp $INCEXCFILE ${TMPDIR}/
   fi
 
   if [ ! -z "$GPG_ENC_KEY" -a ! -z "$GPG_SIGN_KEY" ]; then

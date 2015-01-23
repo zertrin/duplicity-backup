@@ -348,7 +348,7 @@ get_lock()
 
 get_source_file_size()
 {
-  echo "---------[ Source File Size Information ]---------" >> ${LOGFILE}
+  echo "-----------[ Source Disk Use Information ]-----------" >> ${LOGFILE}
 
   # Patches to support spaces in paths-
   # Remove space as a field separator temporarily
@@ -357,28 +357,35 @@ get_source_file_size()
 
   case `uname` in
     FreeBSD|Darwin|DragonFly)
-     DUEXCFLAG="-I -"
-     ;;
-   OpenBSD)
-     echo "WARNING: OpenBSD du does not support exclusion, sizes may be off" >> ${LOGFILE}
-     DUEXCFLAG=""
-     ;;
-   *)
-    DUEXCFLAG="--exclude-from=-"
+      DUEXCFLAG="-I -"
+      ;;
+    OpenBSD)
+      echo "WARNING: OpenBSD du does not support exclusion, sizes may be off" >> ${LOGFILE}
+      DUEXCFLAG=""
+      ;;
+    *)
+      DUEXCFLAG="--exclude-from=-"
     ;;
-esac
+  esac
 
   for exclude in ${EXCLIST[@]}; do
     DUEXCLIST="${DUEXCLIST}${exclude}\n"
   done
 
-  for include in ${INCLIST[@]}
-    do
-      echo -e '"'$DUEXCLIST'"' | \
+  # if INCLIST is not set or empty, add ROOT to it to be able to calculate disk usage
+  if [ -z "$INCLIST" ]; then
+    DUINCLIST=($ROOT)
+  else
+    DUINCLIST=("${INCLIST[@]}")
+  fi
+
+  for include in ${DUINCLIST[@]}; do
+      echo -e "$DUEXCLIST" | \
       du -hs ${DUEXCFLAG} ${include} | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
       >> ${LOGFILE}
   done
+  
   echo >> ${LOGFILE}
 
   # Restore IFS
@@ -387,7 +394,7 @@ esac
 
 get_remote_file_size()
 {
-  echo "------[ Destination File Size Information ]------" >> ${LOGFILE}
+  echo "---------[ Destination Disk Use Information ]--------" >> ${LOGFILE}
 
   dest_type=`echo ${DEST} | cut -c 1,2`
   case $dest_type in
@@ -413,7 +420,7 @@ get_remote_file_size()
     ;;
   esac
 
-  echo "Current Remote Backup File Size: ${SIZE}" >> ${LOGFILE}
+  echo "Current Remote Backup Disk Usage: ${SIZE}" >> ${LOGFILE}
   echo >> ${LOGFILE}
 }
 
@@ -462,7 +469,7 @@ include_exclude()
 
 duplicity_cleanup()
 {
-  echo "-----------[ Duplicity Cleanup ]-----------" >> ${LOGFILE}
+  echo "----------------[ Duplicity Cleanup ]----------------" >> ${LOGFILE}
   if [[ "${CLEAN_UP_TYPE}" != "none" && ! -z ${CLEAN_UP_TYPE} && ! -z ${CLEAN_UP_VARIABLE} ]]; then
     eval ${ECHO} ${DUPLICITY} ${CLEAN_UP_TYPE} ${CLEAN_UP_VARIABLE} ${STATIC_OPTIONS} --force \
       ${ENCRYPT} \
@@ -703,7 +710,7 @@ case "$COMMAND" in
     read ANSWER
     if [ "$ANSWER" != "yes" ]; then
       echo "You said << ${ANSWER} >> so I am exiting now."
-      echo -e "--------    END    --------\n" >> ${LOGFILE}
+      echo -e "---------------------    END    ---------------------\n" >> ${LOGFILE}
       exit 1
     fi
 
@@ -728,7 +735,7 @@ case "$COMMAND" in
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}
-    echo -e "--------    END    --------\n" >> ${LOGFILE}
+    echo -e "---------------------    END    ---------------------\n" >> ${LOGFILE}
   ;;
 
   "collection-status")
@@ -738,7 +745,7 @@ case "$COMMAND" in
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}
-    echo -e "--------    END    --------\n" >> ${LOGFILE}
+    echo -e "---------------------    END    ---------------------\n" >> ${LOGFILE}
   ;;
 
   "backup")
@@ -754,7 +761,7 @@ case "$COMMAND" in
   ;;
 esac
 
-echo -e "--------    END DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
+echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> ${LOGFILE}
 
 email_logfile
 

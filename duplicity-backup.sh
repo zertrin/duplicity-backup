@@ -373,7 +373,7 @@ get_source_file_size()
   done
 
   # if INCLIST is not set or empty, add ROOT to it to be able to calculate disk usage
-  if [ ! -z "$INCLIST" ]; then
+  if [ -z "$INCLIST" ]; then
     DUINCLIST=($ROOT)
   else
     DUINCLIST=$INCLIST

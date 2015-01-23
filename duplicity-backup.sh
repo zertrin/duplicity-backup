@@ -376,7 +376,7 @@ get_source_file_size()
   if [ -z "$INCLIST" ]; then
     DUINCLIST=($ROOT)
   else
-    DUINCLIST=$INCLIST
+    DUINCLIST=("${INCLIST[@]}")
   fi
 
   for include in ${DUINCLIST[@]}; do

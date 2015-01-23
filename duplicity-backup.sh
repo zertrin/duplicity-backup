@@ -770,5 +770,6 @@ unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 unset PASSPHRASE
 unset SIGN_PASSPHRASE
+unset FTP_PASSWORD
 
 # vim: set tabstop=2 shiftwidth=2 sts=2 autoindent smartindent:

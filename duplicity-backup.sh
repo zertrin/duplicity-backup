@@ -398,14 +398,16 @@ get_source_file_size()
 get_remote_file_size()
 {
   echo "---------[ Destination Disk Use Information ]--------" >> ${LOGFILE}
-
+  FRIENDLY_TYPE_NAME=""
   dest_type=`echo ${DEST} | cut -c 1,2`
   case $dest_type in
     "fi")
+      FRIENDLY_TYPE_NAME="File"
       TMPDEST=`echo ${DEST} | cut -c 6-`
       SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`
     ;;
     "s3")
+      FRIENDLY_TYPE_NAME="S3"
       if $S3CMD_AVAIL ; then
           TMPDEST=$(echo ${DEST} | cut -c 11-)
           dest_scheme=$(echo ${DEST} | cut -f -1 -d :)
@@ -416,18 +418,20 @@ get_remote_file_size()
           SIZE=`${S3CMD} du -H s3://${TMPDEST} | awk '{print $1}'`
       else
           if ! $S3CMD_CONF_FOUND ; then
-              SIZE="s3cmd config not found"
+              SIZE="-s3cmd config not found-"
           else
-              SIZE="s3cmd not found in PATH"
+              SIZE="-s3cmd not found in PATH-"
           fi
       fi
     ;;
     *)
-      SIZE="unsupported by backend"
+      # cover all so just grab first 4 chars from DEST
+      FRIENDLY_TYPE_NAME=`echo ${DEST} | cut -c 1,4`
+      SIZE="unsupported on"
     ;;
   esac
 
-  echo "Current Remote Backup Disk Usage: ${SIZE}" >> ${LOGFILE}
+  echo -e ""$SIZE"\t"$FRIENDLY_TYPE_NAME" type backend" >> ${LOGFILE}
   echo >> ${LOGFILE}
 }
 

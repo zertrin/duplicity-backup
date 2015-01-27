@@ -212,7 +212,7 @@ elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
-NO_S3CMD="WARNING: s3cmd is not installed, remote file \
+NO_S3CMD="WARNING: s3cmd no found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
@@ -418,7 +418,7 @@ get_remote_file_size()
           if ! $S3CMD_CONF_FOUND ; then
               SIZE="s3cmd config not found"
           else
-              SIZE="s3cmd not installed"
+              SIZE="s3cmd not found in PATH"
           fi
       fi
     ;;

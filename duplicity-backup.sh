@@ -398,6 +398,14 @@ get_remote_file_size()
 
   dest_type=`echo ${DEST} | cut -c 1,2`
   case $dest_type in
+    "ss")
+      TMPDEST="${DEST#*://*/}"
+      TMPDEST="${DEST%/${TMPDEST}}"
+      ssh_opt=`echo $STATIC_OPTIONS |perl -ne 'print "-i $1" if (/IdentityFile="?([^"]*)/);'`
+
+      SIZE=`${TMPDEST%://*} ${ssh_opt} ${TMPDEST#*//} du -hs ${DEST#${TMPDEST}/} | awk '{print $1}'` 2>> ${LOGFILE}
+      EMAIL_SUBJECT="$EMAIL_SUBJECT $SIZE `${TMPDEST%://*} ${ssh_opt} ${TMPDEST#*//} df -hP ${DEST#${TMPDEST}/} | awk '{tmp=$5 " used"}END{print tmp}'`" 2>> ${LOGFILE}
+    ;;
     "fi")
       TMPDEST=`echo ${DEST} | cut -c 6-`
       SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`

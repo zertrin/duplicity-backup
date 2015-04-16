@@ -212,7 +212,7 @@ elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
-NO_S3CMD="WARNING: s3cmd is not installed, remote file \
+NO_S3CMD="WARNING: s3cmd no found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
@@ -230,15 +230,18 @@ if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
   if [ ! -x "$S3CMD" ]; then
     echo $NO_S3CMD; S3CMD_AVAIL=false
   elif [ -z "$S3CMD_CONF_FILE" -a ! -f "${HOME}/.s3cfg" ]; then
+    S3CMD_CONF_FOUND=false
     echo $NO_S3CMD_CFG; S3CMD_AVAIL=false
   elif [ ! -z "$S3CMD_CONF_FILE" -a ! -f "$S3CMD_CONF_FILE" ]; then
+    S3CMD_CONF_FOUND=false
     echo "${S3CMD_CONF_FILE} not found, check S3CMD_CONF_FILE variable in duplicity-backup's configuration!";
     echo $NO_S3CMD_CFG;
     S3CMD_AVAIL=false
-  else
+  else    
     S3CMD_AVAIL=true
-
+    S3CMD_CONF_FOUND=true
     if [ ! -z "$S3CMD_CONF_FILE" -a -f "$S3CMD_CONF_FILE" ]; then
+      # if conf file specified and it exists then add it to the command line for s3cmd
       S3CMD="${S3CMD} -c ${S3CMD_CONF_FILE}"
     fi
   fi
@@ -395,14 +398,16 @@ get_source_file_size()
 get_remote_file_size()
 {
   echo "---------[ Destination Disk Use Information ]--------" >> ${LOGFILE}
-
+  FRIENDLY_TYPE_NAME=""
   dest_type=`echo ${DEST} | cut -c 1,2`
   case $dest_type in
     "fi")
+      FRIENDLY_TYPE_NAME="File"
       TMPDEST=`echo ${DEST} | cut -c 6-`
       SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`
     ;;
     "s3")
+      FRIENDLY_TYPE_NAME="S3"
       if $S3CMD_AVAIL ; then
           TMPDEST=$(echo ${DEST} | cut -c 11-)
           dest_scheme=$(echo ${DEST} | cut -f -1 -d :)
@@ -412,15 +417,21 @@ get_remote_file_size()
           fi
           SIZE=`${S3CMD} du -H s3://${TMPDEST} | awk '{print $1}'`
       else
-          SIZE="s3cmd not installed."
+          if ! $S3CMD_CONF_FOUND ; then
+              SIZE="-s3cmd config not found-"
+          else
+              SIZE="-s3cmd not found in PATH-"
+          fi
       fi
     ;;
     *)
-      SIZE="unsupported by backend"
+      # cover all so just grab first 4 chars from DEST
+      FRIENDLY_TYPE_NAME=`echo ${DEST} | cut -c 1,4`
+      SIZE="unsupported on"
     ;;
   esac
 
-  echo "Current Remote Backup Disk Usage: ${SIZE}" >> ${LOGFILE}
+  echo -e ""$SIZE"\t"$FRIENDLY_TYPE_NAME" type backend" >> ${LOGFILE}
   echo >> ${LOGFILE}
 }
 

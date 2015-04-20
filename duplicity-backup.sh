@@ -212,7 +212,7 @@ elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
-NO_S3CMD="WARNING: s3cmd no found in PATH, remote file \
+NO_S3CMD="WARNING: s3cmd not found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
@@ -237,7 +237,7 @@ if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
     echo "${S3CMD_CONF_FILE} not found, check S3CMD_CONF_FILE variable in duplicity-backup's configuration!";
     echo $NO_S3CMD_CFG;
     S3CMD_AVAIL=false
-  else    
+  else
     S3CMD_AVAIL=true
     S3CMD_CONF_FOUND=true
     if [ ! -z "$S3CMD_CONF_FILE" -a -f "$S3CMD_CONF_FILE" ]; then
@@ -351,7 +351,7 @@ get_lock()
 
 get_source_file_size()
 {
-  echo "-----------[ Source Disk Use Information ]-----------" >> ${LOGFILE}
+  echo "[ Source Disk Use Information ]" >> ${LOGFILE}
 
   # Patches to support spaces in paths-
   # Remove space as a field separator temporarily
@@ -397,7 +397,7 @@ get_source_file_size()
 
 get_remote_file_size()
 {
-  echo "---------[ Destination Disk Use Information ]--------" >> ${LOGFILE}
+  echo "[ Destination Disk Use Information ]" >> ${LOGFILE}
   FRIENDLY_TYPE_NAME=""
   dest_type=`echo ${DEST} | cut -c 1,2`
   case $dest_type in
@@ -445,7 +445,7 @@ include_exclude()
   # Exlcude device files?
   if [ ! -z $EXDEVICEFILES ] && [ $EXDEVICEFILES -ne 0 ]; then
     TMP=" --exclude-device-files"
-    INCLUDE=$INCLUDE$TMP
+    EXCLUDE=$EXCLUDE$TMP
   fi
   
   for include in ${INCLIST[@]}
@@ -480,7 +480,7 @@ include_exclude()
 
 duplicity_cleanup()
 {
-  echo "----------------[ Duplicity Cleanup ]----------------" >> ${LOGFILE}
+  echo "[ Duplicity Cleanup ]" >> ${LOGFILE}
   if [[ "${CLEAN_UP_TYPE}" != "none" && ! -z ${CLEAN_UP_TYPE} && ! -z ${CLEAN_UP_VARIABLE} ]]; then
     eval ${ECHO} ${DUPLICITY} ${CLEAN_UP_TYPE} ${CLEAN_UP_VARIABLE} ${STATIC_OPTIONS} --force \
       ${ENCRYPT} \
@@ -622,7 +622,8 @@ backup_this_script()
 check_variables
 check_logdir
 
-echo -e "--------    START DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
+echo -e "\n--------    START DUPLICITY-BACKUP SCRIPT    --------" >> ${LOGFILE}
+echo -e "$(date +"%c")\n" >> ${LOGFILE}
 
 get_lock
 
@@ -650,7 +651,7 @@ case "$COMMAND" in
     DEST=${OLDROOT}
     OPTION="verify"
 
-    echo -e "-------[ Verifying Source & Destination ]-------\n" >> ${LOGFILE}
+    echo -e "[ Verifying Source & Destination ]\n" >> ${LOGFILE}
     include_exclude
     setup_passphrase
     echo -e "Attempting to verify now ..."
@@ -721,7 +722,6 @@ case "$COMMAND" in
     read ANSWER
     if [ "$ANSWER" != "yes" ]; then
       echo "You said << ${ANSWER} >> so I am exiting now."
-      echo -e "---------------------    END    ---------------------\n" >> ${LOGFILE}
       exit 1
     fi
 
@@ -746,7 +746,6 @@ case "$COMMAND" in
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}
-    echo -e "---------------------    END    ---------------------\n" >> ${LOGFILE}
   ;;
 
   "collection-status")
@@ -756,7 +755,6 @@ case "$COMMAND" in
     ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
     $ENCRYPT \
     ${DEST} | tee -a ${LOGFILE}
-    echo -e "---------------------    END    ---------------------\n" >> ${LOGFILE}
   ;;
 
   "backup")
@@ -772,7 +770,6 @@ case "$COMMAND" in
   ;;
 esac
 
-echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> ${LOGFILE}
 
 email_logfile
 

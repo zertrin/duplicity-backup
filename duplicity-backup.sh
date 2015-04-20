@@ -212,7 +212,7 @@ elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
-NO_S3CMD="WARNING: s3cmd no found in PATH, remote file \
+NO_S3CMD="WARNING: s3cmd not found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
@@ -237,7 +237,7 @@ if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
     echo "${S3CMD_CONF_FILE} not found, check S3CMD_CONF_FILE variable in duplicity-backup's configuration!";
     echo $NO_S3CMD_CFG;
     S3CMD_AVAIL=false
-  else    
+  else
     S3CMD_AVAIL=true
     S3CMD_CONF_FOUND=true
     if [ ! -z "$S3CMD_CONF_FILE" -a -f "$S3CMD_CONF_FILE" ]; then
@@ -453,7 +453,7 @@ include_exclude()
   # Exlcude device files?
   if [ ! -z $EXDEVICEFILES ] && [ $EXDEVICEFILES -ne 0 ]; then
     TMP=" --exclude-device-files"
-    INCLUDE=$INCLUDE$TMP
+    EXCLUDE=$EXCLUDE$TMP
   fi
   
   for include in ${INCLIST[@]}

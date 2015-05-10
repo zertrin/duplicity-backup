@@ -171,6 +171,8 @@ STATIC_OPTIONS="$DRY_RUN$STATIC_OPTIONS"
 SIGN_PASSPHRASE=$PASSPHRASE
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
+export GS_ACCESS_KEY_ID
+export GS_SECRET_ACCESS_KEY
 export PASSPHRASE
 export SIGN_PASSPHRASE
 if [[ -n "$FTP_PASSWORD" ]]; then
@@ -224,6 +226,10 @@ if [ ! -x "$DUPLICITY" ]; then
   exit 1
 fi
 
+if  [ "`echo ${DEST} | cut -c 1,2`" = "gs" ]; then
+  DEST_IS_GS=true
+fi
+
 if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
   DEST_IS_S3=true
   S3CMD="$(which s3cmd)"
@@ -270,6 +276,8 @@ check_variables ()
   [[ ${LOGDIR} = "/home/foobar_user_name/logs/test2/" ]] && config_sanity_fail "LOGDIR must be configured"
   [[ ( ${DEST_IS_S3} = true && (${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" || ${AWS_SECRET_ACCESS_KEY} = "foobar_aws_access_key" )) ]] && \
   config_sanity_fail "An s3 DEST has been specified, but AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY have not been configured"
+  [[ ( ${DEST_IS_GS} = true && (${GS_ACCESS_KEY_ID} = "foobar_gcs_key_id" || ${GS_SECRET_ACCESS_KEY} = "foobar_gcs_secret_id" )) ]] && \
+  config_sanity_fail "A Google Cloud Storage DEST has been specified, but GS_ACCESS_KEY_ID or GS_SECRET_ACCESS_KEY have not been configured"
   [[ ! -z "$INCEXCFILE" && ! -f $INCEXCFILE ]] && config_sanity_fail "The specified INCEXCFILE $INCEXCFILE does not exists"
 }
 
@@ -405,6 +413,11 @@ get_remote_file_size()
       FRIENDLY_TYPE_NAME="File"
       TMPDEST=`echo ${DEST} | cut -c 6-`
       SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`
+    ;;
+    "gs")
+      FRIENDLY_TYPE_NAME="Google Cloud Storage"
+      #TMPDEST=`echo ${DEST} | cut -c 4-`
+      #SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`
     ;;
     "s3")
       FRIENDLY_TYPE_NAME="S3"

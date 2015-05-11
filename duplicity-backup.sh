@@ -214,6 +214,11 @@ elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
+NO_GSCMD="WARNING: gsutil no found in PATH, remote file \
+size information unavailable."
+NO_GSCMD_CFG="WARNING: gsutil is not configured, run 'gsutil config' \
+in order to retrieve remote file size information. Remote file \
+size information unavailable."
 NO_S3CMD="WARNING: s3cmd no found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
@@ -228,6 +233,17 @@ fi
 
 if  [ "`echo ${DEST} | cut -c 1,2`" = "gs" ]; then
   DEST_IS_GS=true
+  GSCMD="$(which gsutil)"
+  if [ ! -x "$GSCMD" ]; then
+    echo $NO_GSCMD; GSCMD_AVAIL=false
+  elif [ ! -f "${HOME}/.boto" ]; then
+    echo $NO_GSCMD_CFG; GSCMD_AVAIL=false
+  else
+    GSCMD_AVAIL=true
+    GSCMD="${GSCMD}"
+  fi
+else
+  DEST_IS_GS=false
 fi
 
 if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
@@ -416,8 +432,10 @@ get_remote_file_size()
     ;;
     "gs")
       FRIENDLY_TYPE_NAME="Google Cloud Storage"
-      #TMPDEST=`echo ${DEST} | cut -c 4-`
-      #SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`
+      if $GSCMD_AVAIL ; then
+        TMPDEST=`echo $DEST | sed -e "s/\/*$//" `
+        SIZE=`gsutil du -s ${TMPDEST} | awk '{print $1}'`
+      fi
     ;;
     "s3")
       FRIENDLY_TYPE_NAME="S3"
@@ -799,6 +817,8 @@ fi
 
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
+unset GS_ACCESS_KEY_ID
+unset GS_SECRET_ACCESS_KEY
 unset PASSPHRASE
 unset SIGN_PASSPHRASE
 unset FTP_PASSWORD

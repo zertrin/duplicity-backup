@@ -434,7 +434,7 @@ get_remote_file_size()
       FRIENDLY_TYPE_NAME="Google Cloud Storage"
       if $GSCMD_AVAIL ; then
         TMPDEST=`echo $DEST | sed -e "s/\/*$//" `
-        SIZE=`gsutil du -s ${TMPDEST} | awk '{print $1}'`
+        SIZE=`gsutil du -hs ${TMPDEST} | awk '{print $1$2}'`
       fi
     ;;
     "s3")

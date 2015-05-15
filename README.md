@@ -1,6 +1,6 @@
 # duplicity-backup.sh
 
-This bash script was designed to automate and simplify the remote backup process of [duplicity](http://duplicity.nongnu.org/) on Amazon S3 primarily. Other backup destinations are possible (FTP, SFTP, SCP, rsync, file...), i.e. any of duplicity's supported outputs.
+This bash script was designed to automate and simplify the remote backup process of [duplicity](http://duplicity.nongnu.org/) on Amazon S3 primarily. Other backup destinations are possible (Google Cloud Storage, FTP, SFTP, SCP, rsync, file...), i.e. any of duplicity's supported outputs.
 
 After your script is configured, you can easily backup, restore, verify and clean (either via cron or manually) your data without having to remember lots of different command options and passphrases.
 
@@ -49,9 +49,19 @@ Be sure to make the script executable (`chmod +x`) before you hit the gas.
 * [duplicity](http://duplicity.nongnu.org/)
 * Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](https://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
 * [gpg](https://www.gnupg.org/) *`optional`*
-* [Amazon S3](https://aws.amazon.com/s3/) *`optional`*
-* [s3cmd](http://s3tools.org/s3cmd) *`optional`*
 * [mailx](http://linux.die.net/man/1/mailx) *`optional`*
+For [Amazon S3](https://aws.amazon.com/s3/) *`optional`*
+* [s3cmd](http://s3tools.org/s3cmd) *`optional`*
+For [Google Cloud Storage](https://cloud.google.com/storage/) *`optional`*
+* [boto](https://github.com/boto/boto) 
+* [gsutil](https://cloud.google.com/storage/docs/gsutil) *`optional`*
+
+For [Amazon S3](https://aws.amazon.com/s3/) *`optional`*
+* [s3cmd](http://s3tools.org/s3cmd) *`optional`*
+
+For [Google Cloud Storage](https://cloud.google.com/storage/) *`optional`*
+* [boto](https://github.com/boto/boto) 
+* [gsutil](https://cloud.google.com/storage/docs/gsutil) *`optional`*
 
 
 ## Configuration

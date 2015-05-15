@@ -171,6 +171,8 @@ STATIC_OPTIONS="$DRY_RUN$STATIC_OPTIONS"
 SIGN_PASSPHRASE=$PASSPHRASE
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
+export GS_ACCESS_KEY_ID
+export GS_SECRET_ACCESS_KEY
 export PASSPHRASE
 export SIGN_PASSPHRASE
 if [[ -n "$FTP_PASSWORD" ]]; then
@@ -212,6 +214,11 @@ elif [ "$ENCRYPTION" = "no" ]; then
   ENCRYPT="--no-encryption"
 fi
 
+NO_GSCMD="WARNING: gsutil not found in PATH, remote file \
+size information unavailable."
+NO_GSCMD_CFG="WARNING: gsutil is not configured, run 'gsutil config' \
+in order to retrieve remote file size information. Remote file \
+size information unavailable."
 NO_S3CMD="WARNING: s3cmd not found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
@@ -222,6 +229,21 @@ README_TXT="In case you've long forgotten, this is a backup script that you used
 if [ ! -x "$DUPLICITY" ]; then
   echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
   exit 1
+fi
+
+if  [ "`echo ${DEST} | cut -c 1,2`" = "gs" ]; then
+  DEST_IS_GS=true
+  GSCMD="$(which gsutil)"
+  if [ ! -x "$GSCMD" ]; then
+    echo $NO_GSCMD; GSCMD_AVAIL=false
+  elif [ ! -f "${HOME}/.boto" ]; then
+    echo $NO_GSCMD_CFG; GSCMD_AVAIL=false
+  else
+    GSCMD_AVAIL=true
+    GSCMD="${GSCMD}"
+  fi
+else
+  DEST_IS_GS=false
 fi
 
 if  [ "`echo ${DEST} | cut -c 1,2`" = "s3" ]; then
@@ -270,6 +292,8 @@ check_variables ()
   [[ ${LOGDIR} = "/home/foobar_user_name/logs/test2/" ]] && config_sanity_fail "LOGDIR must be configured"
   [[ ( ${DEST_IS_S3} = true && (${AWS_ACCESS_KEY_ID} = "foobar_aws_key_id" || ${AWS_SECRET_ACCESS_KEY} = "foobar_aws_access_key" )) ]] && \
   config_sanity_fail "An s3 DEST has been specified, but AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY have not been configured"
+  [[ ( ${DEST_IS_GS} = true && (${GS_ACCESS_KEY_ID} = "foobar_gcs_key_id" || ${GS_SECRET_ACCESS_KEY} = "foobar_gcs_secret_id" )) ]] && \
+  config_sanity_fail "A Google Cloud Storage DEST has been specified, but GS_ACCESS_KEY_ID or GS_SECRET_ACCESS_KEY have not been configured"
   [[ ! -z "$INCEXCFILE" && ! -f $INCEXCFILE ]] && config_sanity_fail "The specified INCEXCFILE $INCEXCFILE does not exists"
 }
 
@@ -413,6 +437,13 @@ get_remote_file_size()
       FRIENDLY_TYPE_NAME="File"
       TMPDEST=`echo ${DEST} | cut -c 6-`
       SIZE=`du -hs ${TMPDEST} | awk '{print $1}'`
+    ;;
+    "gs")
+      FRIENDLY_TYPE_NAME="Google Cloud Storage"
+      if $GSCMD_AVAIL ; then
+        TMPDEST=`echo $DEST | sed -e "s/\/*$//" `
+        SIZE=`gsutil du -hs ${TMPDEST} | awk '{print $1$2}'`
+      fi
     ;;
     "s3")
       FRIENDLY_TYPE_NAME="S3"
@@ -794,6 +825,8 @@ fi
 
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
+unset GS_ACCESS_KEY_ID
+unset GS_SECRET_ACCESS_KEY
 unset PASSPHRASE
 unset SIGN_PASSPHRASE
 unset FTP_PASSWORD

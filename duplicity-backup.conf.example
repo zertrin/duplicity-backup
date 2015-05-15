@@ -46,6 +46,11 @@
 AWS_ACCESS_KEY_ID="foobar_aws_key_id"
 AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 
+# GOOGLE CLOUD STORAGE INFORMATION
+# Comment out these lines if you're not using Google Cloud storage
+GS_ACCESS_KEY_ID="foobar_gcs_key_id"
+GS_SECRET_ACCESS_KEY="foobar_gcs_secret_id"
+
 # S3CMD INFORMATION
 # Most people don't need this, but in some cases
 # you may want to specify a custom configuration file
@@ -117,6 +122,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 # Be sure to check duplicity's man page to know how to use them
 # (http://duplicity.nongnu.org/duplicity.1.html)
 #
+#DEST="gs://foobar-backup-bucket/backup-folder/"
 #DEST="ftp://user[:password]@other.host[:port]/some_dir"
 #DEST="rsync://user@host.com[:port]//absolute_path"
 #DEST="scp://user[:password]@other.host[:port]/[/]some_dir"

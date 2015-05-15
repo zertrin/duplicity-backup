@@ -26,7 +26,7 @@ This means the following:
 
 Latest version of the code is available at https://github.com/zertrin/duplicity-backup
 
-Pull requests are welcome! However please **always use individual feature branches for each pull request**. I will not accept any pull request from master branches.
+Pull requests are welcome! However please **always use individual feature branches for each pull request**. I don't accept pull requests from master branches.
 
 More information about this script is available at https://zertrin.org/projects/duplicity-backup/
 
@@ -50,11 +50,6 @@ Be sure to make the script executable (`chmod +x`) before you hit the gas.
 * Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](https://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
 * [gpg](https://www.gnupg.org/) *`optional`*
 * [mailx](http://linux.die.net/man/1/mailx) *`optional`*
-For [Amazon S3](https://aws.amazon.com/s3/) *`optional`*
-* [s3cmd](http://s3tools.org/s3cmd) *`optional`*
-For [Google Cloud Storage](https://cloud.google.com/storage/) *`optional`*
-* [boto](https://github.com/boto/boto) 
-* [gsutil](https://cloud.google.com/storage/docs/gsutil) *`optional`*
 
 For [Amazon S3](https://aws.amazon.com/s3/) *`optional`*
 * [s3cmd](http://s3tools.org/s3cmd) *`optional`*

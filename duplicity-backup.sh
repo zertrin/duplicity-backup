@@ -426,6 +426,8 @@ get_remote_file_size()
   dest_type=`echo ${DEST} | cut -c 1,2`
   case $dest_type in
     "ss")
+      FRIENDLY_TYPE_NAME="SSH"
+
       TMPDEST="${DEST#*://*/}"
       TMPDEST="${DEST%/${TMPDEST}}"
       ssh_opt=`echo $STATIC_OPTIONS |awk -vo="--ssh-options=" '{s=index($0,o); if (s) {s=substr($0,s+length(o)); m=substr(s,0,1); for (i=2; i < length(s); i++) { if (substr(s,i,1) == m && substr(s,i-1,1) != "\\") break; } print substr(s,2,i-2)}}'`
@@ -446,7 +448,7 @@ get_remote_file_size()
       fi
     ;;
     "s3")
-      FRIENDLY_TYPE_NAME="S3"
+      FRIENDLY_TYPE_NAME="Amazon S3"
       if $S3CMD_AVAIL ; then
           TMPDEST=$(echo ${DEST} | cut -c 11-)
           dest_scheme=$(echo ${DEST} | cut -f -1 -d :)
@@ -464,13 +466,17 @@ get_remote_file_size()
       fi
     ;;
     *)
-      # cover all so just grab first 4 chars from DEST
-      FRIENDLY_TYPE_NAME=`echo ${DEST} | cut -c 1,4`
-      SIZE="unsupported on"
+      # not yet available for the other backends
+      FRIENDLY_TYPE_NAME=""
     ;;
   esac
 
-  echo -e ""$SIZE"\t"$FRIENDLY_TYPE_NAME" type backend" >> ${LOGFILE}
+  if $FRIENDLY_TYPE_NAME ; then
+      echo -e ""$SIZE"\t"$FRIENDLY_TYPE_NAME" type backend" >> ${LOGFILE}
+  else
+      echo "Destination disk use information is currently only available for the following storage backends:" >> ${LOGFILE}
+      echo "File, SSH, Amazon S3 and Google Cloud" >> ${LOGFILE}
+  fi
   echo >> ${LOGFILE}
 }
 

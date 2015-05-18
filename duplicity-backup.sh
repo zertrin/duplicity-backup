@@ -283,8 +283,8 @@ check_variables ()
 {
   [[ ${ROOT} = "" ]] && config_sanity_fail "ROOT must be configured"
   [[ ${DEST} = "" || ${DEST} = "s3+http://backup-foobar-bucket/backup-folder/" ]] && config_sanity_fail "DEST must be configured"
-  [[ ${INCLIST} = "/home/foobar_user_name/Documents/" ]] && config_sanity_fail "INCLIST must be configured" 
-  [[ ${EXCLIST} = "/home/foobar_user_name/Documents/foobar-to-exclude" ]] && config_sanity_fail "EXCLIST must be configured" 
+  [[ ${INCLIST} = "/home/foobar_user_name/Documents/" ]] && config_sanity_fail "INCLIST must be configured"
+  [[ ${EXCLIST} = "/home/foobar_user_name/Documents/foobar-to-exclude" ]] && config_sanity_fail "EXCLIST must be configured"
   [[ ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
        ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
        ${PASSPHRASE} = "foobar_gpg_passphrase")) ]] && \
@@ -412,7 +412,7 @@ get_source_file_size()
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
       >> ${LOGFILE}
   done
-  
+
   echo >> ${LOGFILE}
 
   # Restore IFS
@@ -492,7 +492,7 @@ include_exclude()
     TMP=" --exclude-device-files"
     EXCLUDE=$EXCLUDE$TMP
   fi
-  
+
   for include in ${INCLIST[@]}
   do
     TMP=" --include=""'"$include"'"
@@ -504,21 +504,21 @@ include_exclude()
     TMP=" --exclude ""'"$exclude"'"
     EXCLUDE=$EXCLUDE$TMP
   done
-  
+
   # Include/Exclude globbing filelist
   if [ "$INCEXCFILE" != '' ]; then
     TMP=" --include-globbing-filelist ""'"$INCEXCFILE"'"
     INCLUDE=$INCLUDE$TMP
   fi
-  
+
   # INCLIST and globbing filelist is empty so every file needs to be saved
   if [ "$INCLIST" == '' ] && [ "$INCEXCFILE" == '' ]; then
     EXCLUDEROOT=''
   else
     EXCLUDEROOT="--exclude=**"
   fi
-  
-  
+
+
   # Restore IFS
   IFS=$OLDIFS
 }
@@ -538,7 +538,7 @@ duplicity_cleanup()
       ${ENCRYPT} \
       ${DEST} >> ${LOGFILE}
     echo >> ${LOGFILE}
-  fi  
+  fi
 }
 
 duplicity_backup()

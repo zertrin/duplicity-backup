@@ -471,7 +471,7 @@ get_remote_file_size()
     ;;
   esac
 
-  if $FRIENDLY_TYPE_NAME ; then
+  if [[ $FRIENDLY_TYPE_NAME ]] ; then
       echo -e ""$SIZE"\t"$FRIENDLY_TYPE_NAME" type backend" >> ${LOGFILE}
   else
       echo "Destination disk use information is currently only available for the following storage backends:" >> ${LOGFILE}

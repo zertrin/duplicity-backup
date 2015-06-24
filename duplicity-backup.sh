@@ -656,11 +656,11 @@ backup_this_script()
 
   echo -e ${README_TXT} > ${README}
   echo "Encrypting tarball, choose a password you'll remember..."
-  tar c ${TMPDIR} | gpg -aco ${TMPFILENAME}
+  tar -cf - ${TMPDIR} | gpg -aco ${TMPFILENAME}
   rm -Rf ${TMPDIR}
   echo -e "\nIMPORTANT!!"
   echo ">> To restore these files, run the following (remember your password):"
-  echo "gpg -d ${TMPFILENAME} | tar x"
+  echo "gpg -d ${TMPFILENAME} | tar -xf -"
   echo -e "\nYou may want to write the above down and save it with the file."
 }
 

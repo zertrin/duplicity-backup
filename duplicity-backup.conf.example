@@ -51,6 +51,13 @@ AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
 GS_ACCESS_KEY_ID="foobar_gcs_key_id"
 GS_SECRET_ACCESS_KEY="foobar_gcs_secret_id"
 
+# OPENSTACK OBJECT STORAGE (SWIFT) INFORMATION
+# Comment out these lines if you're not using OpenStack Object Storage (Swift)
+SWIFT_USERNAME="foobar_swift_tenant:foobar_swift_username"
+SWIFT_PASSWORD="foobar_swift_password"
+SWIFT_AUTHURL="foobar_swift_authurl"
+SWIFT_AUTHVERSION="2"
+
 # S3CMD INFORMATION
 # Most people don't need this, but in some cases
 # you may want to specify a custom configuration file
@@ -132,6 +139,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #DEST="imap[s]://user[:password]@host.com[/from_address_prefix]"
 #DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"
 #DEST="gdocs://foobar_google_account/some_dir"
+#DEST="swift://foobar_swift_container/some_dir"
 
 # DESTINATION BACKEND PASSWORD
 # Instead of setting the password needed for the backup destination in the

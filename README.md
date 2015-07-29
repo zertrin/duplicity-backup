@@ -8,7 +8,7 @@ Most importantly, you can easily backup the script and your gpg key in a conveni
 
 Optionally, you can set up an email address where the log file will be sent, which is useful when the script is used via cron.
 
-This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github.
+This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github. Thanks to all the contributors!
 
 
 ## duplicity-backup.sh IS NOT duplicity
@@ -17,16 +17,16 @@ It is only a wrapper script for duplicity written in bash!
 
 This means the following:
 
-* You need to install and configure duplicity before using duplicity-backup.sh
+* You need to install and configure duplicity BEFORE using duplicity-backup.sh
 * [The official documentation of duplicity](http://duplicity.nongnu.org/duplicity.1.html) is relevant to duplicity-backup.sh too. Virtually any option supported by duplicity can be specified in the config file of duplicity-backup.sh. See the `STATIC_OPTIONS`, `CLEAN_UP_TYPE` and `CLEAN_UP_VARIABLE` parameters in particular.
-* Before asking something about duplicity-backup.sh, ensure that your question isn’t actually concerning duplicity ;)
+* Before asking something about duplicity-backup.sh, ensure that your question isn’t actually concerning duplicity ;) First, make sure you can perform a backup with duplicity without using this script. If you can't make the backup work with duplicity alone, the problem is probably concerning duplicity and not this script. If you manage to make a backup with duplicity alone but not with this script, then there is probably a problem with duplicity-backup.sh.
 * In particular, to the question "_Does duplicity-backup.sh support the backend XXX_" (with XXX being for example Amazon Glacier), the answer is always the same: "_duplicity-backup.sh uses duplicity, so ask the developers of duplicity ;) Once it's in duplicity, it's automatically available to duplicity-backup.sh_"
 
 ## Contributing
 
-Latest version of the code is available at https://github.com/zertrin/duplicity-backup
+Latest version of the code is available at https://github.com/zertrin/duplicity-backup in the `master` branch.
 
-Pull requests are welcome! However please **always use individual feature branches for each pull request**. I don't accept pull requests from master branches.
+Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master branch.
 
 More information about this script is available at https://zertrin.org/projects/duplicity-backup/
 
@@ -41,7 +41,7 @@ Be sure to replace all the *foobar* values with your real ones. Almost every val
 
 You can use one copy of the script with different settings for different backup scenarios. It is designed to run as a cron job and will log information to a text file (including remote file sizes, if you use Amazon S3 and have `s3cmd` installed).
 
-Be sure to make the script executable (`chmod +x`) before you hit the gas.
+Be sure to make the script executable if needed (`chmod +x`) before you hit the gas.
 
 
 ## Requirements
@@ -63,7 +63,7 @@ For the [Google Cloud Storage](https://cloud.google.com/storage/) storage backen
 
 The configuration takes place in a separate config file and is documented there.
 
-You want to copy `duplicity-backup.conf.example` to another place that suits your needs (for example `/etc/duplicity-backup.conf`)
+You should copy `duplicity-backup.conf.example` to another place that suits your needs (for example `/etc/duplicity-backup.conf`)
 
 The script looks for its configuration by reading the config file specified by the command line option `-c` or `--config` (see [Usage](#usage))
 
@@ -162,7 +162,7 @@ Note that the commands `--restore-file` and `--restore-dir` are equivalent.
 
 ## Cron Usage Example
 
-    41 3 * * * cd /path/to/duplicity-backup; ./duplicity-backup.sh -c /etc/duplicity-backup.conf -b
+    41 3 * * * /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -b
 
 
 ## Troubleshooting

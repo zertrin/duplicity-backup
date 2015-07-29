@@ -29,9 +29,13 @@
 
 # Default config file (don't forget to copy duplicity-backup.conf.example to
 # match that path)
-# NOTE: It can be useful not to edit this script at all to ease future updates
-#       so the config file can be specified directly on the command line too
-#       with the -c option.
+#
+# NOTE: It is RECOMMENDED to use the command line option -c to specify the
+#       location of the config file. The CONFIG variable here is only used for
+#       fallback purposes (look for the file named 'duplicity-backup.conf' in
+#       the same folder as the script, if the option -c is not given).
+#       It is DEPRECATED to edit this.
+
 CONFIG="duplicity-backup.conf"
 
 ##############################################################
@@ -166,9 +170,11 @@ else
   usage
   exit 1
 fi
+
 STATIC_OPTIONS="$DRY_RUN$STATIC_OPTIONS"
 
 SIGN_PASSPHRASE=$PASSPHRASE
+
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
 export GS_ACCESS_KEY_ID
@@ -179,6 +185,7 @@ export SWIFT_AUTHURL
 export SWIFT_AUTHVERSION
 export PASSPHRASE
 export SIGN_PASSPHRASE
+
 if [[ -n "$FTP_PASSWORD" ]]; then
   export FTP_PASSWORD
 fi
@@ -223,11 +230,13 @@ size information unavailable."
 NO_GSCMD_CFG="WARNING: gsutil is not configured, run 'gsutil config' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
+
 NO_S3CMD="WARNING: s3cmd not found in PATH, remote file \
 size information unavailable."
 NO_S3CMD_CFG="WARNING: s3cmd is not configured, run 's3cmd --configure' \
 in order to retrieve remote file size information. Remote file \
 size information unavailable."
+
 README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\n\nIf you were using the same key for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.txt\nOr if you were using two separate keys for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.txt\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.txt\n\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files.\n\nGood luck!"
 
 if [ ! -x "$DUPLICITY" ]; then

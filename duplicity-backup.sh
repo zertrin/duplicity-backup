@@ -443,7 +443,7 @@ get_remote_file_size()
 
       TMPDEST="${DEST#*://*/}"
       TMPDEST="${DEST%/${TMPDEST}}"
-      ssh_opt=`echo $STATIC_OPTIONS |awk -vo="--ssh-options=" '{s=index($0,o); if (s) {s=substr($0,s+length(o)); m=substr(s,0,1); for (i=2; i < length(s); i++) { if (substr(s,i,1) == m && substr(s,i-1,1) != "\\") break; } print substr(s,2,i-2)}}'`
+      ssh_opt=`echo $STATIC_OPTIONS |awk -vo="--ssh-options=" '{s=index($0,o); if (s) {s=substr($0,s+length(o)); m=substr(s,0,1); for (i=2; i < length(s); i++) { if (substr(s,i,1) == m && substr(s,i-1,1) != "\\\\") break; } print substr(s,2,i-2)}}'`
 
       SIZE=`${TMPDEST%://*} ${ssh_opt} ${TMPDEST#*//} du -hs ${DEST#${TMPDEST}/} | awk '{print $1}'` 2>> ${LOGFILE}
       EMAIL_SUBJECT="$EMAIL_SUBJECT $SIZE `${TMPDEST%://*} ${ssh_opt} ${TMPDEST#*//} df -hP ${DEST#${TMPDEST}/} | awk '{tmp=$5 " used"}END{print tmp}'`" 2>> ${LOGFILE}

@@ -77,6 +77,10 @@
 #
 ROOT="/home"
 
+# Set hostname for this duplicity instance, usefull for e-mail reports
+#
+HOSTNAME=$(hostname -f)
+
 # ------------------------------------------------------------------------------
 # BACKUP DESTINATION INFORMATION
 # ------------------------------------------------------------------------------
@@ -371,6 +375,7 @@ VERBOSITY="-v3"
 EMAIL_TO=
 EMAIL_FROM=
 EMAIL_SUBJECT=
+EMAIL_FAILURE_ONLY="yes" # send e-mail only if there was an error while creating backup
 
 # command to use to send mail
 MAIL="mailx"     # default command for Linux mail

@@ -556,6 +556,7 @@ duplicity_cleanup()
 
 duplicity_backup()
 {
+{
   eval ${ECHO} ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
   ${ENCRYPT} \
   ${EXCLUDE} \
@@ -563,6 +564,9 @@ duplicity_backup()
   ${EXCLUDEROOT} \
   ${ROOT} ${DEST} \
   >> ${LOGFILE}
+} || {
+  BACKUP_ERROR=1
+}
 }
 
 setup_passphrase()
@@ -680,7 +684,7 @@ backup_this_script()
 check_variables
 check_logdir
 
-echo -e "--------    START DUPLICITY-BACKUP SCRIPT    --------\n" >> ${LOGFILE}
+echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n" >> ${LOGFILE}
 
 get_lock
 
@@ -832,7 +836,20 @@ esac
 
 echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> ${LOGFILE}
 
-email_logfile
+if [ ${EMAIL_FAILURE_ONLY} == "yes" ]
+then
+	if [ ${BACKUP_ERROR} ]; then
+		EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
+		email_logfile
+	fi
+else
+	if [ ${BACKUP_ERROR} ]; then
+		EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
+	else
+		EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
+	fi
+		email_logfile
+fi
 
 # remove old logfiles
 # stops them from piling up infinitely

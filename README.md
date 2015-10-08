@@ -17,10 +17,11 @@ It is only a wrapper script for duplicity written in bash!
 
 This means the following:
 
-* You need to install and configure duplicity BEFORE using duplicity-backup.sh
+* You need to install AND configure duplicity BEFORE using duplicity-backup.sh
 * [The official documentation of duplicity](http://duplicity.nongnu.org/duplicity.1.html) is relevant to duplicity-backup.sh too. Virtually any option supported by duplicity can be specified in the config file of duplicity-backup.sh. See the `STATIC_OPTIONS`, `CLEAN_UP_TYPE` and `CLEAN_UP_VARIABLE` parameters in particular.
 * Before asking something about duplicity-backup.sh, ensure that your question isn’t actually concerning duplicity ;) First, make sure you can perform a backup with duplicity without using this script. If you can't make the backup work with duplicity alone, the problem is probably concerning duplicity and not this script. If you manage to make a backup with duplicity alone but not with this script, then there is probably a problem with duplicity-backup.sh.
 * In particular, to the question "_Does duplicity-backup.sh support the backend XXX_" (with XXX being for example Amazon Glacier), the answer is always the same: "_duplicity-backup.sh uses duplicity, so ask the developers of duplicity ;) Once it's in duplicity, it's automatically available to duplicity-backup.sh_"
+
 
 ## Contributing
 
@@ -33,18 +34,71 @@ More information about this script is available at https://zertrin.org/projects/
 The original version of the code is available at https://github.com/theterran/dt-s3-backup
 
 
-## Before you start
+## Installation
 
-This script requires user configuration. Instructions are in the config file itself and should be self-explanatory. You SHOULD NOT edit the example config file `duplicity-backup.conf.example`, but instead make a copy of it (typical examples are `duplicity-backup.conf` in the same directory as the script or `/etc/duplicity-backup.conf`) and edit this one.
+### 1. Get the script
+
+You can clone the repository (which makes it easy to get future updates):
+
+    git clone https://github.com/zertrin/duplicity-backup.git duplicity-backup
+
+If you prefer the stable version:
+
+    git checkout stable
+
+... or if you want the latest version:
+
+    git checkout master
+
+Or just download the ZIP file:
+
+* For the stable branch: https://github.com/zertrin/duplicity-backup/archive/stable.zip
+* For the normal branch: https://github.com/zertrin/duplicity-backup/archive/master.zip
+
+### 2. Configure the script
+
+This script requires user configuration. Instructions are in the config file itself and should be self-explanatory. You SHOULD NOT edit the example config file `duplicity-backup.conf.example`, but instead make a copy of it (for example to `/etc/duplicity-backup.conf`) and edit this one.
 
 Be sure to replace all the *foobar* values with your real ones. Almost every value needs to be configured in someway.
 
-You can use one copy of the script with different settings for different backup scenarios. It is designed to run as a cron job and will log information to a text file (including remote file sizes, if you use Amazon S3 and have `s3cmd` installed).
+The script looks for its configuration by reading the path to the config file specified by the command line option `-c` or `--config` (see [Usage](#usage))
+
+If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beginning of the script (default: `duplicity-backup.conf` in the script's directory).
+
+So be sure to either:
+* specify the configuration file path on the command line with the -c option **[recommended]**
+* or to edit the `CONFIG` parameter in the script to match the actual location of your config file. **[deprecated]** _(will be removed in future versions of the script)_
+
+NOTE: to ease future updates of the script, you may prefer NOT to edit the script at all and to specify systematically the path to your config file on the command line with the `-c` or `--config` option.
+
+You can use one copy of the script and call it with different config file for different backup scenarios. It is designed to run as a cron job and will log information to a text file (including remote file sizes, if you use Amazon S3 and have `s3cmd` installed).
+
+### Misc
 
 Be sure to make the script executable if needed (`chmod +x`) before you hit the gas.
 
 
-## Requirements
+## Upgrade
+
+### 1. Get the new version
+
+If you got the script by cloning the repository, upgrading is easy:
+
+    git pull
+
+else just download again the ZIP archive an extract it over the existing folder. (Don't forget to keep a backup of the previous folder to be able to rollback easily if needed)
+
+### 2. Adapt the config file if needed
+
+Then compare the example config file (`duplicity-backup.conf.example`) with your modified version (for example `/etc/duplicity-backup.conf`) and adapt your copy to reflect the changes in the example file.
+
+Thare are many ways to do so, here are some examples (adapt the path to your actual files):
+
+    diff duplicity-backup.conf.example /etc/duplicity-backup.conf
+    vimdiff duplicity-backup.conf.example /etc/duplicity-backup.conf
+
+
+## Dependancies
 
 * [duplicity](http://duplicity.nongnu.org/)
 * Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](https://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)
@@ -57,23 +111,6 @@ For the [Amazon S3](https://aws.amazon.com/s3/) storage backend *`optional`*
 For the [Google Cloud Storage](https://cloud.google.com/storage/) storage backend *`optional`*
 * [boto](https://github.com/boto/boto) (may already have been installed with duplicity)
 * [gsutil](https://cloud.google.com/storage/docs/gsutil) *`optional`*
-
-
-## Configuration
-
-The configuration takes place in a separate config file and is documented there.
-
-You should copy `duplicity-backup.conf.example` to another place that suits your needs (for example `/etc/duplicity-backup.conf`)
-
-The script looks for its configuration by reading the config file specified by the command line option `-c` or `--config` (see [Usage](#usage))
-
-If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beginning of the script (default: `duplicity-backup.conf` in the script's directory).
-
-So be sure to either:
-* specify the configuration file path on the command line with the -c option **[recommended]**
-* or to edit the `CONFIG` parameter in the script to match the actual location of your config file. **[deprecated]**
-
-NOTE: to ease future updates of the script, you may prefer NOT to edit the script at all and to specify systematically the path to your config file on the command line with the `-c` or `--config` option.
 
 
 ## Usage
@@ -165,6 +202,11 @@ Note that the commands `--restore-file` and `--restore-dir` are equivalent.
     41 3 * * * /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -b
 
 
+## Known issues
+
+If your system's locale is not english, an error can happen when duplicity is trying to encrypt the files with gpg. This problem concerns duplicity and has been reported upstream ([see bug report](https://bugs.launchpad.net/duplicity/+bug/510625)). A simple workaround is to set the following environement variable: `LANG=C`. For example: `LANG=C duplicity-backup.sh [-c config_file] ...` or in the cron `41 3 * * * LANG=C /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -b`
+
+
 ## Troubleshooting
 
 This script attempts to simplify the task of running a duplicity command; if you are having any problems with the script the first step is to determine if the script is generating an incorrect command or if duplicity itself is causing your error.
@@ -178,7 +220,8 @@ You can also try the `-n` or `--dry-run` option. This will make duplicity to cal
 
 ## Wish List
 
-* send mails only on failure
+* Backup to multiple destinations with one config file
+* Show backup-ed files in today incremental backup email
 
 
 ###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup/graphs/contributors) for their help.

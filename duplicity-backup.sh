@@ -540,33 +540,41 @@ duplicity_cleanup()
 {
   echo "----------------[ Duplicity Cleanup ]----------------" >> ${LOGFILE}
   if [[ "${CLEAN_UP_TYPE}" != "none" && ! -z ${CLEAN_UP_TYPE} && ! -z ${CLEAN_UP_VARIABLE} ]]; then
-    eval ${ECHO} ${DUPLICITY} ${CLEAN_UP_TYPE} ${CLEAN_UP_VARIABLE} ${STATIC_OPTIONS} --force \
-      ${ENCRYPT} \
-      ${DEST} >> ${LOGFILE}
+    {
+      eval ${ECHO} ${DUPLICITY} ${CLEAN_UP_TYPE} ${CLEAN_UP_VARIABLE} ${STATIC_OPTIONS} --force \
+        ${ENCRYPT} \
+        ${DEST} >> ${LOGFILE}
+    } || {
+      BACKUP_ERROR=1
+    }
     echo >> ${LOGFILE}
   fi
   if [ ! -z ${REMOVE_INCREMENTALS_OLDER_THAN} ] && [[ ${REMOVE_INCREMENTALS_OLDER_THAN} =~ ^[0-9]+$ ]]; then
-    eval ${ECHO} ${DUPLICITY} remove-all-inc-of-but-n-full ${REMOVE_INCREMENTALS_OLDER_THAN} \
-      ${STATIC_OPTIONS} --force \
-      ${ENCRYPT} \
-      ${DEST} >> ${LOGFILE}
+    {
+      eval ${ECHO} ${DUPLICITY} remove-all-inc-of-but-n-full ${REMOVE_INCREMENTALS_OLDER_THAN} \
+        ${STATIC_OPTIONS} --force \
+        ${ENCRYPT} \
+        ${DEST} >> ${LOGFILE}
+    } || {
+      BACKUP_ERROR=1
+    }
     echo >> ${LOGFILE}
   fi
 }
 
 duplicity_backup()
 {
-{
-  eval ${ECHO} ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
-  ${ENCRYPT} \
-  ${EXCLUDE} \
-  ${INCLUDE} \
-  ${EXCLUDEROOT} \
-  ${ROOT} ${DEST} \
-  >> ${LOGFILE}
-} || {
-  BACKUP_ERROR=1
-}
+  {
+    eval ${ECHO} ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
+    ${ENCRYPT} \
+    ${EXCLUDE} \
+    ${INCLUDE} \
+    ${EXCLUDEROOT} \
+    ${ROOT} ${DEST} \
+    >> ${LOGFILE}
+  } || {
+    BACKUP_ERROR=1
+  }
 }
 
 setup_passphrase()
@@ -838,17 +846,17 @@ echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> ${LOGFILE}
 
 if [ ${EMAIL_FAILURE_ONLY} == "yes" ]
 then
-	if [ ${BACKUP_ERROR} ]; then
-		EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
-		email_logfile
-	fi
+  if [ ${BACKUP_ERROR} ]; then
+    EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
+    email_logfile
+  fi
 else
-	if [ ${BACKUP_ERROR} ]; then
-		EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
-	else
-		EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
-	fi
-		email_logfile
+  if [ ${BACKUP_ERROR} ]; then
+    EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
+  else
+    EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
+  fi
+  email_logfile
 fi
 
 # remove old logfiles

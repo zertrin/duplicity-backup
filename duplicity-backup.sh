@@ -844,8 +844,7 @@ esac
 
 echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> ${LOGFILE}
 
-if [ ${EMAIL_FAILURE_ONLY} == "yes" ]
-then
+if [ "$EMAIL_FAILURE_ONLY" = "yes" ]; then
   if [ ${BACKUP_ERROR} ]; then
     EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
     email_logfile

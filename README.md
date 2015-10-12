@@ -10,6 +10,10 @@ Optionally, you can set up an email address where the log file will be sent, whi
 
 This version is a rewriting of the code originally written by [Damon Timm](https://github.com/thornomad), including many patches that have been brought to the original scripts by various forks on Github. Thanks to all the contributors!
 
+More information about this script is available at https://zertrin.org/projects/duplicity-backup/
+
+The original version of the code is available at https://github.com/theterran/dt-s3-backup
+
 
 ## duplicity-backup.sh IS NOT duplicity
 
@@ -29,9 +33,23 @@ Latest version of the code is available at https://github.com/zertrin/duplicity-
 
 Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master branch.
 
-More information about this script is available at https://zertrin.org/projects/duplicity-backup/
+Here is how to do it:
 
-The original version of the code is available at https://github.com/theterran/dt-s3-backup
+Fork the repository and then clone your fork:
+
+    git clone git@github.com:YOURNAME/duplicity-backup.git
+
+Create a new topic branch for the changes you want to make, based on the master branch from the clone:
+
+    git checkout -b my-fix-1 origin/master
+
+Make your changes, test them, commit them and push them to Github:
+
+    git push origin my-fix-1
+
+Open a Pull request from `YOURNAME:my-fix-1` to `zertrin:master`.
+
+If you want to open another pull request for another change which is independant of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 origin/master`)
 
 
 ## Installation

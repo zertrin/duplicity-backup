@@ -20,7 +20,7 @@
 # MORE ABOUT THIS SCRIPT AVAILABLE IN THE README AND AT:
 #
 # http://zertrin.org/projects/duplicity-backup/ (for this version)
-# http://damontimm.com/code/dt-s3-backup (for the original programi by Damon Timm)
+# http://damontimm.com/code/dt-s3-backup (for the original program by Damon Timm)
 #
 # Latest code available at:
 # http://github.com/zertrin/duplicity-backup

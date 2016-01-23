@@ -104,6 +104,8 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #
 #DEST="gs://foobar-backup-bucket/backup-folder/"
 #DEST="ftp://user[:password]@other.host[:port]/some_dir"
+#DEST="ftps://user[:password]@other.host[:port]/some_dir"
+#DEST="ftpes://user[:password]@other.host[:port]/some_dir"
 #DEST="rsync://user@host.com[:port]//absolute_path"
 #DEST="scp://user[:password]@other.host[:port]/[/]some_dir"
 #DEST="ssh://user[:password]@other.host[:port]/[/]some_dir"

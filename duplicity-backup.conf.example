@@ -373,6 +373,7 @@ VERBOSITY="-v3"
 # used by default: "duplicity-backup Alert ${LOG_FILE}"
 # MTA used: mailx
 
+
 #EMAIL="admin@example.com"
 EMAIL_TO=
 EMAIL_FROM=
@@ -385,6 +386,15 @@ MAIL="mailx"     # default command for Linux mail
 #MAIL="ssmtp"
 #MAIL="sendmail"
 #MAIL="msmtp"
+
+# You may also specify a custom mail script.  It will be called via
+# the following convention:
+
+# MAIL "SUBJECT OF MESSAGE" "TO EMAIL ADDRESS" "FROM EMAIL ADDRESS"
+
+# The email body will be available on stdin.
+
+#MAIL="/path/to/custom/mail_script.py
 
 
 # ------------------------------------------------------------------------------

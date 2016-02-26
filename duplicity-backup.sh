@@ -370,6 +370,15 @@ email_logfile()
   fi
 }
 
+send_notification()
+{
+  if [ ! -z "$NOTIFICATION_SERVICE" ]; then
+    if [ "$NOTIFICATION_SERVICE" = "slack" ]; then
+      curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$NOTIFICATION_CONTENT\", \"channel\": \"$SLACK_CHANNEL\", \"username\": \"$SLACK_USERNAME\", \"icon_emoji\": \":$SLACK_EMOJI:\"}" ${SLACK_HOOK_URL}
+    fi
+  fi
+}
+
 get_lock()
 {
   echo "Attempting to acquire lock ${LOCKFILE}" >> ${LOGFILE}
@@ -856,6 +865,20 @@ else
     EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
   fi
   email_logfile
+fi
+
+if [ "$NOTIFICATION_FAILURE_ONLY" = "yes" ]; then
+  if [ ${BACKUP_ERROR} ]; then
+    NOTIFICATION_CONTENT="BACKUP ERROR: ${HOSTNAME} - \`$LOGFILE\`"
+    send_notification
+  fi
+else
+  if [ ${BACKUP_ERROR} ]; then
+    NOTIFICATION_CONTENT="BACKUP ERROR: ${HOSTNAME} - \`$LOGFILE\`"
+  else
+    NOTIFICATION_CONTENT="BACKUP OK: ${HOSTNAME} - \`$LOGFILE\`"
+  fi
+  send_notification
 fi
 
 # remove old logfiles

@@ -366,15 +366,14 @@ VERBOSITY="-v3"
 # EMAIL ALERT (*thanks: rmarescu*)
 # ------------------------------------------------------------------------------
 #
-# Provide an email address to receive the logfile by email. If no email
-# address is provided, no alert will be sent.
+# Provide an email address to receive the logfile by email. If EMAIL_TO is not
+# provided, no alert will be sent.
 # You can set a custom from email address and a custom subject (both optionally)
 # If no value is provided for the subject, the following value will be
 # used by default: "duplicity-backup Alert ${LOG_FILE}"
 # MTA used: mailx
 
-
-#EMAIL="admin@example.com"
+#EMAIL_TO="admin@example.com"
 EMAIL_TO=
 EMAIL_FROM=
 EMAIL_SUBJECT=

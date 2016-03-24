@@ -387,14 +387,12 @@ MAIL="mailx"     # default command for Linux mail
 #MAIL="sendmail"
 #MAIL="msmtp"
 
-# You may also specify a custom mail script.  It will be called via
+# You may specify a custom mail script instead.  It will be called with
 # the following convention:
-
 # MAIL "SUBJECT OF MESSAGE" "TO EMAIL ADDRESS" "FROM EMAIL ADDRESS"
-
 # The email body will be available on stdin.
-
-#MAIL="/path/to/custom/mail_script.py
+#
+#MAIL="/path/to/custom/mail_script.py"
 
 
 # ------------------------------------------------------------------------------

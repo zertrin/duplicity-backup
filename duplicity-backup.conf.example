@@ -138,16 +138,13 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #
 #AWS_ACCESS_KEY_ID="foobar_aws_key_id"
 #AWS_SECRET_ACCESS_KEY="foobar_aws_access_key"
-
-# ------------------------------------------------------------------------------
+#
 # SET STORAGE CLASS for AWS
-# ------------------------------------------------------------------------------
-# The defaulct storage class is STANDARD STORAGE. You can comment this option if 
+# The default storage class is STANDARD STORAGE. You can comment this option if 
 # want to go with standard. The other storage options are --s3-use-ia and --s3-use-rrs.
 # Note: --s3-use-ia option is supported only in duplicity version greater than 0.7.06 
-
+#
 #STORAGECLASS="--s3-use-ia"
-
 #
 # S3CMD INFORMATION
 # Most people don't need this, but in some cases

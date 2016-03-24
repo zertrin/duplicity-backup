@@ -568,6 +568,7 @@ duplicity_backup()
 {
   {
     eval ${ECHO} ${DUPLICITY} ${OPTION} ${VERBOSITY} ${STATIC_OPTIONS} \
+    ${STORAGECLASS} \
     ${ENCRYPT} \
     ${EXCLUDE} \
     ${INCLUDE} \

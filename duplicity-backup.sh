@@ -432,7 +432,7 @@ get_source_file_size()
 
   for include in "${DUINCLIST[@]}"; do
       echo -e "${DUEXCLIST}" | \
-      du -hs ${DUEXCFLAG} ${include} | \
+      du -hs ${DUEXCFLAG} "${include}" | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
       >> "${LOGFILE}"
   done
@@ -683,7 +683,8 @@ backup_this_script()
   fi
 
   if [ ! -z "${GPG_ENC_KEY}" -a ! -z "${GPG_SIGN_KEY}" ]; then
-    export GPG_TTY=$(tty)
+    GPG_TTY=$(tty)
+    export GPG_TTY
     if [ "${GPG_ENC_KEY}" = "${GPG_SIGN_KEY}" ]; then
       gpg -a --export-secret-keys "${KEYRING}" "${GPG_ENC_KEY}" > "${TMPDIR}"/duplicity-backup-encryption-and-sign-secret.key.txt
     else

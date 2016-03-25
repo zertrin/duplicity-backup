@@ -11,7 +11,7 @@ addons:
     - shellcheck
 
 script:
-  - shellcheck duplicity-backup.sh
+  - shellcheck -e SC2153 duplicity-backup.sh
   - shellcheck -e SC2034 duplicity-backup.conf.example
 
 matrix:

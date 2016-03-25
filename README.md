@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/zertrin/duplicity-backup.svg?branch=dev)](https://travis-ci.org/zertrin/duplicity-backup)
+
 # duplicity-backup.sh
 
 This bash script was designed to automate and simplify the remote backup process of [duplicity](http://duplicity.nongnu.org/) on Amazon S3 primarily. Other backup destinations are possible (Google Cloud Storage, FTP, SFTP, SCP, rsync, file...), i.e. any of duplicity's supported outputs.
@@ -29,27 +31,31 @@ This means the following:
 
 ## Contributing
 
-Latest version of the code is available at https://github.com/zertrin/duplicity-backup in the `master` branch.
+The development version of the code is available at https://github.com/zertrin/duplicity-backup in the `dev` branch. It is a bleeding-edge version with the latests changes that have not yet been tested a lot, but that's the best starting point to contribute.
 
-Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master branch.
+Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master or dev branch.
 
 Here is how to do it:
 
-Fork the repository and then clone your fork:
+Fork the repository first and then clone your fork on your machine:
 
-    git clone git@github.com:YOURNAME/duplicity-backup.git
+    git clone git@github.com:YOURNAME/duplicity-backup.git && cd duplicity-backup
 
-Create a new topic branch for the changes you want to make, based on the master branch from the clone:
+Add a remote for the upstream repository:
 
-    git checkout -b my-fix-1 origin/master
+    git remote add upstream git@github.com:zertrin/duplicity-backup.git
+
+Create a new topic branch for the changes you want to make, based on the `dev` branch from upstream:
+
+    git checkout -b my-fix-1 upstream/dev
 
 Make your changes, test them, commit them and push them to Github:
 
     git push origin my-fix-1
 
-Open a Pull request from `YOURNAME:my-fix-1` to `zertrin:master`.
+Open a Pull request from `YOURNAME:my-fix-1` to `zertrin:dev`.
 
-If you want to open another pull request for another change which is independant of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 origin/master`)
+If you want to open another pull request for another change which is independant of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 upstream/dev`)
 
 
 ## Installation
@@ -60,13 +66,15 @@ You can clone the repository (which makes it easy to get future updates):
 
     git clone https://github.com/zertrin/duplicity-backup.git duplicity-backup
 
-If you prefer the stable version:
+If you prefer the stable version do:
 
     git checkout stable
 
-... or if you want the latest version:
+... or if you want the latest version (might still have bugs), then:
 
     git checkout master
+
+... or if you like living on the edge, you can stay at the development version which is automatically cloned.
 
 Or just download the ZIP file:
 

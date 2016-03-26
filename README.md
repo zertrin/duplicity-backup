@@ -39,11 +39,13 @@ Here is how to do it:
 
 Fork the repository first and then clone your fork on your machine:
 
-    git clone git@github.com:YOURNAME/duplicity-backup.git && cd duplicity-backup
+    git clone git@github.com:YOURNAME/duplicity-backup.git
+    cd duplicity-backup
 
 Add a remote for the upstream repository:
 
     git remote add upstream git@github.com:zertrin/duplicity-backup.git
+    git fetch upstream
 
 Create a new topic branch for the changes you want to make, based on the `dev` branch from upstream:
 

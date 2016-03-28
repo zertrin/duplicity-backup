@@ -858,33 +858,23 @@ esac
 
 echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> "${LOGFILE}"
 
-if [ "${EMAIL_FAILURE_ONLY}" = "yes" ]; then
-  if [ ${BACKUP_ERROR} ]; then
-    EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
-    email_logfile
-  fi
+# send email
+if [ "${BACKUP_ERROR}" ]; then
+  EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
 else
-  if [ ${BACKUP_ERROR} ]; then
-    EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
-  else
-    EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
-  fi
-  email_logfile
+  EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
 fi
 
-if [ "${NOTIFICATION_FAILURE_ONLY}" = "yes" ]; then
-  if [ ${BACKUP_ERROR} ]; then
-    NOTIFICATION_CONTENT="BACKUP ERROR: ${HOSTNAME} - \`${LOGFILE}\`"
-    send_notification
-  fi
+[[ ${BACKUP_ERROR} || ! "$EMAIL_FAILURE_ONLY" = "yes" ]] && email_logfile
+
+# send notification
+if [ "${BACKUP_ERROR}" ]; then
+  NOTIFICATION_CONTENT="BACKUP ERROR: ${HOSTNAME} - \`$LOGFILE\`"
 else
-  if [ ${BACKUP_ERROR} ]; then
-    NOTIFICATION_CONTENT="BACKUP ERROR: ${HOSTNAME} - \`${LOGFILE}\`"
-  else
-    NOTIFICATION_CONTENT="BACKUP OK: ${HOSTNAME} - \`${LOGFILE}\`"
-  fi
-  send_notification
+  NOTIFICATION_CONTENT="BACKUP OK: ${HOSTNAME} - \`$LOGFILE\`"
 fi
+
+[[ ${BACKUP_ERROR} || ! "$NOTIFICATION_FAILURE_ONLY" = "yes" ]] && send_notification
 
 # remove old logfiles
 # stops them from piling up infinitely

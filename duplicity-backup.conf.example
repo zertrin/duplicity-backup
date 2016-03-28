@@ -77,7 +77,7 @@
 #
 ROOT="/home"
 
-# Set hostname for this duplicity instance, usefull for e-mail reports
+# Set hostname for this duplicity instance, useful for e-mail reports
 #
 HOSTNAME=$(hostname -f)
 

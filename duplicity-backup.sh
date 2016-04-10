@@ -336,47 +336,82 @@ check_logdir()
   fi
 }
 
+mailcmd_sendmail() {
+  # based on http://linux.die.net/man/8/sendmail.sendmail
+  echo -e "From: ${EMAIL_FROM}\nSubject: ${EMAIL_SUBJECT}\n" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
+}
+mailcmd_ssmtp() {
+  # based on http://linux.die.net/man/8/ssmtp
+  echo -e "From: ${EMAIL_FROM}\nSubject: ${EMAIL_SUBJECT}\n" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
+}
+mailcmd_msmtp() {
+  # based on http://manpages.ubuntu.com/manpages/precise/en/man1/msmtp.1.html
+  echo -e "Subject: ${EMAIL_SUBJECT}\n" | cat - "${LOGFILE}" | ${MAILCMD} -f "${EMAIL_FROM}" -- "${EMAIL_TO}"
+}
+mailcmd_bsd_mailx() {
+  # based on http://man.he.net/man1/bsd-mailx
+  ${MAILCMD} -s "${EMAIL_SUBJECT}" -a "From: ${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
+}
+mailcmd_heirloom_mailx() {
+  # based on http://heirloom.sourceforge.net/mailx/mailx.1.html
+  ${MAILCMD} -s "${EMAIL_SUBJECT}" -S from="${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
+}
+mailcmd_nail() {
+  # based on http://linux.die.net/man/1/nail
+  ${MAILCMD} -s "${EMAIL_SUBJECT}" -r "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
+}
+mailcmd_else() {
+  mailcmd_sendmail
+}
+
 email_logfile()
 {
   if [ ! -z "${EMAIL_TO}" ]; then
+
       MAILCMD=$(which "${MAIL}")
+      MAILCMD_REALPATH=$(readlink -e "${MAILCMD}")
+      MAILCMD_BASENAME=${MAILCMD_REALPATH##*/}
+
       if [ ! -x "${MAILCMD}" ]; then
           echo -e "Email couldn't be sent. ${MAIL} not available." >> "${LOGFILE}"
       else
-          EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup alert ${LOG_FILE}"}
-          if [ "${MAIL}" = "ssmtp" ]; then
-            echo """Subject: ${EMAIL_SUBJECT}""" | cat - "${LOGFILE}" | ${MAILCMD} -s "${EMAIL_TO}"
-          elif [ "${MAIL}" = "msmtp" ]; then
-            echo """Subject: ${EMAIL_SUBJECT}""" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
-          elif [ "${MAIL}" = "mailx" ]; then
-            EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
-            ${MAILCMD} -s """${EMAIL_SUBJECT}""" "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
-          elif [ "${MAIL}" = "mail" ]; then
-            case $(uname) in
-              FreeBSD|Darwin|DragonFly|OpenBSD)
-                ${MAILCMD} -s """${EMAIL_SUBJECT}""" "${EMAIL_TO}" -- < "${LOGFILE}"
-                ;;
-              *)
-               ${MAILCMD} -s """${EMAIL_SUBJECT}""" "${EMAIL_FROM}" "${EMAIL_TO}" -- -f "${EMAIL_FROM}" < "${LOGFILE}"
-               ;;
-            esac
-          elif [[ "${MAIL}" = "sendmail" ]]; then
-            (echo """Subject: ${EMAIL_SUBJECT}""" ; cat "${LOGFILE}") | ${MAILCMD} -f "${EMAIL_FROM}" "${EMAIL_TO}"
-          elif [ "${MAIL}" = "nail" ]; then
-            ${MAILCMD} -s """${EMAIL_SUBJECT}""" "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
-          else
-            ${MAILCMD} """${EMAIL_SUBJECT}""" "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
-          fi
-          echo -e "Email alert sent to ${EMAIL_TO} using ${MAIL}" >> "${LOGFILE}"
+          EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] ${LOG_FILE}"}
+          case ${MAIL} in
+            ssmtp)
+              mailcmd_ssmtp;;
+            msmtp)
+              mailcmd_msmtp;;
+            mail|mailx)
+              case ${MAILCMD_BASENAME} in
+                bsd-mailx)
+                  mailcmd_bsd_mailx;;
+                heirloom-mailx)
+                  mailcmd_heirloom_mailx;;
+                *)
+                  mailcmd_else;;
+              esac
+              ;;
+            sendmail)
+              mailcmd_sendmail;;
+            nail)
+              mailcmd_nail;;
+            *)
+              mailcmd_else;;
+          esac
+
+          echo -e "Email notification sent to ${EMAIL_TO} using ${MAIL}" >> "${LOGFILE}"
       fi
   fi
 }
 
 send_notification()
 {
+  NOTIFICATION_CONTENT="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] - \`${LOGFILE}\`"
   if [ ! -z "${NOTIFICATION_SERVICE}" ]; then
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"${NOTIFICATION_CONTENT}\", \"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \":${SLACK_EMOJI}:\"}" "${SLACK_HOOK_URL}"
+
+      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}" >> "${LOGFILE}"
     fi
   fi
 }
@@ -858,22 +893,16 @@ esac
 
 echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> "${LOGFILE}"
 
-# send email
 if [ "${BACKUP_ERROR}" ]; then
-  EMAIL_SUBJECT="BACKUP ERROR: ${EMAIL_SUBJECT}"
+  BACKUP_STATUS="ERROR"
 else
-  EMAIL_SUBJECT="BACKUP OK: ${EMAIL_SUBJECT}"
+  BACKUP_STATUS="OK"
 fi
 
+# send email
 [[ ${BACKUP_ERROR} || ! "$EMAIL_FAILURE_ONLY" = "yes" ]] && email_logfile
 
 # send notification
-if [ "${BACKUP_ERROR}" ]; then
-  NOTIFICATION_CONTENT="BACKUP ERROR: ${HOSTNAME} - \`$LOGFILE\`"
-else
-  NOTIFICATION_CONTENT="BACKUP OK: ${HOSTNAME} - \`$LOGFILE\`"
-fi
-
 [[ ${BACKUP_ERROR} || ! "$NOTIFICATION_FAILURE_ONLY" = "yes" ]] && send_notification
 
 # remove old logfiles

@@ -594,7 +594,7 @@ setup_passphrase()
 {
   if [ ! -z "${GPG_ENC_KEY}" -a ! -z "${GPG_SIGN_KEY}" -a "${GPG_ENC_KEY}" != "${GPG_SIGN_KEY}" ]; then
     echo -n "Please provide the passphrase for decryption (GPG key 0x${GPG_ENC_KEY}): "
-    builtin read -s ENCPASSPHRASE
+    builtin read -s -r ENCPASSPHRASE
     echo -ne "\n"
     PASSPHRASE=${ENCPASSPHRASE}
     export PASSPHRASE

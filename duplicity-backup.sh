@@ -410,8 +410,14 @@ send_notification()
   if [ ! -z "${NOTIFICATION_SERVICE}" ]; then
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"${NOTIFICATION_CONTENT}\", \"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \":${SLACK_EMOJI}:\"}" "${SLACK_HOOK_URL}"
-
       echo -e "Slack notification sent to channel ${SLACK_CHANNEL}" >> "${LOGFILE}"
+    elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
+      curl -s \
+      -F "token=APP_TOKEN" \
+      -F "user=USER_KEY" \
+      -F "message=${NOTIFICATION_CONTENT}" \
+      https://api.pushover.net/1/messages
+      echo -e "Pushover notification sent" >> "${LOGFILE}"
     fi
   fi
 }

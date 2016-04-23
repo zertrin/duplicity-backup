@@ -418,6 +418,9 @@ SLACK_CHANNEL="#general"
 SLACK_USERNAME="duplicity-backup"
 SLACK_EMOJI="package"
 
+# Provider: Pushover
+PUSHOVER_TOKEN="token" # App token generated at pushover.net
+PUSHOVER_USER="userkey" # User key from pushover.net
 
 # ------------------------------------------------------------------------------
 # TROUBLESHOOTING

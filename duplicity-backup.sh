@@ -361,7 +361,7 @@ mailcmd_nail() {
   ${MAILCMD} -s "${EMAIL_SUBJECT}" -r "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
 }
 mailcmd_else() {
-  mailcmd_sendmail
+  ${MAILCMD} "${EMAIL_SUBJECT}" "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
 }
 
 email_logfile()

@@ -408,17 +408,17 @@ MAIL="mailx"     # default command for Linux mail
 # Third-party notification services. If NOTIFICATION_SERVICE is not provided, no
 # notifications will be sent.
 
+# Possible values for NOTIFICATION_SERVICE are: slack, pushover
+NOTIFICATION_SERVICE=""
 NOTIFICATION_FAILURE_ONLY="yes" # send notifications only if there was an error while creating backup
 
 # Provider: Slack
-# NOTIFICATION_SERVICE="slack" # uncomment to activate
 SLACK_HOOK_URL="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
 SLACK_CHANNEL="#general"
 SLACK_USERNAME="duplicity-backup"
 SLACK_EMOJI="package"
 
 # Provider: Pushover
-# NOTIFICATION_SERVICE="pushover" # uncomment to activate
 PUSHOVER_TOKEN="" # App token generated at pushover.net
 PUSHOVER_USER="" # User key from pushover.net
 

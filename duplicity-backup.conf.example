@@ -387,11 +387,20 @@ EMAIL_SUBJECT=
 EMAIL_FAILURE_ONLY="yes" # send e-mail only if there was an error while creating backup
 
 # command to use to send mail
+# don't put any options here, as ${MAIL} is used to check if the command is available
+# on the system and locate its binary
 MAIL="mailx"     # default command for Linux mail
 #MAIL="mail"     # for CentOS, if "mailx" fails try this one
 #MAIL="ssmtp"
 #MAIL="sendmail"
 #MAIL="msmtp"
+
+# Array to pass additional options to the mail command
+# the options will be passed immediately after the name of the mail command
+# like this: ${MAIL} ${MAIL_OPTIONS[*]} ${other options}
+MAIL_OPTIONS=()
+# for example with mailx, you can set the server and port for sending mails like this
+#MAIL_OPTIONS=(-S smtp="smtps://mailserver.example.com:587")
 
 # You may specify a custom mail script instead.  It will be called with
 # the following convention:

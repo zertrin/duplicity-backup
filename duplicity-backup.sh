@@ -350,6 +350,7 @@ email_logfile()
             echo """Subject: ${EMAIL_SUBJECT}""" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
           elif [ "${MAIL}" = "mailx" ]; then
             EMAIL_FROM=${EMAIL_FROM:+"-r ${EMAIL_FROM}"}
+            MAILCMD="${MAILCMD} ${MAIL_OPTIONS[*]}"
             ${MAILCMD} -s """${EMAIL_SUBJECT}""" "${EMAIL_FROM}" "${EMAIL_TO}" < "${LOGFILE}"
           elif [ "${MAIL}" = "mail" ]; then
             case $(uname) in

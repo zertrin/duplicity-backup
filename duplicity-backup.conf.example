@@ -208,6 +208,9 @@ INCLIST=( "/home/foobar_user_name/Documents/" )
 #            "/**Icon?" \
 #            "/**.AppleDouble" \
 #        )
+#
+# If you don't want to exclude anything, use EXCLIST=()
+#
 # Simpler example with one location. Adapt it to your needs.
 
 EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )

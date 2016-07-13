@@ -52,6 +52,10 @@ echo "USAGE:
     -b, --backup               runs an incremental backup
     -f, --full                 forces a full backup
     -v, --verify               verifies the backup
+    -e, --cleanup              cleanup the backup (eg. broken sessions), by default using
+                               duplicity --force flag, use --dry-run to actually log what
+                               will be cleaned up without removing (see man duplicity
+                               > ACTIONS > cleanup for details)
     -l, --list-current-files   lists the files currently backed up in the archive
     -s, --collection-status    show all the backup sets in the archive
 
@@ -83,7 +87,7 @@ echo "USAGE:
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:t:bfvlsnd-:" opt; do
+while getopts ":c:t:bfvelsnd-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and I don't want to impose GNU getopt dependancy)
@@ -146,6 +150,7 @@ while getopts ":c:t:bfvlsnd-:" opt; do
     b) COMMAND="backup";;
     f) COMMAND="full";;
     v) COMMAND="verify";;
+    e) COMMAND="cleanup";;
     l) COMMAND="list-current-files";;
     s) COMMAND="collection-status";;
     n) DRY_RUN="--dry-run ";; # dry run
@@ -631,6 +636,17 @@ duplicity_backup()
   }
 }
 
+duplicity_cleanup_failed()
+{
+  {
+    eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
+    "${DEST}" \
+    >> "${LOGFILE}"
+  } || {
+    BACKUP_ERROR=1
+  }
+}
+
 setup_passphrase()
 {
   if [ ! -z "${GPG_ENC_KEY}" -a ! -z "${GPG_SIGN_KEY}" -a "${GPG_ENC_KEY}" != "${GPG_SIGN_KEY}" ]; then
@@ -788,6 +804,20 @@ case "${COMMAND}" in
     get_file_sizes
 
     echo -e "Verify complete.  Check the log file for results:\n>> ${LOGFILE}"
+  ;;
+
+  "cleanup")
+    OPTION="cleanup"
+
+    if [ -z "${DRY_RUN}" ]; then
+      STATIC_OPTIONS="--force"
+    fi
+
+    echo -e "-------[ Cleaning up Destination ]-------\n" >> "${LOGFILE}"
+    setup_passphrase
+    duplicity_cleanup_failed
+
+    echo -e "Cleanup complete." >> "${LOGFILE}"
   ;;
 
   "restore")

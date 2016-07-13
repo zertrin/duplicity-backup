@@ -383,7 +383,7 @@ email_logfile()
               mailcmd_msmtp;;
             mail|mailx)
               case ${MAILCMD_BASENAME} in
-                bsd-mailx)
+                bsd-mailx|mail.mailutils)
                   mailcmd_bsd_mailx;;
                 heirloom-mailx)
                   mailcmd_heirloom_mailx;;

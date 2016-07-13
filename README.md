@@ -151,6 +151,10 @@ For the [Google Cloud Storage](https://cloud.google.com/storage/) storage backen
         -b, --backup               runs an incremental backup
         -f, --full                 forces a full backup
         -v, --verify               verifies the backup
+        -e, --cleanup              cleanup the backup (eg. broken sessions), by default using
+                                   duplicity --force flag, use --dry-run to actually log what
+                                   will be cleaned up without removing (see man duplicity
+                                   > ACTIONS > cleanup for details)
         -l, --list-current-files   lists the files currently backed up in the archive
         -s, --collection-status    show all the backup sets in the archive
 
@@ -220,14 +224,22 @@ Note that the commands `--restore-file` and `--restore-dir` are equivalent.
 
     duplicity-backup.sh [-c config_file] --verify
 
+**Clean the backup**
+
+    duplicity-backup.sh [-c config_file] --cleanup
+
 **Backup the script and gpg key in a encrypted tarfile (for safekeeping)**
 
     duplicity-backup.sh [-c config_file] --backup-script
 
 
-## Cron Usage Example
+## Cron Usage Example (backup)
 
     41 3 * * * /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -b
+
+## Cron Usage Example (cleanup)
+
+    41 4 * * 1 /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -e
 
 
 ## Known issues

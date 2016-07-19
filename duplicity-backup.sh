@@ -641,6 +641,7 @@ duplicity_cleanup_failed()
   {
     eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
     "${DEST}" \
+    "${ENCRYPT}" \
      | tee -a "${LOGFILE}"
   } || {
     BACKUP_ERROR=1

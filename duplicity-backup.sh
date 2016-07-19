@@ -378,7 +378,7 @@ email_logfile()
       MAILCMD_BASENAME=${MAILCMD_REALPATH##*/}
 
       if [ ! -x "${MAILCMD}" ]; then
-          echo -e "Email couldn't be sent. ${MAIL} not available." >> "${LOGFILE}"
+          echo -e "Email couldn't be sent. ${MAIL} not available."  | tee -a "${LOGFILE}"
       else
           EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] ${LOG_FILE}"}
           case ${MAIL} in
@@ -404,7 +404,7 @@ email_logfile()
               mailcmd_else;;
           esac
 
-          echo -e "Email notification sent to ${EMAIL_TO} using ${MAIL}" >> "${LOGFILE}"
+          echo -e "Email notification sent to ${EMAIL_TO} using ${MAIL}"  | tee -a "${LOGFILE}"
       fi
   fi
 }
@@ -415,25 +415,25 @@ send_notification()
   if [ ! -z "${NOTIFICATION_SERVICE}" ]; then
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"${NOTIFICATION_CONTENT}\", \"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \":${SLACK_EMOJI}:\"}" "${SLACK_HOOK_URL}"
-      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}" >> "${LOGFILE}"
+      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}"  | tee -a "${LOGFILE}"
     elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
       curl -s \
       -F "token=${PUSHOVER_TOKEN}" \
       -F "user=${PUSHOVER_USER}" \
       -F "message=${NOTIFICATION_CONTENT}" \
       https://api.pushover.net/1/messages
-      echo -e "Pushover notification sent" >> "${LOGFILE}"
+      echo -e "Pushover notification sent"  | tee -a "${LOGFILE}"
     fi
   fi
 }
 
 get_lock()
 {
-  echo "Attempting to acquire lock ${LOCKFILE}" >> "${LOGFILE}"
+  echo "Attempting to acquire lock ${LOCKFILE}"  | tee -a "${LOGFILE}"
   if ( set -o noclobber; echo "$$" > "${LOCKFILE}" ) 2> /dev/null; then
       # The lock succeeded. Create a signal handler to remove the lock file when the process terminates.
       trap 'EXITCODE=$?; echo "Removing lock. Exit code: ${EXITCODE}" >>${LOGFILE}; rm -f "${LOCKFILE}"' 0
-      echo "successfully acquired lock." >> "${LOGFILE}"
+      echo "successfully acquired lock."  | tee -a "${LOGFILE}"
   else
       # Write lock acquisition errors to log file and stderr
       echo "lock failed, could not acquire ${LOCKFILE}" | tee -a "${LOGFILE}" >&2
@@ -445,7 +445,7 @@ get_lock()
 
 get_source_file_size()
 {
-  echo "-----------[ Source Disk Use Information ]-----------" >> "${LOGFILE}"
+  echo "-----------[ Source Disk Use Information ]-----------"  | tee -a "${LOGFILE}"
 
   # Patches to support spaces in paths-
   # Remove space as a field separator temporarily
@@ -457,7 +457,7 @@ get_source_file_size()
       DUEXCFLAG="-I -"
       ;;
     OpenBSD)
-      echo "WARNING: OpenBSD du does not support exclusion, sizes may be off" >> "${LOGFILE}"
+      echo "WARNING: OpenBSD du does not support exclusion, sizes may be off"  | tee -a "${LOGFILE}"
       DUEXCFLAG=""
       ;;
     *)
@@ -480,10 +480,10 @@ get_source_file_size()
       echo -e "${DUEXCLIST}" | \
       du -hs ${DUEXCFLAG} "${include}" | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }' \
-      >> "${LOGFILE}"
+       | tee -a "${LOGFILE}"
   done
 
-  echo >> "${LOGFILE}"
+  echo  | tee -a "${LOGFILE}"
 
   # Restore IFS
   IFS=$OLDIFS
@@ -491,7 +491,7 @@ get_source_file_size()
 
 get_remote_file_size()
 {
-  echo "---------[ Destination Disk Use Information ]--------" >> "${LOGFILE}"
+  echo "---------[ Destination Disk Use Information ]--------"  | tee -a "${LOGFILE}"
   FRIENDLY_TYPE_NAME=""
   dest_type=$(echo "${DEST}" | cut -c 1,2)
   case $dest_type in
@@ -502,8 +502,8 @@ get_remote_file_size()
       TMPDEST="${DEST%/${TMPDEST}}"
       ssh_opt=$(echo "${STATIC_OPTIONS}" |awk -vo="--ssh-options=" '{s=index($0,o); if (s) {s=substr($0,s+length(o)); m=substr(s,0,1); for (i=2; i < length(s); i++) { if (substr(s,i,1) == m && substr(s,i-1,1) != "\\\\") break; } print substr(s,2,i-2)}}')
 
-      SIZE=$(${TMPDEST%://*} "${ssh_opt}" "${TMPDEST#*//}" du -hs "${DEST#${TMPDEST}/}" | awk '{print $1}') 2>> "${LOGFILE}"
-      EMAIL_SUBJECT="${EMAIL_SUBJECT} ${SIZE} $(${TMPDEST%://*} "${ssh_opt}" "${TMPDEST#*//}" df -hP "${DEST#${TMPDEST}/}" | awk '{tmp=$5 " used"}END{print tmp}')" 2>> "${LOGFILE}"
+      SIZE=$(${TMPDEST%://*} "${ssh_opt}" "${TMPDEST#*//}" du -hs "${DEST#${TMPDEST}/}" | awk '{print $1}') 2 | tee -a "${LOGFILE}"
+      EMAIL_SUBJECT="${EMAIL_SUBJECT} ${SIZE} $(${TMPDEST%://*} "${ssh_opt}" "${TMPDEST#*//}" df -hP "${DEST#${TMPDEST}/}" | awk '{tmp=$5 " used"}END{print tmp}')" 2 | tee -a "${LOGFILE}"
     ;;
     "fi")
       FRIENDLY_TYPE_NAME="File"
@@ -543,12 +543,12 @@ get_remote_file_size()
   esac
 
   if [[ ${FRIENDLY_TYPE_NAME} ]] ; then
-      echo -e "${SIZE}\t${FRIENDLY_TYPE_NAME} type backend" >> "${LOGFILE}"
+      echo -e "${SIZE}\t${FRIENDLY_TYPE_NAME} type backend"  | tee -a "${LOGFILE}"
   else
-      echo "Destination disk use information is currently only available for the following storage backends:" >> "${LOGFILE}"
-      echo "File, SSH, Amazon S3 and Google Cloud" >> "${LOGFILE}"
+      echo "Destination disk use information is currently only available for the following storage backends:"  | tee -a "${LOGFILE}"
+      echo "File, SSH, Amazon S3 and Google Cloud"  | tee -a "${LOGFILE}"
   fi
-  echo >> "${LOGFILE}"
+  echo  | tee -a "${LOGFILE}"
 }
 
 include_exclude()
@@ -596,27 +596,27 @@ include_exclude()
 
 duplicity_cleanup()
 {
-  echo "----------------[ Duplicity Cleanup ]----------------" >> "${LOGFILE}"
+  echo "----------------[ Duplicity Cleanup ]----------------"  | tee -a "${LOGFILE}"
   if [[ "${CLEAN_UP_TYPE}" != "none" && ! -z ${CLEAN_UP_TYPE} && ! -z ${CLEAN_UP_VARIABLE} ]]; then
     {
       eval "${ECHO}" "${DUPLICITY}" "${CLEAN_UP_TYPE}" "${CLEAN_UP_VARIABLE}" "${STATIC_OPTIONS}" --force \
         "${ENCRYPT}" \
-        "${DEST}" >> "${LOGFILE}"
+        "${DEST}"  | tee -a "${LOGFILE}"
     } || {
       BACKUP_ERROR=1
     }
-    echo >> "${LOGFILE}"
+    echo  | tee -a "${LOGFILE}"
   fi
   if [ ! -z "${REMOVE_INCREMENTALS_OLDER_THAN}" ] && [[ ${REMOVE_INCREMENTALS_OLDER_THAN} =~ ^[0-9]+$ ]]; then
     {
       eval "${ECHO}" "${DUPLICITY}" remove-all-inc-of-but-n-full "${REMOVE_INCREMENTALS_OLDER_THAN}" \
         "${STATIC_OPTIONS}" --force \
         "${ENCRYPT}" \
-        "${DEST}" >> "${LOGFILE}"
+        "${DEST}"  | tee -a "${LOGFILE}"
     } || {
       BACKUP_ERROR=1
     }
-    echo >> "${LOGFILE}"
+    echo  | tee -a "${LOGFILE}"
   fi
 }
 
@@ -630,7 +630,7 @@ duplicity_backup()
     "${INCLUDE}" \
     "${EXCLUDEROOT}" \
     "${ROOT}" "${DEST}" \
-    >> "${LOGFILE}"
+     | tee -a "${LOGFILE}"
   } || {
     BACKUP_ERROR=1
   }
@@ -641,7 +641,7 @@ duplicity_cleanup_failed()
   {
     eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
     "${DEST}" \
-    >> "${LOGFILE}"
+     | tee -a "${LOGFILE}"
   } || {
     BACKUP_ERROR=1
   }
@@ -763,7 +763,7 @@ backup_this_script()
 check_variables
 check_logdir
 
-echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n" >> "${LOGFILE}"
+echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n"  | tee -a "${LOGFILE}"
 
 get_lock
 
@@ -791,7 +791,7 @@ case "${COMMAND}" in
     DEST=${OLDROOT}
     OPTION="verify"
 
-    echo -e "-------[ Verifying Source & Destination ]-------\n" >> "${LOGFILE}"
+    echo -e "-------[ Verifying Source & Destination ]-------\n"  | tee -a "${LOGFILE}"
     include_exclude
     setup_passphrase
     echo -e "Attempting to verify now ..."
@@ -813,11 +813,11 @@ case "${COMMAND}" in
       STATIC_OPTIONS="--force"
     fi
 
-    echo -e "-------[ Cleaning up Destination ]-------\n" >> "${LOGFILE}"
+    echo -e "-------[ Cleaning up Destination ]-------\n"  | tee -a "${LOGFILE}"
     setup_passphrase
     duplicity_cleanup_failed
 
-    echo -e "Cleanup complete." >> "${LOGFILE}"
+    echo -e "Cleanup complete."  | tee -a "${LOGFILE}"
   ;;
 
   "restore")
@@ -836,7 +836,7 @@ case "${COMMAND}" in
       read ANSWER
       if [[ "${ANSWER}" != "yes" ]]; then
         echo "You said << ${ANSWER} >> so I am exiting now."
-        echo -e "User aborted restore process ...\n" >> "${LOGFILE}"
+        echo -e "User aborted restore process ...\n"  | tee -a "${LOGFILE}"
         exit 1
       fi
     else
@@ -876,7 +876,7 @@ case "${COMMAND}" in
     read ANSWER
     if [ "${ANSWER}" != "yes" ]; then
       echo "You said << ${ANSWER} >> so I am exiting now."
-      echo -e "---------------------    END    ---------------------\n" >> "${LOGFILE}"
+      echo -e "---------------------    END    ---------------------\n"  | tee -a "${LOGFILE}"
       exit 1
     fi
 
@@ -901,7 +901,7 @@ case "${COMMAND}" in
     "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
     ${ENCRYPT} \
     "${DEST}" | tee -a "${LOGFILE}"
-    echo -e "---------------------    END    ---------------------\n" >> "${LOGFILE}"
+    echo -e "---------------------    END    ---------------------\n"  | tee -a "${LOGFILE}"
   ;;
 
   "collection-status")
@@ -911,7 +911,7 @@ case "${COMMAND}" in
     "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
     ${ENCRYPT} \
     "${DEST}" | tee -a "${LOGFILE}"
-    echo -e "---------------------    END    ---------------------\n" >> "${LOGFILE}"
+    echo -e "---------------------    END    ---------------------\n"  | tee -a "${LOGFILE}"
   ;;
 
   "backup")
@@ -922,12 +922,12 @@ case "${COMMAND}" in
   ;;
 
   *)
-    echo -e "[Only show $(basename "$0") usage options]\n" >> "${LOGFILE}"
+    echo -e "[Only show $(basename "$0") usage options]\n"  | tee -a "${LOGFILE}"
     usage
   ;;
 esac
 
-echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >> "${LOGFILE}"
+echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n"  | tee -a "${LOGFILE}"
 
 if [ "${BACKUP_ERROR}" ]; then
   BACKUP_STATUS="ERROR"

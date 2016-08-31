@@ -724,7 +724,7 @@ backup_this_script()
   echo "Backup tarball will be encrypted and saved to: $(pwd)/${TMPFILENAME}"
   echo
   echo ">> Are you sure you want to do that ('yes' to continue)?"
-  read ANSWER
+  read -r ANSWER
   if [ "${ANSWER}" != "yes" ]; then
     echo "You said << ${ANSWER} >> so I am exiting now."
     exit 1
@@ -833,11 +833,11 @@ case "${COMMAND}" in
 
     if [[ ! "${RESTORE_DEST}" ]]; then
       echo "Please provide a destination path (eg, /home/user/dir):"
-      read -e NEWDESTINATION
+      read -r -e NEWDESTINATION
       DEST=${NEWDESTINATION}
       echo ">> You will restore from ${ROOT} to ${DEST}"
       echo "Are you sure you want to do that ('yes' to continue)?"
-      read ANSWER
+      read -r ANSWER
       if [[ "${ANSWER}" != "yes" ]]; then
         echo "You said << ${ANSWER} >> so I am exiting now."
         echo -e "User aborted restore process ...\n" >> "${LOGFILE}"
@@ -863,7 +863,7 @@ case "${COMMAND}" in
     if [[ ! "${FILE_TO_RESTORE}" ]]; then
       echo "Which file or directory do you want to restore?"
       echo "(give the path relative to the root of the backup eg, mail/letter.txt):"
-      read -e FILE_TO_RESTORE
+      read -r -e FILE_TO_RESTORE
       echo
     fi
 
@@ -877,7 +877,7 @@ case "${COMMAND}" in
     echo -e ">> RESTORE: ${FILE_TO_RESTORE}"
     echo -e ">> TO: ${DEST}"
     echo -e "\nAre you sure you want to do that ('yes' to continue)?"
-    read ANSWER
+    read -r ANSWER
     if [ "${ANSWER}" != "yes" ]; then
       echo "You said << ${ANSWER} >> so I am exiting now."
       echo -e "---------------------    END    ---------------------\n" >> "${LOGFILE}"

@@ -408,7 +408,7 @@ MAIL="mailx"     # default command for Linux mail
 # Third-party notification services. If NOTIFICATION_SERVICE is not provided, no
 # notifications will be sent.
 
-# Possible values for NOTIFICATION_SERVICE are: slack, pushover
+# Possible values for NOTIFICATION_SERVICE are: slack, pushover, ifttt
 NOTIFICATION_SERVICE=""
 NOTIFICATION_FAILURE_ONLY="yes" # send notifications only if there was an error while creating backup
 
@@ -422,6 +422,11 @@ SLACK_EMOJI="package"
 PUSHOVER_TOKEN="" # App token generated at pushover.net
 PUSHOVER_USER="" # User key from pushover.net
 
+# Provider: IFTTT
+IFTTT_KEY="" # Key for MAKER channel at IFTTT
+IFTTT_MAKER_EVENT="duplicity" # name the event to trigger at IFTTT Maker Channel
+IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY" # ONLY change this if IFTTT changes it
+IFTTT_VALUE2="" # general purpose value to pass to your maker channel (optional)
 
 # ------------------------------------------------------------------------------
 # TROUBLESHOOTING

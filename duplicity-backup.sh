@@ -442,6 +442,7 @@ get_lock()
       echo "lock failed, could not acquire ${LOCKFILE}" | tee -a "${LOGFILE}" >&2
       echo "lock held by $(cat "${LOCKFILE}")" | tee -a "${LOGFILE}" >&2
       email_logfile
+      send_notification
       exit 2
   fi
 }

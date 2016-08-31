@@ -416,6 +416,9 @@ send_notification()
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"${NOTIFICATION_CONTENT}\", \"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \":${SLACK_EMOJI}:\"}" "${SLACK_HOOK_URL}"
       echo -e "Slack notification sent to channel ${SLACK_CHANNEL}" >> "${LOGFILE}"
+    elif [ "${NOTIFICATION_SERVICE}" = "ifttt" ]; then
+      curl -X POST -H 'Content-type: application/json' --data "{\"value1\": \"${NOTIFICATION_CONTENT}\", \"value2\": \"${IFTTT_VALUE2}\"}" "${IFTTT_HOOK_URL}"
+      echo -e "IFTTT notification sent to Maker channel event ${IFTTT_EVENT}" >> "${LOGFILE}"	
     elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
       curl -s \
       -F "token=${PUSHOVER_TOKEN}" \

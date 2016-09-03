@@ -71,9 +71,9 @@ echo "USAGE:
     --backup-script            automatically backup the script and secret key(s) to
                                the current working directory
 
-    -q, --quiet                standard output is only written to the logfile and
-                               is not shown. standard error will still be logged and
-                               shown.
+    -q, --quiet                silence most of output messages, except errors and output
+                               that is intended for interactive usage. Silenced output
+                               is still logged in the logfile.
 
     -n, --dry-run              perform a trial run with no changes made
     -d, --debug                echo duplicity commands to logfile
@@ -251,13 +251,8 @@ fi
 #
 #  QUIET mode ON  | shown on screen | not shown on screen
 #  ---------------+-----------------+----------------------
-#  logged         |   fd2 and fd3   |      fd1, fd5
+#  logged         |    fd2, fd3     |      fd1, fd5
 #  not logged     |      fd4        |         -
-#
-# fd1 is stdout and is not shown if QUIET, but still logged
-# fd2 is stderr and is always shown on screen and logged
-# fd3 is like stdout but always shown on screen
-# fd4 is always shown on sceen but never logged (for interactive prompts)
 #
 #  ##### Redirection matrix in the case when quiet mode is OFF #####
 #
@@ -273,15 +268,13 @@ fi
 # fd5 is never shown on screen but always logged (for delimiters in the log)
 #
 
-# fd2 and fd3 are always logged and shown on screen via tee
-
 # make a backup of stderr for later
 exec 6>&2
 
+# fd2 and fd3 are always logged and shown on screen via tee
 # for fd2 (original stderr) the output of tee needs to be redirected to stderr
 exec 2> >(tee -ia "${LOGFILE}" >&2)
-
-# here we can leave the output of tee to stdout
+# create fd3 as a redirection to stdout and the logfile via tee
 exec 3> >(tee -ia "${LOGFILE}")
 
 # create fd4 as a copy of stdout, but that won't be redirected to tee

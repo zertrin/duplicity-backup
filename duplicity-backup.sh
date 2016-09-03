@@ -169,6 +169,7 @@ done
 # Read config file if specified
 if [ ! -z "${CONFIG}" -a -f "${CONFIG}" ];
 then
+  # shellcheck source=duplicity-backup.conf.example
   . "${CONFIG}"
 else
   echo "ERROR: can't find config file! (${CONFIG})" >&2

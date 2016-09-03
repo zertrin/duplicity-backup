@@ -60,7 +60,7 @@
 #       See the `STATIC_OPTIONS`, `CLEAN_UP_TYPE` and `CLEAN_UP_VARIABLE` parameters in particular.
 #
 #     * Before asking something about duplicity-backup.sh, ensure that your question
-#       isn’t actually concerning duplicity ;)
+#       isn't actually concerning duplicity ;)
 #       First, make sure you can perform a backup with duplicity without using this script.
 #       If you can't make the backup work with duplicity alone, the problem is probably
 #       concerning duplicity and not this script. If you manage to make a backup with duplicity
@@ -122,7 +122,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 # ------------------------------------------------------------------------------
 # Instead of setting the password needed for the backup destination in the
 # DEST url, you can supply it in the FTP_PASSWORD variable below, which is
-# used by most, if not all backends, regardless of it’s name.
+# used by most, if not all backends, regardless of its name.
 # Duplicity's official documentation states:
 #   "Supported by most backends which are password capable. More secure than
 #    setting it in the backend url (which might be readable in the operating
@@ -335,7 +335,7 @@ CLEAN_UP_VARIABLE="4"
 # (a full backup every 7 days), and you execute duplicity-backup once a day.
 # After six months you'll have 25 full backups, each with daily incrementals
 # in between. Perhaps you're keeping the backups past 1 month "just in case",
-# and so the older incrementals are overkill – weekly full backups beyond
+# and so the older incrementals are overkill - weekly full backups beyond
 # one month backward would suffice. In this case you can set
 # "REMOVE_INCREMENTALS_OLDER_THAN to, say, "4" which will delete the
 # incrementals for backup sets beyond the four most recent, keeping

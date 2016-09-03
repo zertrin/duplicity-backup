@@ -563,7 +563,7 @@ include_exclude()
   OLDIFS=$IFS
   IFS=$(echo -en "\t\n")
 
-  # Exlcude device files?
+  # Exclude device files?
   if [ ! -z "${EXDEVICEFILES}" ] && [ "${EXDEVICEFILES}" -ne 0 ]; then
     TMP=" --exclude-device-files"
     EXCLUDE=${EXCLUDE}${TMP}
@@ -571,14 +571,18 @@ include_exclude()
 
   for include in "${INCLIST[@]}"
   do
-    TMP=" --include='$include'"
-    INCLUDE=${INCLUDE}${TMP}
+    if [[ -n "$include" ]]; then
+      TMP=" --include='$include'"
+      INCLUDE=${INCLUDE}${TMP}
+    fi
   done
 
   for exclude in "${EXCLIST[@]}"
   do
-    TMP=" --exclude '$exclude'"
-    EXCLUDE=${EXCLUDE}${TMP}
+    if [[ -n "$exclude" ]]; then
+      TMP=" --exclude '$exclude'"
+      EXCLUDE=${EXCLUDE}${TMP}
+    fi
   done
 
   # Include/Exclude globbing filelist

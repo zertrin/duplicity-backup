@@ -74,6 +74,8 @@ echo "USAGE:
     -n, --dry-run              perform a trial run with no changes made
     -d, --debug                echo duplicity commands to logfile
 
+    -V, --version              print version information about this script and duplicity
+
   CURRENT SCRIPT VARIABLES:
   ========================
     DEST (backup destination)       = ${DEST}
@@ -84,10 +86,27 @@ echo "USAGE:
 "
 }
 
+DUPLICITY="$(which duplicity)"
+
+if [ ! -x "${DUPLICITY}" ]; then
+  echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
+  exit 1
+fi
+
+
+version(){
+  # Read the version string from the file VERSION
+  VERSION=$(<VERSION)
+
+  echo "duplicity-backup.sh ${VERSION}"
+  ${DUPLICITY} --version
+  exit 0
+}
+
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:t:bfvelsnd-:" opt; do
+while getopts ":c:t:bfvelsndV-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and I don't want to impose GNU getopt dependancy)
@@ -139,6 +158,9 @@ while getopts ":c:t:bfvelsnd-:" opt; do
         debug)
           ECHO=$(which echo)
         ;;
+        version)
+          version
+        ;;
         *)
           COMMAND=${OPTARG}
         ;;
@@ -155,6 +177,7 @@ while getopts ":c:t:bfvelsnd-:" opt; do
     s) COMMAND="collection-status";;
     n) DRY_RUN="--dry-run ";; # dry run
     d) ECHO=$(which echo);; # debug
+    V) version;;
     :)
       echo "Option -${OPTARG} requires an argument." >&2
       COMMAND=""
@@ -204,7 +227,6 @@ fi
 LOGDIR="${LOGDIR%/}/"
 
 LOGFILE="${LOGDIR}${LOG_FILE}"
-DUPLICITY="$(which duplicity)"
 
 # File to use as a lock. The lock is used to insure that only one instance of
 # the script is running at a time.
@@ -244,11 +266,6 @@ in order to retrieve remote file size information. Remote file \
 size information unavailable."
 
 README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\n\nIf you were using the same key for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.txt\nOr if you were using two separate keys for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.txt\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.txt\n\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files.\n\nGood luck!"
-
-if [ ! -x "${DUPLICITY}" ]; then
-  echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
-  exit 1
-fi
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "gs" ]; then
   DEST_IS_GS=true

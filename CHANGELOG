@@ -1,3 +1,18 @@
+v1.1 (2016-09-03)
+===================
+  * Fix and improve handling of INCLIST and EXCLIST (issue #128)
+  * Fix shellcheck error SC2166
+  * Fix shellcheck error SC2128
+  * Fix shellcheck SC2153 and SC1090
+  * Restart versionning and keeping a changelog
+  * Add option "--version" or "-V" to show version information about this script and duplicity
+
+0.9.x (2013-01-14 to 2016-08-31)
+================================
+Versionning and keeping a changelog up to date has been neglected between 2013-01-14 and 2016-08-31.
+
+There were no official 0.9.x release, but an automatically generated list of changes that affected `duplicity-backup.sh` or `duplicity-backup.conf.example` is available in the file `CHANGELOG_0.9.x.md`.
+
 0.8.3 (02 January 2013)
 ======================
   * FreeBSD portability (du, mail, & shebang) [barofsoap]

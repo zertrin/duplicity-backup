@@ -302,8 +302,8 @@ check_variables ()
 {
   [[ ${ROOT} = "" ]] && config_sanity_fail "ROOT must be configured"
   [[ ${DEST} = "" || ${DEST} = "s3+http://backup-foobar-bucket/backup-folder/" ]] && config_sanity_fail "DEST must be configured"
-  [[ ${INCLIST} = "/home/foobar_user_name/Documents/" ]] && config_sanity_fail "INCLIST must be configured"
-  [[ ${EXCLIST} = "/home/foobar_user_name/Documents/foobar-to-exclude" ]] && config_sanity_fail "EXCLIST must be configured"
+  [[ ${INCLIST[0]} = "/home/foobar_user_name/Documents/" ]] && config_sanity_fail "INCLIST must be configured"
+  [[ ${EXCLIST[0]} = "/home/foobar_user_name/Documents/foobar-to-exclude" ]] && config_sanity_fail "EXCLIST must be configured"
   [[ ( ${ENCRYPTION} = "yes" && (${GPG_ENC_KEY} = "foobar_gpg_key" || \
        ${GPG_SIGN_KEY} = "foobar_gpg_key" || \
        ${PASSPHRASE} = "foobar_gpg_passphrase")) ]] && \
@@ -475,7 +475,7 @@ get_source_file_size()
   done
 
   # if INCLIST is not set or empty, add ROOT to it to be able to calculate disk usage
-  if [ -z "${INCLIST}" ]; then
+  if [ ${#INCLIST[@]} -eq 0 ]; then
     DUINCLIST=(${ROOT})
   else
     DUINCLIST=("${INCLIST[@]}")
@@ -588,7 +588,7 @@ include_exclude()
   fi
 
   # INCLIST and globbing filelist is empty so every file needs to be saved
-  if [ "${INCLIST}" == '' ] && [ "${INCEXCFILE}" == '' ]; then
+  if [ ${#INCLIST[@]} -eq 0 ] && [ "${INCEXCFILE}" == '' ]; then
     EXCLUDEROOT=''
   else
     EXCLUDEROOT="--exclude=**"

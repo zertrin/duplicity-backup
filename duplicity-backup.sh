@@ -469,6 +469,8 @@ get_source_file_size()
 {
   echo "-----------[ Source Disk Use Information ]-----------" >> "${LOGFILE}"
 
+  # FIXME: doesn't work properly with include/exclude-filelists (issue #101)
+
   # Patches to support spaces in paths-
   # Remove space as a field separator temporarily
   OLDIFS=$IFS
@@ -486,6 +488,9 @@ get_source_file_size()
       DUEXCFLAG="--exclude-from=-"
     ;;
   esac
+
+  # always exclude /proc
+  DUEXCLIST="/proc\n"
 
   for exclude in "${EXCLIST[@]}"; do
     DUEXCLIST="${DUEXCLIST}${exclude}\n"

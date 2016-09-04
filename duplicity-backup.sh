@@ -410,6 +410,8 @@ email_logfile()
                   mailcmd_bsd_mailx;;
                 heirloom-mailx)
                   mailcmd_heirloom_mailx;;
+                s-nail)
+                  mailcmd_nail;;
                 *)
                   mailcmd_else;;
               esac

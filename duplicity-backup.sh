@@ -483,6 +483,8 @@ email_logfile()
                   mailcmd_bsd_mailx;;
                 heirloom-mailx)
                   mailcmd_heirloom_mailx;;
+                s-nail)
+                  mailcmd_nail;;
                 *)
                   mailcmd_else;;
               esac
@@ -542,6 +544,8 @@ get_source_file_size()
 {
   echo "-----------[ Source Disk Use Information ]-----------"
 
+  # FIXME: doesn't work properly with include/exclude-filelists (issue #101)
+
   # Patches to support spaces in paths-
   # Remove space as a field separator temporarily
   OLDIFS=$IFS
@@ -559,6 +563,9 @@ get_source_file_size()
       DUEXCFLAG="--exclude-from=-"
     ;;
   esac
+
+  # always exclude /proc
+  DUEXCLIST="/proc\n"
 
   for exclude in "${EXCLIST[@]}"; do
     DUEXCLIST="${DUEXCLIST}${exclude}\n"

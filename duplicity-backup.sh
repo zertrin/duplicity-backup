@@ -233,14 +233,15 @@ LOGFILE="${LOGDIR}${LOG_FILE}"
 LOCKFILE=${LOGDIR}backup.lock
 
 if [ "${ENCRYPTION}" = "yes" ]; then
+  ENCRYPT="--gpg-options \"--no-show-photos\""
   if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ]; then
     if [ "${HIDE_KEY_ID}" = "yes" ]; then
-      ENCRYPT="--hidden-encrypt-key=${GPG_ENC_KEY}"
+      ENCRYPT="${ENCRYPT} --hidden-encrypt-key=${GPG_ENC_KEY}"
       if [ "${COMMAND}" != "restore" ] && [ "${COMMAND}" != "restore-file" ] && [ "${COMMAND}" != "restore-dir" ]; then
         ENCRYPT="${ENCRYPT} --sign-key=${GPG_SIGN_KEY}"
       fi
     else
-      ENCRYPT="--encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
+      ENCRYPT="${ENCRYPT} --encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
     fi
     if [ ! -z "${SECRET_KEYRING}" ]; then
       KEYRING="--secret-keyring ${SECRET_KEYRING}"

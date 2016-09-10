@@ -42,6 +42,12 @@ CONFIG="duplicity-backup.conf"
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
 
+# make a backup of stdout and stderr for later
+exec 6>&1
+exec 7>&2
+
+# ------------------------------------------------------------
+
 usage(){
 echo "USAGE:
   $(basename "$0") [options]
@@ -86,7 +92,7 @@ echo "USAGE:
     EXCLIST (directories excluded)  = ${EXCLIST[*]:0}
     ROOT (root directory of backup) = ${ROOT}
     LOGFILE (log file path)         = ${LOGFILE}
-" >&4
+" >&6
 }
 
 DUPLICITY="$(which duplicity)"
@@ -267,9 +273,6 @@ fi
 # fd4 is always shown on sceen but never logged (for the usage text)
 # fd5 is never shown on screen but always logged (for delimiters in the log)
 #
-
-# make a backup of stderr for later
-exec 6>&2
 
 # fd2 and fd3 are always logged and shown on screen via tee
 # for fd2 (original stderr) the output of tee needs to be redirected to stderr
@@ -1050,6 +1053,6 @@ unset FTP_PASSWORD
 
 # restore stdout and stderr to their original values
 # and close the other fd
-exec 1>&4 2>&6 3>&- 4>&- 5>&- 6>&-
+exec 1>&6 2>&7 3>&- 4>&- 5>&- 6>&- 7>&-
 
 # vim: set tabstop=2 shiftwidth=2 sts=2 autoindent smartindent:

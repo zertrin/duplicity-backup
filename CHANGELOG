@@ -1,3 +1,15 @@
+vX.X (XXXX-XX-XX)
+=================
+  * placeholder for next version's changelog
+
+v1.2 (2016-09-10)
+=================
+  * Changed: big rework of logging handling. Now done through I/O-redirection of file descriptors 1 to 5.
+  * Fix: Add case for s-nail when using mailx.
+  * Fix: Always exclude /proc from Source Disk Use Information.
+  * Fix issue #140: Add --no-show-photos to --gpg-options.
+  * Fix "line 89: 4: Bad file descriptor" when printing usage without config set up.
+
 v1.1 (2016-09-03)
 ===================
   * Fix and improve handling of INCLIST and EXCLIST (issue #128)

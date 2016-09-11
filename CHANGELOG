@@ -1,5 +1,6 @@
 vX.X (XXXX-XX-XX)
 =================
+  * Fix GPG error when backing up the script if no specific keyring is set up.
   * placeholder for next version's changelog
 
 v1.2 (2016-09-10)

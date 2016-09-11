@@ -833,10 +833,13 @@ backup_this_script()
     GPG_TTY=$(tty)
     export GPG_TTY
     if [ "${GPG_ENC_KEY}" = "${GPG_SIGN_KEY}" ]; then
-      gpg -a --export-secret-keys "${KEYRING}" "${GPG_ENC_KEY}" > "${TMPDIR}"/duplicity-backup-encryption-and-sign-secret.key.txt
+      # shellcheck disable=SC2086
+      gpg -a --export-secret-keys ${KEYRING} ${GPG_ENC_KEY} > "${TMPDIR}"/duplicity-backup-encryption-and-sign-secret.key.txt
     else
-      gpg -a --export-secret-keys "${KEYRING}" "${GPG_ENC_KEY}" > "${TMPDIR}"/duplicity-backup-encryption-secret.key.txt
-      gpg -a --export-secret-keys "${KEYRING}" "${GPG_SIGN_KEY}" > "${TMPDIR}"/duplicity-backup-sign-secret.key.txt
+      # shellcheck disable=SC2086
+      gpg -a --export-secret-keys ${KEYRING} ${GPG_ENC_KEY} > "${TMPDIR}"/duplicity-backup-encryption-secret.key.txt
+      # shellcheck disable=SC2086
+      gpg -a --export-secret-keys ${KEYRING} ${GPG_SIGN_KEY} > "${TMPDIR}"/duplicity-backup-sign-secret.key.txt
     fi
   fi
 

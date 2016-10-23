@@ -292,6 +292,14 @@ GPG_SIGN_KEY="foobar_gpg_key"
 #
 #SECRET_KEYRING="/home/foobar_user_name/.gnupg/duplicity.gpg
 
+# Here you can specify options that will be passed to GPG.
+# If you can, avoid using quotes here, as it hasn't been tested much yet.
+# You shouldn't need to remove the following default (--no-show-photos)
+# For example an user reported (GitHub issue #145) that since gnupg v2.1,
+# the option "--pinentry-mode loopback" is necessary,
+# then set GPG_OPTIONS="--no-show-photos --pinentry-mode loopback"
+GPG_OPTIONS="--no-show-photos"
+
 
 # ------------------------------------------------------------------------------
 # STATIC BACKUP OPTIONS

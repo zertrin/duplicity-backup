@@ -335,7 +335,7 @@ fi
 LOCKFILE=${LOGDIR}backup.lock
 
 if [ "${ENCRYPTION}" = "yes" ]; then
-  ENCRYPT="--gpg-options \"--no-show-photos\""
+  ENCRYPT="--gpg-options \"${GPG_OPTIONS}\""
   if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ]; then
     if [ "${HIDE_KEY_ID}" = "yes" ]; then
       ENCRYPT="${ENCRYPT} --hidden-encrypt-key=${GPG_ENC_KEY}"

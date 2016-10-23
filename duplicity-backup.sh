@@ -84,6 +84,7 @@ echo "USAGE:
     -n, --dry-run              perform a trial run with no changes made
     -d, --debug                echo duplicity commands to logfile
     -V, --version              print version information about this script and duplicity
+    -h, --help                 print this help and exit
 
   CURRENT SCRIPT VARIABLES:
   ========================
@@ -93,6 +94,7 @@ echo "USAGE:
     ROOT (root directory of backup) = ${ROOT}
     LOGFILE (log file path)         = ${LOGFILE}
 " >&6
+USAGE=1
 }
 
 DUPLICITY="$(which duplicity)"
@@ -114,7 +116,7 @@ version(){
 # Some expensive argument parsing that allows the script to
 # be insensitive to the order of appearance of the options
 # and to handle correctly option parameters that are optional
-while getopts ":c:t:bfvelsqndV-:" opt; do
+while getopts ":c:t:bfvelsqndhV-:" opt; do
   case $opt in
     # parse long options (a bit tricky because builtin getopts does not
     # manage long options and I don't want to impose GNU getopt dependancy)
@@ -169,6 +171,10 @@ while getopts ":c:t:bfvelsqndV-:" opt; do
         debug)
           ECHO=$(which echo)
         ;;
+        help)
+          usage
+          exit 0
+        ;;
         version)
           version
         ;;
@@ -189,6 +195,10 @@ while getopts ":c:t:bfvelsqndV-:" opt; do
     q) QUIET=1;;
     n) DRY_RUN="--dry-run ";; # dry run
     d) ECHO=$(which echo);; # debug
+    h)
+      usage
+      exit 0
+    ;;
     V) version;;
     :)
       echo "Option -${OPTARG} requires an argument." >&2
@@ -1025,6 +1035,10 @@ case "${COMMAND}" in
 esac
 
 echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >&5
+
+if [ "${USAGE}" ]; then
+  exit 0
+fi
 
 if [ "${BACKUP_ERROR}" ]; then
   BACKUP_STATUS="ERROR"

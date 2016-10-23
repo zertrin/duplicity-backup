@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/zertrin/duplicity-backup.svg?branch=dev)](https://travis-ci.org/zertrin/duplicity-backup)
+[![Build Status](https://travis-ci.org/zertrin/duplicity-backup.sh.svg?branch=dev)](https://travis-ci.org/zertrin/duplicity-backup.sh)
 
 # duplicity-backup.sh
 
@@ -31,7 +31,7 @@ This means the following:
 
 ## Contributing
 
-The development version of the code is available at https://github.com/zertrin/duplicity-backup in the `dev` branch. It is a bleeding-edge version with the latests changes that have not yet been tested a lot, but that's the best starting point to contribute.
+The development version of the code is available at https://github.com/zertrin/duplicity-backup.sh in the `dev` branch. It is a bleeding-edge version with the latests changes that have not yet been tested a lot, but that's the best starting point to contribute.
 
 Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master or dev branch.
 
@@ -39,12 +39,12 @@ Here is how to do it:
 
 Fork the repository first and then clone your fork on your machine:
 
-    git clone git@github.com:YOURNAME/duplicity-backup.git
+    git clone git@github.com:YOURNAME/duplicity-backup.sh.git duplicity-backup
     cd duplicity-backup
 
 Add a remote for the upstream repository:
 
-    git remote add upstream git@github.com:zertrin/duplicity-backup.git
+    git remote add upstream git@github.com:zertrin/duplicity-backup.sh.git
     git fetch upstream
 
 Create a new topic branch for the changes you want to make, based on the `dev` branch from upstream:
@@ -66,7 +66,7 @@ If you want to open another pull request for another change which is independant
 
 You can clone the repository (which makes it easy to get future updates):
 
-    git clone https://github.com/zertrin/duplicity-backup.git duplicity-backup
+    git clone https://github.com/zertrin/duplicity-backup.sh.git duplicity-backup
 
 If you prefer the stable version do:
 
@@ -80,8 +80,8 @@ If you prefer the stable version do:
 
 Or just download the ZIP file:
 
-* For the stable branch: https://github.com/zertrin/duplicity-backup/archive/stable.zip
-* For the normal branch: https://github.com/zertrin/duplicity-backup/archive/master.zip
+* For the stable branch: https://github.com/zertrin/duplicity-backup.sh/archive/stable.zip
+* For the normal branch: https://github.com/zertrin/duplicity-backup.sh/archive/master.zip
 
 ### 2. Configure the script
 
@@ -253,7 +253,7 @@ If your system's locale is not english, an error can happen when duplicity is tr
 
 This script attempts to simplify the task of running a duplicity command; if you are having any problems with the script the first step is to determine if the script is generating an incorrect command or if duplicity itself is causing your error.
 
-To see exactly what is happening when you run duplicity-backup, either pass the option `-d` or `--debug` on the command line, or head to the bottom of the configuration file and uncomment the `ECHO=$(which echo)` variable. 
+To see exactly what is happening when you run duplicity-backup.sh, either pass the option `-d` or `--debug` on the command line, or head to the bottom of the configuration file and uncomment the `ECHO=$(which echo)` variable.
 
 This will stop the script from running and will, instead, output the generated command into your log file. You can then check to see if what is being generated is causing an error or if it is duplicity causing you woe.
 
@@ -266,5 +266,5 @@ You can also try the `-n` or `--dry-run` option. This will make duplicity to cal
 * Show backup-ed files in today incremental backup email
 
 
-###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup/graphs/contributors) for their help.
+###### Thanks to all the [contributors](https://github.com/zertrin/duplicity-backup.sh/graphs/contributors) for their help.
 

@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
-# Copyright (c) 2012 Marc Gallet.
+# Copyright (c) 2012-2016 Marc Gallet.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,10 @@
 # http://damontimm.com/code/dt-s3-backup (for the original program by Damon Timm)
 #
 # Latest code available at:
-# http://github.com/zertrin/duplicity-backup
+# http://github.com/zertrin/duplicity-backup.sh
+#
+# List of contributors:
+# https://github.com/zertrin/duplicity-backup.sh/graphs/contributors
 #
 # ---------------------------------------------------------------------------- #
 
@@ -78,7 +81,7 @@ echo "USAGE:
                                the current working directory
 
     -q, --quiet                silence most of output messages, except errors and output
-                               that is intended for interactive usage. Silenced output
+                               that are intended for interactive usage. Silenced output
                                is still logged in the logfile.
 
     -n, --dry-run              perform a trial run with no changes made

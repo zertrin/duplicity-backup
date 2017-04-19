@@ -488,7 +488,7 @@ email_logfile()
       if [ ! -x "${MAILCMD}" ]; then
           echo -e "Email couldn't be sent. ${MAIL} not available." >&2
       else
-          EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] ${LOG_FILE}"}
+          EMAIL_SUBJECT=${EMAIL_SUBJECT:="duplicity-backup ${BACKUP_STATUS:-"ERROR"} (${HOSTNAME}) ${LOG_FILE}"}
           case ${MAIL} in
             ssmtp)
               mailcmd_ssmtp;;

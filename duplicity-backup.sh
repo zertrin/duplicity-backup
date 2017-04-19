@@ -639,7 +639,7 @@ get_remote_file_size()
     "s3")
       FRIENDLY_TYPE_NAME="Amazon S3"
       if ${S3CMD_AVAIL} ; then
-          TMPDEST=$(echo "${DEST}" | cut -c 11-)
+          TMPDEST=$(echo "${DEST}" | cut -f 3- -d /)
           dest_scheme=$(echo "${DEST}" | cut -f -1 -d :)
           if [ "$dest_scheme" = "s3" ]; then
               # Strip off the host name, too.

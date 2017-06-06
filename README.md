@@ -31,7 +31,7 @@ This means the following:
 
 ## Contributing
 
-The development version of the code is available at https://github.com/zertrin/duplicity-backup.sh in the `dev` branch. It is a bleeding-edge version with the latests changes that have not yet been tested a lot, but that's the best starting point to contribute.
+The development version of the code is available at https://github.com/zertrin/duplicity-backup.sh in the `dev` branch. It is a bleeding-edge version with the latest changes that have not yet been tested a lot, but that's the best starting point to contribute.
 
 Pull requests are welcome! However please **always use individual feature branches for each pull request**. I may not accept a pull request from a master or dev branch.
 
@@ -57,7 +57,7 @@ Make your changes, test them, commit them and push them to Github:
 
 Open a Pull request from `YOURNAME:my-fix-1` to `zertrin:dev`.
 
-If you want to open another pull request for another change which is independant of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 upstream/dev`)
+If you want to open another pull request for another change which is independent of the previous one, just create another topic branch based on master (`git checkout -b my-fix-2 upstream/dev`)
 
 
 ## Installation
@@ -120,13 +120,13 @@ else just download again the ZIP archive an extract it over the existing folder.
 
 Then compare the example config file (`duplicity-backup.conf.example`) with your modified version (for example `/etc/duplicity-backup.conf`) and adapt your copy to reflect the changes in the example file.
 
-Thare are many ways to do so, here are some examples (adapt the path to your actual files):
+There are many ways to do so, here are some examples (adapt the path to your actual files):
 
     diff duplicity-backup.conf.example /etc/duplicity-backup.conf
     vimdiff duplicity-backup.conf.example /etc/duplicity-backup.conf
 
 
-## Dependancies
+## Dependencies
 
 * [duplicity](http://duplicity.nongnu.org/)
 * Basic utilities like: [bash](https://www.gnu.org/software/bash/), [which](http://unixhelp.ed.ac.uk/CGI/man-cgi?which), [find](https://www.gnu.org/software/findutils/) and [tee](http://linux.die.net/man/1/tee) (should already be available on most Linux systems)

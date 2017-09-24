@@ -246,8 +246,13 @@ Note that the commands `--restore-file` and `--restore-dir` are equivalent.
 
 ## Known issues
 
+### GPG error if system locale is not english
+
 If your system's locale is not english, an error can happen when duplicity is trying to encrypt the files with gpg. This problem concerns duplicity and has been reported upstream ([see bug report](https://bugs.launchpad.net/duplicity/+bug/510625)). A simple workaround is to set the following environement variable: `LANG=C`. For example: `LANG=C duplicity-backup.sh [-c config_file] ...` or in the cron `41 3 * * * LANG=C /absolute/path/to/duplicity-backup.sh -c /etc/duplicity-backup.conf -b`
 
+### "/dev/fd/62: Operation not supported" errors on FreeBSD
+
+See [issue #143](https://github.com/zertrin/duplicity-backup.sh/issues/143) for a fix.
 
 ## Troubleshooting
 

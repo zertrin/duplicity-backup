@@ -2,6 +2,11 @@ vX.X.X (unreleased)
 ===================
   * Placeholder for next release
 
+v1.4.0 (2017-09-24)
+===================
+  * Add version check of duplicity to handle deprecation of --include-globbing-filelist
+  * Bugfixes
+
 v1.3.0 (2016-10-23)
 ===================
   * Fix GPG error when backing up the script if no specific keyring is set up.

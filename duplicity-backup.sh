@@ -107,6 +107,28 @@ if [ ! -x "${DUPLICITY}" ]; then
   exit 1
 fi
 
+DUPLICITY_VERSION=$(${DUPLICITY} --version)
+DUPLICITY_VERSION=${DUPLICITY_VERSION//[^0-9\.]/}
+
+version_compare() {
+    if [[ $1 =~ ^([0-9]+\.?)+$ && $2 =~ ^([0-9]+\.?)+$ ]]; then
+        local l=(${1//./ }) r=(${2//./ }) s=${#l[@]}; [[ ${#r[@]} -gt ${#l[@]} ]] && s=${#r[@]}
+
+        for i in $(seq 0 $((s - 1))); do
+            [[ ${l[$i]} -gt ${r[$i]} ]] && return 1
+            [[ ${l[$i]} -lt ${r[$i]} ]] && return 2
+        done
+
+        return 0
+    else
+        echo "Invalid version number given"
+        exit 1
+    fi
+}
+
+version_compare "${DUPLICITY_VERSION}" 0.7
+case $? in 2) LT07=1;; *) LT07=0;; esac
+
 version(){
   # Read the version string from the file VERSION
   VERSION=$(<VERSION)
@@ -700,7 +722,11 @@ include_exclude()
 
   # Include/Exclude globbing filelist
   if [ "${INCEXCFILE}" != '' ]; then
-    TMP=" --include-globbing-filelist '${INCEXCFILE}'"
+    if [ ${LT07} -eq 1 ]; then
+      TMP=" --include-globbing-filelist '${INCEXCFILE}'"
+    else
+      TMP=" --include-filelist '${INCEXCFILE}'"
+    fi
     INCLUDE=${INCLUDE}${TMP}
   fi
 

@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
-# Copyright (c) 2012-2016 Marc Gallet.
+# Copyright (c) 2012-2017 Marc Gallet.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -129,12 +129,12 @@ version_compare() {
 version_compare "${DUPLICITY_VERSION}" 0.7
 case $? in 2) LT07=1;; *) LT07=0;; esac
 
-version(){
-  # Read the version string from the file VERSION
-  VERSION=$(<VERSION)
+# Read the version string from the file VERSION
+DBSH_VERSION=$(<VERSION)
 
-  echo "duplicity-backup.sh ${VERSION}"
-  ${DUPLICITY} --version
+version(){
+  echo "duplicity-backup.sh ${DBSH_VERSION}"
+  echo "duplicity ${DUPLICITY_VERSION}"
   exit 0
 }
 
@@ -305,7 +305,7 @@ fi
 # fd1 is stdout and is always logged but only shown if not QUIET
 # fd2 is stderr and is always shown on screen and logged
 # fd3 is like stdout but always shown on screen (for interactive prompts)
-# fd4 is always shown on sceen but never logged (for the usage text)
+# fd4 is always shown on screen but never logged (for the usage text)
 # fd5 is never shown on screen but always logged (for delimiters in the log)
 #
 
@@ -899,6 +899,10 @@ backup_this_script()
 check_variables
 
 echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n" >&5
+
+echo -e "-------[ Program versions ]-------\n"
+echo -e "duplicity-backup.sh ${DBSH_VERSION}\n"
+echo -e "duplicity ${DUPLICITY_VERSION}\n"
 
 get_lock
 

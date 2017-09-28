@@ -130,7 +130,8 @@ version_compare "${DUPLICITY_VERSION}" 0.7
 case $? in 2) LT07=1;; *) LT07=0;; esac
 
 # Read the version string from the file VERSION
-DBSH_VERSION=$(<VERSION)
+DBSH_DIRPATH=$(dirname "$(readlink -f "$0")")
+DBSH_VERSION=$(<${DBSH_DIRPATH}/VERSION)
 
 version(){
   echo "duplicity-backup.sh ${DBSH_VERSION}"
@@ -900,9 +901,10 @@ check_variables
 
 echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n" >&5
 
-echo -e "-------[ Program versions ]-------\n"
-echo -e "duplicity-backup.sh ${DBSH_VERSION}\n"
-echo -e "duplicity ${DUPLICITY_VERSION}\n"
+echo -e "-------[ Program versions ]-------"
+echo -e "duplicity-backup.sh ${DBSH_VERSION}"
+echo -e "duplicity ${DUPLICITY_VERSION}"
+echo -e "----------------------------------\n"
 
 get_lock
 

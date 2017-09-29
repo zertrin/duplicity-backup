@@ -130,7 +130,11 @@ version_compare "${DUPLICITY_VERSION}" 0.7
 case $? in 2) LT07=1;; *) LT07=0;; esac
 
 # Read the version string from the file VERSION
-DBSH_DIRPATH=$(dirname "$(readlink -f "$0")")
+if [[ "$(uname)" == "Darwin" ]]; then
+  DBSH_DIRPATH=$(dirname "$(readlink "$0")")
+else
+  DBSH_DIRPATH=$(dirname "$(readlink -f "$0")")
+fi
 DBSH_VERSION=$(<${DBSH_DIRPATH}/VERSION)
 
 version(){

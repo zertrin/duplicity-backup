@@ -126,12 +126,22 @@ version_compare() {
     fi
 }
 
+# set a flag if duplicity's version is lower than 0.7, for usage later in the script
 version_compare "${DUPLICITY_VERSION}" 0.7
 case $? in 2) LT07=1;; *) LT07=0;; esac
 
-# Read the version string from the file VERSION
-DBSH_DIRPATH=$(dirname "$(readlink -f "$0")")
-DBSH_VERSION=$(<"${DBSH_DIRPATH}/VERSION")
+# Read the version string from the file named VERSION in the same directory as the script.
+if [[ "$(uname)" == "Darwin" ]]; then
+  DBSH_VERPATH="$(dirname "$(readlink "$0")")/VERSION"
+else
+  DBSH_VERPATH="$(dirname "$(readlink -f "$0")")/VERSION"
+fi
+
+if [ -r "${DBSH_VERPATH}" ]; then
+  DBSH_VERSION=$(<"${DBSH_VERPATH}")
+else
+  DBSH_VERSION=unknown
+fi
 
 version(){
   echo "duplicity-backup.sh ${DBSH_VERSION}"

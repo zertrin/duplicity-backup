@@ -80,8 +80,11 @@ If you prefer the stable version do:
 
 Or just download the ZIP file:
 
-* For the stable branch: https://github.com/zertrin/duplicity-backup.sh/archive/stable.zip
-* For the normal branch: https://github.com/zertrin/duplicity-backup.sh/archive/master.zip
+| Version       | Download link                                                     |
+|---------------|-------------------------------------------------------------------|
+| stable        | https://github.com/zertrin/duplicity-backup.sh/archive/stable.zip |
+| normal        | https://github.com/zertrin/duplicity-backup.sh/archive/master.zip |
+| bleeding-edge | https://github.com/zertrin/duplicity-backup.sh/archive/dev.zip    |
 
 ### 2. Configure the script
 
@@ -94,7 +97,7 @@ The script looks for its configuration by reading the path to the config file sp
 If no config file was given on the command line, the script will try to find the file specified in the `CONFIG` parameter at the beginning of the script (default: `duplicity-backup.conf` in the script's directory).
 
 So be sure to either:
-* specify the configuration file path on the command line with the -c option **[recommended]**
+* specify the configuration file path on the command line with the `-c` option **[recommended]**
 * or to edit the `CONFIG` parameter in the script to match the actual location of your config file. **[deprecated]** _(will be removed in future versions of the script)_
 
 NOTE: to ease future updates of the script, you may prefer NOT to edit the script at all and to specify systematically the path to your config file on the command line with the `-c` or `--config` option.

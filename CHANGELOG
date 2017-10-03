@@ -2,6 +2,10 @@ vX.X.X (unreleased)
 ===================
   * Placeholder for next release
 
+v1.4.1 (2017-10-04)
+===================
+  * Show program versions in output.
+
 v1.4.0 (2017-09-24)
 ===================
   * Add version check of duplicity to handle deprecation of --include-globbing-filelist

@@ -2,6 +2,10 @@ vX.X.X (unreleased)
 ===================
   * Placeholder for next release
 
+v1.4.3 (2017-10-30)
+===================
+  * Add support for Telegram notifications (by GerardRibas)
+
 v1.4.2 (2017-10-30)
 ===================
   * Remove VERSION file and hardcode it directly in the script.

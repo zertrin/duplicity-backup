@@ -45,7 +45,7 @@ CONFIG="duplicity-backup.conf"
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
 
-DBSH_VERSION="v1.4.2"
+DBSH_VERSION="v1.4.3"
 
 # make a backup of stdout and stderr for later
 exec 6>&1

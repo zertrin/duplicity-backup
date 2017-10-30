@@ -419,7 +419,7 @@ MAIL="mailx"     # default command for Linux mail
 # Third-party notification services. If NOTIFICATION_SERVICE is not provided, no
 # notifications will be sent.
 
-# Possible values for NOTIFICATION_SERVICE are: slack, pushover, ifttt
+# Possible values for NOTIFICATION_SERVICE are: slack, pushover, ifttt, telegram
 NOTIFICATION_SERVICE=""
 NOTIFICATION_FAILURE_ONLY="yes" # send notifications only if there was an error while creating backup
 

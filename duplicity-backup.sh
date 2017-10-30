@@ -558,6 +558,9 @@ send_notification()
       -F "message=${NOTIFICATION_CONTENT}" \
       https://api.pushover.net/1/messages
       echo -e "Pushover notification sent"
+    elif [ "${NOTIFICATION_SERVICE}" = "telegram" ]; then
+        curl -s --max-time 10 -d "chat_id=$TELEGRAM_CHATID&disable_web_page_preview=1&text=$NOTIFICATION_CONTENT" "https://api.telegram.org/bot$TELEGRAM_KEY/sendMessage" >/dev/null
+      echo -e "Telegram notification sent"
     fi
   fi
 }

@@ -439,6 +439,10 @@ IFTTT_MAKER_EVENT="duplicity" # name the event to trigger at IFTTT Maker Channel
 IFTTT_HOOK_URL="https://maker.ifttt.com/trigger/$IFTTT_MAKER_EVENT/with/key/$IFTTT_KEY" # ONLY change this if IFTTT changes it
 IFTTT_VALUE2="" # general purpose value to pass to your maker channel (optional)
 
+# Provider: Telegram
+TELEGRAM_CHATID="" #Generate a Telegram bot following guide: https://core.telegram.org/bots#3-how-do-i-create-a-bot
+TELEGRAM_KEY=""
+
 # ------------------------------------------------------------------------------
 # TROUBLESHOOTING
 # ------------------------------------------------------------------------------

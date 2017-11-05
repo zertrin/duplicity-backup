@@ -75,7 +75,7 @@
 # This can be / or somewhere else -- I use /home/ because all the
 # directories that I want to backup start with /home/.
 #
-ROOT="/home"
+ROOT='/home'
 
 # Set hostname for this duplicity instance, useful for e-mail reports
 #
@@ -128,7 +128,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #    setting it in the backend url (which might be readable in the operating
 #    systems process listing to other users on the same machine)."
 #
-#FTP_PASSWORD="password"
+#FTP_PASSWORD='password'
 
 
 # ------------------------------------------------------------------------------
@@ -182,15 +182,15 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #
 # Here is an example with multiple locations:
 #
-#INCLIST=(  "/home/*/Documents" \
-#           "/home/*/Projects" \
-#           "/home/*/logs" \
-#           "/home/www/mysql-backups" \
+#INCLIST=(  '/home/*/Documents' \
+#           '/home/*/Projects' \
+#           '/home/*/logs' \
+#           '/home/www/mysql-backups' \
 #        )
 #
 # Simpler example with one location:
 
-INCLIST=( "/home/foobar_user_name/Documents/" )
+INCLIST=( '/home/foobar_user_name/Documents/' )
 
 
 # ------------------------------------------------------------------------------
@@ -202,18 +202,18 @@ INCLIST=( "/home/foobar_user_name/Documents/" )
 #
 # Here is an example with multiple locations:
 #
-#EXCLIST=(   "/home/*/Trash" \
-#            "/home/*/Projects/Completed" \
-#            "/**.DS_Store" \
-#            "/**Icon?" \
-#            "/**.AppleDouble" \
+#EXCLIST=(   '/home/*/Trash' \
+#            '/home/*/Projects/Completed' \
+#            '/**.DS_Store' \
+#            '/**Icon?' \
+#            '/**.AppleDouble' \
 #        )
 #
 # If you don't want to exclude anything, use EXCLIST=()
 #
 # Simpler example with one location. Adapt it to your needs.
 
-EXCLIST=( "/home/foobar_user_name/Documents/foobar-to-exclude" )
+EXCLIST=( '/home/foobar_user_name/Documents/foobar-to-exclude' )
 
 
 # ------------------------------------------------------------------------------
@@ -260,9 +260,9 @@ ENCRYPTION='yes'
 # (your backups will be encrypted with this password) or is used
 # for the "GPG_SIGN_KEY" (see below).
 # Comment out if you aren't using encryption
-# Note: if you have a '$' in your passphrase, escape it with a '\'
+# Note: if you have a ' in your passphrase, escape it accordingly.
 
-PASSPHRASE="foobar_gpg_passphrase"
+PASSPHRASE='foobar_gpg_passphrase'
 
 # Specify which GPG keys you would like to use (even if you have only one).
 # If you are running this from a cron, it is highly recommended to create separate

@@ -543,23 +543,33 @@ email_logfile()
 
 send_notification()
 {
-  NOTIFICATION_CONTENT="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] - \`${LOGFILE}\`"
   if [ ! -z "${NOTIFICATION_SERVICE}" ]; then
+    echo "-----------[ Notification Request ]-----------"
+    NOTIFICATION_CONTENT="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] - \`${LOGFILE}\`"
+
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"${NOTIFICATION_CONTENT}\", \"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \":${SLACK_EMOJI}:\"}" "${SLACK_HOOK_URL}"
-      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}"
     elif [ "${NOTIFICATION_SERVICE}" = "ifttt" ]; then
       curl -X POST -H 'Content-type: application/json' --data "{\"value1\": \"${NOTIFICATION_CONTENT}\", \"value2\": \"${IFTTT_VALUE2}\"}" "${IFTTT_HOOK_URL}"
-      echo -e "IFTTT notification sent to Maker channel event ${IFTTT_EVENT}"
     elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
       curl -s \
       -F "token=${PUSHOVER_TOKEN}" \
       -F "user=${PUSHOVER_USER}" \
       -F "message=${NOTIFICATION_CONTENT}" \
       https://api.pushover.net/1/messages
+    elif [ "${NOTIFICATION_SERVICE}" = "telegram" ]; then
+      curl -s --max-time 10 -d "chat_id=${TELEGRAM_CHATID}&disable_web_page_preview=1&text=${NOTIFICATION_CONTENT}" "https://api.telegram.org/bot${TELEGRAM_KEY}/sendMessage" >/dev/null
+    fi
+
+    echo -e "\n----------------------------------------------\n"
+
+    if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
+      echo -e "Slack notification sent to channel ${SLACK_CHANNEL}"
+    elif [ "${NOTIFICATION_SERVICE}" = "ifttt" ]; then
+      echo -e "IFTTT notification sent to Maker channel event ${IFTTT_EVENT}"
+    elif [ "${NOTIFICATION_SERVICE}" = "pushover" ]; then
       echo -e "Pushover notification sent"
     elif [ "${NOTIFICATION_SERVICE}" = "telegram" ]; then
-        curl -s --max-time 10 -d "chat_id=${TELEGRAM_CHATID}&disable_web_page_preview=1&text=${NOTIFICATION_CONTENT}" "https://api.telegram.org/bot${TELEGRAM_KEY}/sendMessage" >/dev/null
       echo -e "Telegram notification sent"
     fi
   fi

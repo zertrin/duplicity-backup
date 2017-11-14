@@ -650,7 +650,7 @@ get_remote_file_size()
     ;;
     "fi")
       FRIENDLY_TYPE_NAME="File"
-      TMPDEST=$(echo "${DEST}" | cut -c 6-)
+      TMPDEST="${DEST#file://*}"
       SIZE=$(du -hs "${TMPDEST}" | awk '{print $1}')
     ;;
     "gs")

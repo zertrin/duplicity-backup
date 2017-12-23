@@ -720,12 +720,11 @@ get_remote_file_size()
           SIZE="-b2 bucket wrong-"
           return
         fi
-        ${B2CMD} authorize-account ${ACC_ID} ${APP_KEY} 2>&1 >/dev/null
-        if [[ $? -ne 0 ]]; then
+        if [[ $(${B2CMD} authorize-account "${ACC_ID}" "${APP_KEY}" >/dev/null 2>&1) -ne 0 ]]; then
           SIZE="-b2 authentication wrong-"
           return
         fi
-        SIZE=$(${B2CMD} ls --long ${BUCKET} | awk '{ print $5 }' | paste -sd+ | bc | numfmt --to=iec)
+        SIZE=$(${B2CMD} ls --long "${BUCKET}" | awk '{ print $5 }' | paste -sd+ | bc | numfmt --to=iec)
       else
               SIZE="-b2 not found in PATH-"
       fi

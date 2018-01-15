@@ -139,6 +139,9 @@ There are many ways to do so, here are some examples (adapt the path to your act
 For the [Amazon S3](https://aws.amazon.com/s3/) storage backend *`optional`*
 * [s3cmd](http://s3tools.org/s3cmd) *`optional`*
 
+For the [Backblaze B2](https://www.backblaze.com/b2) storage backend *`optional`*
+* [python-b2](https://pypi.python.org/pypi/b2) *`optional`*
+
 For the [Google Cloud Storage](https://cloud.google.com/storage/) storage backend *`optional`*
 * [boto](https://github.com/boto/boto) (may already have been installed with duplicity)
 * [gsutil](https://cloud.google.com/storage/docs/gsutil) *`optional`*

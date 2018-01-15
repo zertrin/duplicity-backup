@@ -115,6 +115,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"
 #DEST="gdocs://foobar_google_account/some_dir"
 #DEST="swift://foobar_swift_container/some_dir"
+#DEST="b2://some_account_id[:some_application_key]@some_bucket_name/some_dir"
 
 
 # ------------------------------------------------------------------------------

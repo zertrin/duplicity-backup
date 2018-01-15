@@ -2,6 +2,10 @@ vX.X.X (unreleased)
 ===================
   * Placeholder for next release
 
+v1.5.0 (2018-01-15)
+===================
+  * Add support for B2 backend (by harrim4n)
+
 v1.4.3 (2017-10-30)
 ===================
   * Add support for Telegram notifications (by GerardRibas)

@@ -354,6 +354,7 @@ export SWIFT_USERNAME
 export SWIFT_PASSWORD
 export SWIFT_AUTHURL
 export SWIFT_AUTHVERSION
+export DPBX_ACCESS_TOKEN
 export PASSPHRASE
 export SIGN_PASSPHRASE
 
@@ -448,6 +449,12 @@ else
   DEST_IS_S3=false
 fi
 
+if  [ "$(echo "${DEST}" | cut -c 1,4)" = "dpbx" ]; then
+  DEST_IS_DPBX=true
+else
+  DEST_IS_DPBX=false
+fi
+
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "b2" ]; then
   DEST_IS_B2=true
   B2CMD="$(which b2)"
@@ -481,6 +488,8 @@ check_variables ()
   config_sanity_fail "An s3 DEST has been specified, but AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY have not been configured"
   [[ ( ${DEST_IS_GS} = true && (${GS_ACCESS_KEY_ID} = "foobar_gcs_key_id" || ${GS_SECRET_ACCESS_KEY} = "foobar_gcs_secret_id" )) ]] && \
   config_sanity_fail "A Google Cloud Storage DEST has been specified, but GS_ACCESS_KEY_ID or GS_SECRET_ACCESS_KEY have not been configured"
+  [[ ( ${DEST_IS_DPBX} = true && (${DPBX_ACCESS_TOKEN} = "foobar_dropbox_access_token" )) ]] && \
+  config_sanity_fail "A Dropbox DEST has been specified, but DPBX_ACCESS_TOKEN has not been configured"
   [[ ! -z "${INCEXCFILE}" && ! -f ${INCEXCFILE} ]] && config_sanity_fail "The specified INCEXCFILE ${INCEXCFILE} does not exists"
 }
 
@@ -1155,6 +1164,7 @@ unset SWIFT_USERNAME
 unset SWIFT_PASSWORD
 unset SWIFT_AUTHURL
 unset SWIFT_AUTHVERSION
+unset DPBX_ACCESS_TOKEN
 unset PASSPHRASE
 unset SIGN_PASSPHRASE
 unset FTP_PASSWORD

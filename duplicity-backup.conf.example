@@ -115,6 +115,7 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #DEST="webdav[s]://user[:password]@other.host[:port]/some_dir"
 #DEST="gdocs://foobar_google_account/some_dir"
 #DEST="swift://foobar_swift_container/some_dir"
+#DEST="dpbx:///foobar_swift_container/some_dir"
 #DEST="b2://some_account_id[:some_application_key]@some_bucket_name/some_dir"
 
 
@@ -173,6 +174,13 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #SWIFT_PASSWORD="foobar_swift_password"
 #SWIFT_AUTHURL="foobar_swift_authurl"
 #SWIFT_AUTHVERSION="2"
+
+# ------------------------------------------------------------------------------
+# DROPBOX INFORMATION
+# ------------------------------------------------------------------------------
+# Uncomment these lines if you're using Dropbox
+#
+#DPBX_ACCESS_TOKEN="foobar_dropbox_access_token"
 
 
 # ------------------------------------------------------------------------------

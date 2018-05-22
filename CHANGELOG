@@ -1,7 +1,7 @@
 vX.X.X (unreleased)
 ===================
 
-v1.6.0 (unreleased)
+v1.6.0 (2018-05-22)
 ===================
   * Add support for Dropbox backend (by xmatthias)
   * Fix issue #177: bug in `--cleanup` action (thanks smcgrat)

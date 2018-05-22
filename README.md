@@ -68,23 +68,23 @@ You can clone the repository (which makes it easy to get future updates):
 
     git clone https://github.com/zertrin/duplicity-backup.sh.git duplicity-backup
 
-If you prefer the stable version do:
+If you prefer the stable (but old) version do:
 
     git checkout stable
 
-... or if you want the latest version (might still have bugs), then:
+... or if you want the normal version, then:
 
     git checkout master
 
-... or if you like living on the edge, you can stay at the development version which is automatically cloned.
+... or if you like living on the edge (or need the latest bugfixes), you can stay at the development version which is automatically cloned.
 
 Or just download the ZIP file:
 
 | Version       | Download link                                                     |
 |---------------|-------------------------------------------------------------------|
-| stable        | https://github.com/zertrin/duplicity-backup.sh/archive/stable.zip |
+| stable (old)  | https://github.com/zertrin/duplicity-backup.sh/archive/stable.zip |
 | normal        | https://github.com/zertrin/duplicity-backup.sh/archive/master.zip |
-| bleeding-edge | https://github.com/zertrin/duplicity-backup.sh/archive/dev.zip    |
+| latest        | https://github.com/zertrin/duplicity-backup.sh/archive/dev.zip    |
 
 ### 2. Configure the script
 

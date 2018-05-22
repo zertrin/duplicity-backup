@@ -191,7 +191,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
           QUIET=1
         ;;
         dry-run)
-          DRY_RUN="--dry-run "
+          DRY_RUN="--dry-run"
         ;;
         debug)
           ECHO=$(which echo)
@@ -218,7 +218,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
     l) COMMAND="list-current-files";;
     s) COMMAND="collection-status";;
     q) QUIET=1;;
-    n) DRY_RUN="--dry-run ";; # dry run
+    n) DRY_RUN="--dry-run";; # dry run
     d) ECHO=$(which echo);; # debug
     h)
       usage
@@ -342,7 +342,13 @@ fi
 
 # ------------------------- Setting up variables ------------------------
 
-STATIC_OPTIONS="${DRY_RUN}${STATIC_OPTIONS}"
+if [ -n "${DRY_RUN}" ]; then
+  STATIC_OPTIONS="${DRY_RUN} ${STATIC_OPTIONS}"
+fi
+
+if [ -n "${STORAGECLASS}" ]; then
+  STATIC_OPTIONS="${STATIC_OPTIONS} ${STORAGECLASS}"
+fi
 
 SIGN_PASSPHRASE=${PASSPHRASE}
 
@@ -834,7 +840,6 @@ duplicity_backup()
 {
   {
     eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
-    "${STORAGECLASS}" \
     "${ENCRYPT}" \
     "${EXCLUDE}" \
     "${INCLUDE}" \
@@ -849,6 +854,7 @@ duplicity_cleanup_failed()
 {
   {
     eval "${ECHO}" "${DUPLICITY}" "${OPTION}" "${VERBOSITY}" "${STATIC_OPTIONS}" \
+    "${ENCRYPT}" \
     "${DEST}"
   } || {
     BACKUP_ERROR=1
@@ -1013,7 +1019,7 @@ case "${COMMAND}" in
     OPTION="cleanup"
 
     if [ -z "${DRY_RUN}" ]; then
-      STATIC_OPTIONS="--force"
+      STATIC_OPTIONS="${STATIC_OPTIONS} --force"
     fi
 
     echo -e "-------[ Cleaning up Destination ]-------\n"

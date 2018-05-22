@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2008-2010 Damon Timm.
 # Copyright (c) 2010 Mario Santagiuliana.
-# Copyright (c) 2012-2017 Marc Gallet.
+# Copyright (c) 2012-2018 Marc Gallet.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -45,7 +45,7 @@ CONFIG="duplicity-backup.conf"
 # Script Happens Below This Line - Shouldn't Require Editing #
 ##############################################################
 
-DBSH_VERSION="v1.5.0"
+DBSH_VERSION="v1.6.0"
 
 # make a backup of stdout and stderr for later
 exec 6>&1

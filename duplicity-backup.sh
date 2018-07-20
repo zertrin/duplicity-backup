@@ -102,7 +102,7 @@ echo "USAGE:
 USAGE=1
 }
 
-DUPLICITY="$(which duplicity)"
+DUPLICITY="$(command -v duplicity)"
 
 if [ ! -x "${DUPLICITY}" ]; then
   echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
@@ -194,7 +194,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
           DRY_RUN="--dry-run"
         ;;
         debug)
-          ECHO=$(which echo)
+          ECHO=$(command -v echo)
         ;;
         help)
           usage
@@ -219,7 +219,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
     s) COMMAND="collection-status";;
     q) QUIET=1;;
     n) DRY_RUN="--dry-run";; # dry run
-    d) ECHO=$(which echo);; # debug
+    d) ECHO=$(command -v echo);; # debug
     h)
       usage
       exit 0
@@ -417,7 +417,7 @@ README_TXT="In case you've long forgotten, this is a backup script that you used
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "gs" ]; then
   DEST_IS_GS=true
-  GSCMD="$(which gsutil)"
+  GSCMD="$(command -v gsutil)"
   if [ ! -x "${GSCMD}" ]; then
     echo "${NO_GSCMD}"; GSCMD_AVAIL=false
   elif [ ! -f "${HOME}/.boto" ]; then
@@ -432,7 +432,7 @@ fi
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "s3" ]; then
   DEST_IS_S3=true
-  S3CMD="$(which s3cmd)"
+  S3CMD="$(command -v s3cmd)"
   if [ ! -x "${S3CMD}" ]; then
     echo "${NO_S3CMD}"; S3CMD_AVAIL=false
   elif [ -z "${S3CMD_CONF_FILE}" ] && [ ! -f "${HOME}/.s3cfg" ]; then
@@ -463,7 +463,7 @@ fi
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "b2" ]; then
   DEST_IS_B2=true
-  B2CMD="$(which b2)"
+  B2CMD="$(command -v b2)"
   if [ ! -x "${B2CMD}" ]; then
     echo "${NO_B2CMD}"; B2CMD_AVAIL=false
   fi
@@ -531,7 +531,7 @@ email_logfile()
 {
   if [ ! -z "${EMAIL_TO}" ]; then
 
-      MAILCMD=$(which "${MAIL}")
+      MAILCMD=$(command -v "${MAIL}")
       MAILCMD_REALPATH=$(readlink -e "${MAILCMD}")
       MAILCMD_BASENAME=${MAILCMD_REALPATH##*/}
 
@@ -884,7 +884,7 @@ backup_this_script()
     SCRIPTFILE=$(echo "${0}" | cut -c 2-)
     SCRIPTPATH=$(pwd)${SCRIPTFILE}
   else
-    SCRIPTPATH=$(which "${0}")
+    SCRIPTPATH=$(command -v "${0}")
   fi
   TMPDIR=duplicity-backup-$(date +%Y-%m-%d)
   TMPFILENAME=${TMPDIR}.tar.gpg

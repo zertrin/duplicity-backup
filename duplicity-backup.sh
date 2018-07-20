@@ -413,7 +413,7 @@ size information unavailable."
 NO_B2CMD="WARNING: b2 not found in PATH, remote file size information \
 unavailable. Is the python-b2 package installed?"
 
-README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\n\nIf you were using the same key for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.txt\nOr if you were using two separate keys for encryption and signature:\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.txt\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.txt\n\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files.\n\nGood luck!"
+README_TXT="In case you've long forgotten, this is a backup script that you used to backup some files (most likely remotely at Amazon S3). In order to restore these files, you first need to import your GPG private(s) key(s) (if you haven't already). The key(s) is/are in this directory and the following command(s) should do the trick:\\n\\nIf you were using the same key for encryption and signature\\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-and-sign-secret.key.tx\\nOr if you were using two separate keys for encryption and signature\\n  gpg --allow-secret-key-import --import duplicity-backup-encryption-secret.key.tx\\n  gpg --allow-secret-key-import --import duplicity-backup-sign-secret.key.tx\\n\\nAfter your key(s) has/have been succesfully imported, you should be able to restore your files\\n\\nGood luck!"
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "gs" ]; then
   DEST_IS_GS=true
@@ -474,9 +474,9 @@ fi
 config_sanity_fail()
 {
   EXPLANATION=$1
-  CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\nWe are missing one or more important variables in the configuration file.\nCheck your configuration because it appears that something has not been set yet."
-  echo -e "${CONFIG_VAR_MSG}\n  ${EXPLANATION}." >&2
-  echo -e "---------------------    END    ---------------------\n" >&5
+  CONFIG_VAR_MSG="Oops!! ${0} was unable to run!\\nWe are missing one or more important variables in the configuration file.\\nCheck your configuration because it appears that something has not been set yet."
+  echo -e "${CONFIG_VAR_MSG}\\n  ${EXPLANATION}." >&2
+  echo -e "---------------------    END    ---------------------\\n" >&5
   exit 1
 }
 
@@ -501,15 +501,15 @@ check_variables ()
 
 mailcmd_sendmail() {
   # based on http://linux.die.net/man/8/sendmail.sendmail
-  echo -e "From: ${EMAIL_FROM}\nSubject: ${EMAIL_SUBJECT}\n" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
+  echo -e "From: ${EMAIL_FROM}\\nSubject: ${EMAIL_SUBJECT}\\n" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
 }
 mailcmd_ssmtp() {
   # based on http://linux.die.net/man/8/ssmtp
-  echo -e "From: ${EMAIL_FROM}\nSubject: ${EMAIL_SUBJECT}\n" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
+  echo -e "From: ${EMAIL_FROM}\\nSubject: ${EMAIL_SUBJECT}\\n" | cat - "${LOGFILE}" | ${MAILCMD} "${EMAIL_TO}"
 }
 mailcmd_msmtp() {
   # based on http://manpages.ubuntu.com/manpages/precise/en/man1/msmtp.1.html
-  echo -e "Subject: ${EMAIL_SUBJECT}\n" | cat - "${LOGFILE}" | ${MAILCMD} -f "${EMAIL_FROM}" -- "${EMAIL_TO}"
+  echo -e "Subject: ${EMAIL_SUBJECT}\\n" | cat - "${LOGFILE}" | ${MAILCMD} -f "${EMAIL_FROM}" -- "${EMAIL_TO}"
 }
 mailcmd_bsd_mailx() {
   # based on http://man.he.net/man1/bsd-mailx
@@ -589,7 +589,7 @@ send_notification()
       curl -s --max-time 10 -d "chat_id=${TELEGRAM_CHATID}&disable_web_page_preview=1&text=${NOTIFICATION_CONTENT}" "https://api.telegram.org/bot${TELEGRAM_KEY}/sendMessage" >/dev/null
     fi
 
-    echo -e "\n----------------------------------------------\n"
+    echo -e "\\n----------------------------------------------\\n"
 
     if [ "${NOTIFICATION_SERVICE}" = "slack" ]; then
       echo -e "Slack notification sent to channel ${SLACK_CHANNEL}"
@@ -629,7 +629,7 @@ get_source_file_size()
   # Patches to support spaces in paths-
   # Remove space as a field separator temporarily
   OLDIFS=$IFS
-  IFS=$(echo -en "\t\n")
+  IFS=$(echo -en "\\t\\n")
 
   case $(uname) in
     FreeBSD|Darwin|DragonFly)
@@ -645,10 +645,10 @@ get_source_file_size()
   esac
 
   # always exclude /proc
-  DUEXCLIST="/proc\n"
+  DUEXCLIST="/proc\\n"
 
   for exclude in "${EXCLIST[@]}"; do
-    DUEXCLIST="${DUEXCLIST}${exclude}\n"
+    DUEXCLIST="${DUEXCLIST}${exclude}\\n"
   done
 
   # if INCLIST is not set or empty, add ROOT to it to be able to calculate disk usage
@@ -661,7 +661,7 @@ get_source_file_size()
   for include in "${DUINCLIST[@]}"; do
       echo -e "${DUEXCLIST}" | \
       du -hs ${DUEXCFLAG} "${include}" | \
-      awk '{ FS="\t"; $0=$0; print $1"\t"$2 }'
+      awk '{ FS="\\t"; $0=$0; print $1"\\t"$2 }'
   done
 
   echo
@@ -751,7 +751,7 @@ get_remote_file_size()
   esac
 
   if [[ ${FRIENDLY_TYPE_NAME} ]] ; then
-      echo -e "${SIZE}\t${FRIENDLY_TYPE_NAME} type backend"
+      echo -e "${SIZE}\\t${FRIENDLY_TYPE_NAME} type backend"
   else
       echo "Destination disk use information is currently only available for the following storage backends:"
       echo "File, SSH, Amazon S3, Google Cloud and Backblaze B2"
@@ -764,7 +764,7 @@ include_exclude()
   # Changes to handle spaces in directory names and filenames
   # and wrapping the files to include and exclude in quotes.
   OLDIFS=$IFS
-  IFS=$(echo -en "\t\n")
+  IFS=$(echo -en "\\t\\n")
 
   # Exclude device files?
   if [ ! -z "${EXDEVICEFILES}" ] && [ "${EXDEVICEFILES}" -ne 0 ]; then
@@ -866,7 +866,7 @@ setup_passphrase()
   if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ] && [ "${GPG_ENC_KEY}" != "${GPG_SIGN_KEY}" ]; then
     echo -n "Please provide the passphrase for decryption (GPG key 0x${GPG_ENC_KEY}): " >&3
     builtin read -s -r ENCPASSPHRASE
-    echo -ne "\n" >&3
+    echo -ne "\\n" >&3
     PASSPHRASE=${ENCPASSPHRASE}
     export PASSPHRASE
   fi
@@ -919,7 +919,7 @@ backup_this_script()
   read -r ANSWER
   if [ "${ANSWER}" != "yes" ]; then
     echo "You said << ${ANSWER} >> so I am exiting now." >&3
-    echo -e "---------------------    END    ---------------------\n" >&5
+    echo -e "---------------------    END    ---------------------\\n" >&5
     exit 1
   fi
 
@@ -954,10 +954,10 @@ backup_this_script()
   echo "Encrypting tarball, choose a password you'll remember..." >&3
   tar -cf - "${TMPDIR}" | gpg -aco "${TMPFILENAME}"
   rm -Rf "${TMPDIR}"
-  echo -e "\nIMPORTANT!!" >&3
+  echo -e "\\nIMPORTANT!!" >&3
   echo ">> To restore these files, run the following (remember your password):" >&3
   echo "gpg -d ${TMPFILENAME} | tar -xf -" >&3
-  echo -e "\nYou may want to write the above down and save it with the file." >&3
+  echo -e "\\nYou may want to write the above down and save it with the file." >&3
 }
 
 # ##################################################
@@ -966,12 +966,12 @@ backup_this_script()
 
 check_variables
 
-echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\n" >&5
+echo -e "--------    START DUPLICITY-BACKUP SCRIPT for ${HOSTNAME}   --------\\n" >&5
 
 echo -e "-------[ Program versions ]-------"
 echo -e "duplicity-backup.sh ${DBSH_VERSION}"
 echo -e "duplicity ${DUPLICITY_VERSION}"
-echo -e "----------------------------------\n"
+echo -e "----------------------------------\\n"
 
 get_lock
 
@@ -999,10 +999,10 @@ case "${COMMAND}" in
     DEST=${OLDROOT}
     OPTION="verify"
 
-    echo -e "-------[ Verifying Source & Destination ]-------\n"
+    echo -e "-------[ Verifying Source & Destination ]-------\\n"
     include_exclude
     setup_passphrase
-    echo -e "Attempting to verify now ...\n" >&3
+    echo -e "Attempting to verify now ...\\n" >&3
     duplicity_backup
     echo
 
@@ -1012,7 +1012,7 @@ case "${COMMAND}" in
 
     get_file_sizes
 
-    echo -e "Verify complete.\n" >&3
+    echo -e "Verify complete.\\n" >&3
   ;;
 
   "cleanup")
@@ -1022,7 +1022,7 @@ case "${COMMAND}" in
       STATIC_OPTIONS="${STATIC_OPTIONS} --force"
     fi
 
-    echo -e "-------[ Cleaning up Destination ]-------\n"
+    echo -e "-------[ Cleaning up Destination ]-------\\n"
     setup_passphrase
     duplicity_cleanup_failed
 
@@ -1045,8 +1045,8 @@ case "${COMMAND}" in
       read -r ANSWER
       if [[ "${ANSWER}" != "yes" ]]; then
         echo "You said << ${ANSWER} >> so I am exiting now." >&3
-        echo -e "User aborted restore process ...\n" >&2
-        echo -e "---------------------    END    ---------------------\n" >&5
+        echo -e "User aborted restore process ...\\n" >&2
+        echo -e "---------------------    END    ---------------------\\n" >&5
         exit 1
       fi
     else
@@ -1082,12 +1082,12 @@ case "${COMMAND}" in
     echo -e "YOU ARE ABOUT TO..." >&3
     echo -e ">> RESTORE: ${FILE_TO_RESTORE}" >&3
     echo -e ">> TO: ${DEST}" >&3
-    echo -e "\nAre you sure you want to do that ('yes' to continue)?" >&3
+    echo -e "\\nAre you sure you want to do that ('yes' to continue)?" >&3
     read -r ANSWER
     if [ "${ANSWER}" != "yes" ]; then
       echo "You said << ${ANSWER} >> so I am exiting now." >&3
-      echo -e "User aborted restore process ...\n" >&2
-      echo -e "---------------------    END    ---------------------\n" >&5
+      echo -e "User aborted restore process ...\\n" >&2
+      echo -e "---------------------    END    ---------------------\\n" >&5
       exit 1
     fi
 
@@ -1131,12 +1131,12 @@ case "${COMMAND}" in
   ;;
 
   *)
-    echo -e "[Only show $(basename "$0") usage options]\n"
+    echo -e "[Only show $(basename "$0") usage options]\\n"
     usage
   ;;
 esac
 
-echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\n" >&5
+echo -e "---------    END DUPLICITY-BACKUP SCRIPT    ---------\\n" >&5
 
 if [ "${USAGE}" ]; then
   exit 0

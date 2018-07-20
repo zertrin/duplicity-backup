@@ -7,7 +7,7 @@ before_script:
     - shellcheck --version
 
 script:
-    - shellcheck -e SC2034,SC1117,SC2216,SC2206 duplicity-backup.sh duplicity-backup.conf.example
+    - shellcheck -e SC2034,SC2216,SC2206 duplicity-backup.sh duplicity-backup.conf.example
 
 matrix:
   fast_finish: true

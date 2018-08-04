@@ -306,7 +306,7 @@ GPG_SIGN_KEY="foobar_gpg_key"
 # For example an user reported (GitHub issue #145) that since gnupg v2.1,
 # the option "--pinentry-mode loopback" is necessary,
 # then set GPG_OPTIONS="--no-show-photos --pinentry-mode loopback"
-GPG_OPTIONS=""--list-options no-show-photos"
+GPG_OPTIONS="--list-options no-show-photos"
 
 
 # ------------------------------------------------------------------------------

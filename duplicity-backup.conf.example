@@ -173,6 +173,8 @@ DEST="s3+http://foobar-backup-bucket/backup-folder/"
 #SWIFT_PASSWORD="foobar_swift_password"
 #SWIFT_AUTHURL="foobar_swift_authurl"
 #SWIFT_AUTHVERSION="2"
+#SWIFT_TENANTNAME="foobar_swift_tenant"
+#SWIFT_REGIONNAME="foobar_swift_region"
 
 # ------------------------------------------------------------------------------
 # DROPBOX INFORMATION

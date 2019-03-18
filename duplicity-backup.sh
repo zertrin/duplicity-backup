@@ -693,6 +693,11 @@ get_remote_file_size()
       TMPDEST="${DEST#file://*}"
       SIZE=$(du -hs "${TMPDEST}" | awk '{print $1}')
     ;;
+    "cf")
+      FRIENDLY_TYPE_NAME="Cloud File"
+      TMPDEST="${DEST}"
+      SIZE=$(duplicity collection-status "${TMPDEST}")
+    ;;
     "gs")
       FRIENDLY_TYPE_NAME="Google Cloud Storage"
       if ${GSCMD_AVAIL} ; then
@@ -756,7 +761,7 @@ get_remote_file_size()
       echo -e "${SIZE}\t${FRIENDLY_TYPE_NAME} type backend"
   else
       echo "Destination disk use information is currently only available for the following storage backends:"
-      echo "File, SSH, Amazon S3, Google Cloud and Backblaze B2"
+      echo "File, SSH, Amazon S3, Google Cloud, Cloud File and Backblaze B2"
   fi
   echo
 }

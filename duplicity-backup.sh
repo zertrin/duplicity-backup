@@ -51,6 +51,12 @@ DBSH_VERSION="v1.6.0"
 exec 6>&1
 exec 7>&2
 
+##########################################################################
+# Utility function for URL decoding, as my file:// URL had spaces in it, #
+# which duplicity likes fine, but du does not.                           #
+##########################################################################
+urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+
 # ------------------------------------------------------------
 
 usage(){
@@ -691,6 +697,7 @@ get_remote_file_size()
     "fi")
       FRIENDLY_TYPE_NAME="File"
       TMPDEST="${DEST#file://*}"
+      TMPDEST=$(urldecode "$TMPDEST")
       SIZE=$(du -hs "${TMPDEST}" | awk '{print $1}')
     ;;
     "gs")

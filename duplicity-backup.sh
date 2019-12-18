@@ -102,7 +102,7 @@ echo "USAGE:
 USAGE=1
 }
 
-DUPLICITY="$(which duplicity)"
+DUPLICITY="$(command -v duplicity)"
 
 if [ ! -x "${DUPLICITY}" ]; then
   echo "ERROR: duplicity not installed, that's gotta happen first!" >&2
@@ -114,6 +114,7 @@ DUPLICITY_VERSION=${DUPLICITY_VERSION//[^0-9\.]/}
 
 version_compare() {
     if [[ $1 =~ ^([0-9]+\.?)+$ && $2 =~ ^([0-9]+\.?)+$ ]]; then
+        # shellcheck disable=SC2206
         local l=(${1//./ }) r=(${2//./ }) s=${#l[@]}; [[ ${#r[@]} -gt ${#l[@]} ]] && s=${#r[@]}
 
         for i in $(seq 0 $((s - 1))); do
@@ -151,7 +152,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
         restore)
           COMMAND=${OPTARG}
           # We try to find the optional value [restore dest]
-          if [ ! -z "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
+          if [ -n "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
             RESTORE_DEST=${!OPTIND}
             OPTIND=$(( OPTIND + 1 )) # we found it, move forward in arg parsing
           fi
@@ -161,28 +162,28 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
         restore-file|restore-dir)
           COMMAND=${OPTARG}
           # We try to find the first optional value [file to restore]
-          if [ ! -z "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
+          if [ -n "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
             FILE_TO_RESTORE=${!OPTIND}
             OPTIND=$(( OPTIND + 1 )) # we found it, move forward in arg parsing
           else
             continue # no value for the restore-file option, skip the rest
           fi
           # We try to find the second optional value [restore dest]
-          if [ ! -z "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
+          if [ -n "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
             RESTORE_DEST=${!OPTIND}
             OPTIND=$(( OPTIND + 1 )) # we found it, move forward in arg parsing
           fi
         ;;
         config) # set the config file from the command line
           # We try to find the config file
-          if [ ! -z "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
+          if [ -n "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
             CONFIG=${!OPTIND}
             OPTIND=$(( OPTIND + 1 )) # we found it, move forward in arg parsing
           fi
         ;;
         time) # set the restore time from the command line
           # We try to find the restore time
-          if [ ! -z "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
+          if [ -n "${!OPTIND:0:1}" ] && [ ! "${!OPTIND:0:1}" = "-" ]; then
             TIME=${!OPTIND}
             OPTIND=$(( OPTIND + 1 )) # we found it, move forward in arg parsing
           fi
@@ -194,7 +195,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
           DRY_RUN="--dry-run"
         ;;
         debug)
-          ECHO=$(which echo)
+          ECHO=$(command -v echo)
         ;;
         help)
           usage
@@ -219,7 +220,7 @@ while getopts ":c:t:bfvelsqndhV-:" opt; do
     s) COMMAND="collection-status";;
     q) QUIET=1;;
     n) DRY_RUN="--dry-run";; # dry run
-    d) ECHO=$(which echo);; # debug
+    d) ECHO=$(command -v echo);; # debug
     h)
       usage
       exit 0
@@ -240,7 +241,7 @@ done
 
 # ----------------  Read config file if specified -----------------
 
-if [ ! -z "${CONFIG}" ] && [ -f "${CONFIG}" ];
+if [ -n "${CONFIG}" ] && [ -f "${CONFIG}" ];
 then
   # shellcheck source=duplicity-backup.conf.example
   . "${CONFIG}"
@@ -380,7 +381,7 @@ LOCKFILE=${LOGDIR}backup.lock
 
 if [ "${ENCRYPTION}" = "yes" ]; then
   ENCRYPT="--gpg-options \"${GPG_OPTIONS}\""
-  if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ]; then
+  if [ -n "${GPG_ENC_KEY}" ] && [ -n "${GPG_SIGN_KEY}" ]; then
     if [ "${HIDE_KEY_ID}" = "yes" ]; then
       ENCRYPT="${ENCRYPT} --hidden-encrypt-key=${GPG_ENC_KEY}"
       if [ "${COMMAND}" != "restore" ] && [ "${COMMAND}" != "restore-file" ] && [ "${COMMAND}" != "restore-dir" ]; then
@@ -389,11 +390,11 @@ if [ "${ENCRYPTION}" = "yes" ]; then
     else
       ENCRYPT="${ENCRYPT} --encrypt-key=${GPG_ENC_KEY} --sign-key=${GPG_SIGN_KEY}"
     fi
-    if [ ! -z "${SECRET_KEYRING}" ]; then
+    if [ -n "${SECRET_KEYRING}" ]; then
       KEYRING="--secret-keyring ${SECRET_KEYRING}"
       ENCRYPT="${ENCRYPT} --encrypt-secret-keyring=${SECRET_KEYRING}"
     fi
-  elif [ ! -z "${PASSPHRASE}" ]; then
+  elif [ -n "${PASSPHRASE}" ]; then
     ENCRYPT=""
   fi
 elif [ "${ENCRYPTION}" = "no" ]; then
@@ -419,7 +420,7 @@ README_TXT="In case you've long forgotten, this is a backup script that you used
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "gs" ]; then
   DEST_IS_GS=true
-  GSCMD="$(which gsutil)"
+  GSCMD="$(command -v gsutil)"
   if [ ! -x "${GSCMD}" ]; then
     echo "${NO_GSCMD}"; GSCMD_AVAIL=false
   elif [ ! -f "${HOME}/.boto" ]; then
@@ -434,13 +435,13 @@ fi
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "s3" ]; then
   DEST_IS_S3=true
-  S3CMD="$(which s3cmd)"
+  S3CMD="$(command -v s3cmd)"
   if [ ! -x "${S3CMD}" ]; then
     echo "${NO_S3CMD}"; S3CMD_AVAIL=false
   elif [ -z "${S3CMD_CONF_FILE}" ] && [ ! -f "${HOME}/.s3cfg" ]; then
     S3CMD_CONF_FOUND=false
     echo "${NO_S3CMD_CFG}"; S3CMD_AVAIL=false
-  elif [ ! -z "${S3CMD_CONF_FILE}" ] && [ ! -f "${S3CMD_CONF_FILE}" ]; then
+  elif [ -n "${S3CMD_CONF_FILE}" ] && [ ! -f "${S3CMD_CONF_FILE}" ]; then
     S3CMD_CONF_FOUND=false
     echo "${S3CMD_CONF_FILE} not found, check S3CMD_CONF_FILE variable in duplicity-backup's configuration!";
     echo "${NO_S3CMD_CFG}";
@@ -448,7 +449,7 @@ if  [ "$(echo "${DEST}" | cut -c 1,2)" = "s3" ]; then
   else
     S3CMD_AVAIL=true
     S3CMD_CONF_FOUND=true
-    if [ ! -z "${S3CMD_CONF_FILE}" ] && [ -f "${S3CMD_CONF_FILE}" ]; then
+    if [ -n "${S3CMD_CONF_FILE}" ] && [ -f "${S3CMD_CONF_FILE}" ]; then
       # if conf file specified and it exists then add it to the command line for s3cmd
       S3CMD="${S3CMD} -c ${S3CMD_CONF_FILE}"
     fi
@@ -465,7 +466,7 @@ fi
 
 if  [ "$(echo "${DEST}" | cut -c 1,2)" = "b2" ]; then
   DEST_IS_B2=true
-  B2CMD="$(which b2)"
+  B2CMD="$(command -v b2)"
   if [ ! -x "${B2CMD}" ]; then
     echo "${NO_B2CMD}"; B2CMD_AVAIL=false
   fi
@@ -498,7 +499,7 @@ check_variables ()
   config_sanity_fail "A Google Cloud Storage DEST has been specified, but GS_ACCESS_KEY_ID or GS_SECRET_ACCESS_KEY have not been configured"
   [[ ( ${DEST_IS_DPBX} = true && (${DPBX_ACCESS_TOKEN} = "foobar_dropbox_access_token" )) ]] && \
   config_sanity_fail "A Dropbox DEST has been specified, but DPBX_ACCESS_TOKEN has not been configured"
-  [[ ! -z "${INCEXCFILE}" && ! -f ${INCEXCFILE} ]] && config_sanity_fail "The specified INCEXCFILE ${INCEXCFILE} does not exists"
+  [[ -n "${INCEXCFILE}" && ! -f ${INCEXCFILE} ]] && config_sanity_fail "The specified INCEXCFILE ${INCEXCFILE} does not exists"
 }
 
 mailcmd_sendmail() {
@@ -531,9 +532,9 @@ mailcmd_else() {
 
 email_logfile()
 {
-  if [ ! -z "${EMAIL_TO}" ]; then
+  if [ -n "${EMAIL_TO}" ]; then
 
-      MAILCMD=$(which "${MAIL}")
+      MAILCMD=$(command -v "${MAIL}")
       MAILCMD_REALPATH=$(readlink -e "${MAILCMD}")
       MAILCMD_BASENAME=${MAILCMD_REALPATH##*/}
 
@@ -573,7 +574,7 @@ email_logfile()
 
 send_notification()
 {
-  if [ ! -z "${NOTIFICATION_SERVICE}" ]; then
+  if [ -n "${NOTIFICATION_SERVICE}" ]; then
     echo "-----------[ Notification Request ]-----------"
     NOTIFICATION_CONTENT="duplicity-backup ${BACKUP_STATUS:-"ERROR"} [${HOSTNAME}] - \`${LOGFILE}\`"
 
@@ -655,12 +656,13 @@ get_source_file_size()
 
   # if INCLIST is not set or empty, add ROOT to it to be able to calculate disk usage
   if [ ${#INCLIST[@]} -eq 0 ]; then
-    DUINCLIST=(${ROOT})
+    DUINCLIST=("${ROOT}")
   else
     DUINCLIST=("${INCLIST[@]}")
   fi
 
   for include in "${DUINCLIST[@]}"; do
+      # shellcheck disable=SC2216
       echo -e "${DUEXCLIST}" | \
       du -hs ${DUEXCFLAG} "${include}" | \
       awk '{ FS="\t"; $0=$0; print $1"\t"$2 }'
@@ -769,7 +771,7 @@ include_exclude()
   IFS=$(echo -en "\t\n")
 
   # Exclude device files?
-  if [ ! -z "${EXDEVICEFILES}" ] && [ "${EXDEVICEFILES}" -ne 0 ]; then
+  if [ -n "${EXDEVICEFILES}" ] && [ "${EXDEVICEFILES}" -ne 0 ]; then
     TMP=" --exclude-device-files"
     EXCLUDE=${EXCLUDE}${TMP}
   fi
@@ -815,7 +817,7 @@ include_exclude()
 duplicity_cleanup()
 {
   echo "----------------[ Duplicity Cleanup ]----------------"
-  if [[ "${CLEAN_UP_TYPE}" != "none" && ! -z ${CLEAN_UP_TYPE} && ! -z ${CLEAN_UP_VARIABLE} ]]; then
+  if [[ "${CLEAN_UP_TYPE}" != "none" && -n ${CLEAN_UP_TYPE} && -n ${CLEAN_UP_VARIABLE} ]]; then
     {
       eval "${ECHO}" "${DUPLICITY}" "${CLEAN_UP_TYPE}" "${CLEAN_UP_VARIABLE}" "${STATIC_OPTIONS}" --force \
         "${ENCRYPT}" \
@@ -825,7 +827,7 @@ duplicity_cleanup()
     }
     echo
   fi
-  if [ ! -z "${REMOVE_INCREMENTALS_OLDER_THAN}" ] && [[ ${REMOVE_INCREMENTALS_OLDER_THAN} =~ ^[0-9]+$ ]]; then
+  if [ -n "${REMOVE_INCREMENTALS_OLDER_THAN}" ] && [[ ${REMOVE_INCREMENTALS_OLDER_THAN} =~ ^[0-9]+$ ]]; then
     {
       eval "${ECHO}" "${DUPLICITY}" remove-all-inc-of-but-n-full "${REMOVE_INCREMENTALS_OLDER_THAN}" \
         "${STATIC_OPTIONS}" --force \
@@ -865,7 +867,7 @@ duplicity_cleanup_failed()
 
 setup_passphrase()
 {
-  if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ] && [ "${GPG_ENC_KEY}" != "${GPG_SIGN_KEY}" ]; then
+  if [ -n "${GPG_ENC_KEY}" ] && [ -n "${GPG_SIGN_KEY}" ] && [ "${GPG_ENC_KEY}" != "${GPG_SIGN_KEY}" ]; then
     echo -n "Please provide the passphrase for decryption (GPG key 0x${GPG_ENC_KEY}): " >&3
     builtin read -s -r ENCPASSPHRASE
     echo -ne "\n" >&3
@@ -886,7 +888,7 @@ backup_this_script()
     SCRIPTFILE=$(echo "${0}" | cut -c 2-)
     SCRIPTPATH=$(pwd)${SCRIPTFILE}
   else
-    SCRIPTPATH=$(which "${0}")
+    SCRIPTPATH=$(command -v "${0}")
   fi
   TMPDIR=duplicity-backup-$(date +%Y-%m-%d)
   TMPFILENAME=${TMPDIR}.tar.gpg
@@ -895,7 +897,7 @@ backup_this_script()
   echo "You are backing up: " >&3
   echo "      1. ${SCRIPTPATH}" >&3
 
-  if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ]; then
+  if [ -n "${GPG_ENC_KEY}" ] && [ -n "${GPG_SIGN_KEY}" ]; then
     if [ "${GPG_ENC_KEY}" = "${GPG_SIGN_KEY}" ]; then
       echo "      2. GPG Secret encryption and sign key: ${GPG_ENC_KEY}" >&3
     else
@@ -905,12 +907,12 @@ backup_this_script()
     echo "      2. GPG Secret encryption and sign key: none (symmetric encryption)" >&3
   fi
 
-  if [ ! -z "${CONFIG}" ] && [ -f "${CONFIG}" ];
+  if [ -n "${CONFIG}" ] && [ -f "${CONFIG}" ];
   then
     echo "      3. Config file: ${CONFIG}" >&3
   fi
 
-  if [ ! -z "${INCEXCFILE}" ] && [ -f "${INCEXCFILE}" ];
+  if [ -n "${INCEXCFILE}" ] && [ -f "${INCEXCFILE}" ];
   then
     echo "      4. Include/Exclude globbing file: ${INCEXCFILE}" >&3
   fi
@@ -928,17 +930,17 @@ backup_this_script()
   mkdir -p "${TMPDIR}"
   cp "${SCRIPTPATH}" "${TMPDIR}"/
 
-  if [ ! -z "${CONFIG}" ] && [ -f "${CONFIG}" ];
+  if [ -n "${CONFIG}" ] && [ -f "${CONFIG}" ];
   then
     cp "${CONFIG}" "${TMPDIR}"/
   fi
 
-  if [ ! -z "${INCEXCFILE}" ] && [ -f "${INCEXCFILE}" ];
+  if [ -n "${INCEXCFILE}" ] && [ -f "${INCEXCFILE}" ];
   then
     cp "${INCEXCFILE}" "${TMPDIR}"/
   fi
 
-  if [ ! -z "${GPG_ENC_KEY}" ] && [ ! -z "${GPG_SIGN_KEY}" ]; then
+  if [ -n "${GPG_ENC_KEY}" ] && [ -n "${GPG_SIGN_KEY}" ]; then
     GPG_TTY=$(tty)
     export GPG_TTY
     if [ "${GPG_ENC_KEY}" = "${GPG_SIGN_KEY}" ]; then
@@ -1034,7 +1036,7 @@ case "${COMMAND}" in
   "restore")
     ROOT=${DEST}
     OPTION="restore"
-    if [ ! -z "${TIME}" ]; then
+    if [ -n "${TIME}" ]; then
       STATIC_OPTIONS="${STATIC_OPTIONS} --time ${TIME}"
     fi
 
@@ -1064,7 +1066,7 @@ case "${COMMAND}" in
     ROOT=${DEST}
     OPTION="restore"
 
-    if [ ! -z "${TIME}" ]; then
+    if [ -n "${TIME}" ]; then
       STATIC_OPTIONS="${STATIC_OPTIONS} --time ${TIME}"
     fi
 
@@ -1106,7 +1108,7 @@ case "${COMMAND}" in
   "list-current-files")
     OPTION="list-current-files"
 
-    if [ ! -z "${TIME}" ]; then
+    if [ -n "${TIME}" ]; then
       STATIC_OPTIONS="${STATIC_OPTIONS} --time ${TIME}"
     fi
 

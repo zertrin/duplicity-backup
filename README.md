@@ -150,6 +150,9 @@ For the [Google Cloud Storage](https://cloud.google.com/storage/) storage backen
 * [boto](https://github.com/boto/boto) (may already have been installed with duplicity)
 * [gsutil](https://cloud.google.com/storage/docs/gsutil) *`optional`*
 
+For the [Cloud File](Example Hubic) storage backend *`optional`*
+* [python-pip](https://pypi.org/project/pip/)
+* [pyrax](https://github.com/pycontribs/pyrax)
 
 ## Usage
 

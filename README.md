@@ -1,3 +1,7 @@
+![Maintenance](https://img.shields.io/maintenance/no/2019)
+
+_Note: As of 2019, I do not intend to maintain this tool further myself. Feel free to fork it if you want. If a well maintained fork appears, let me know so I can link to it from here._
+
 [![Build Status](https://travis-ci.org/zertrin/duplicity-backup.sh.svg?branch=dev)](https://travis-ci.org/zertrin/duplicity-backup.sh)
 
 # duplicity-backup.sh
